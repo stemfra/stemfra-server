@@ -18,6 +18,7 @@ const router = express.Router();
 const ALLOWED_FIELDS = [
   'record_calls', 'record_inbound_calls', 'signature_html', 'saved_lead_views',
   'shell', 'wallpaper', 'sidebar_docked', 'dock_pins', 'app_usage', 'workspace_session', 'desktop_layout',
+  'theme', // 'dark' | 'light' | 'system' (light mode arc, 2026-09-05)
 ];
 
 async function validateUserSession(req) {

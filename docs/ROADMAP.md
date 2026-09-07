@@ -7,6 +7,55 @@ linked docs; this is "what's next and why."_
 ## 📌 WHERE WE STAND (2026-07-29 audit — read this before the per-arc detail)
 _Verified against code + DB + env, not just doc claims._
 
+### 📋 STATUS DISCIPLINE (Peter, 2026-09-07 — after a reconciliation found 5 stale claims)
+Every session, in EVERY repo, before ending: (1) every ROADMAP arc or item you touched
+gets an explicit mark on its own line: `✅ DONE <date> (<commit>)`, `⏸ PARKED <date>`,
+`❌ DROPPED <date>`, or `🔜 NEXT`; an arc whose work shipped under another name (the
+Visual Tour closed P15) gets `✅ CLOSED <date>` on its HEADER plus one line saying where
+the work lives. (2) Things Peter does outside code (dashboard settings, verifications,
+purchases) are recorded the moment he says so in chat as `✅ Peter confirmed <date>`; no
+"⏳ Peter" line may outlive his confirmation. (3) The AGREED BUILD ORDER block carries a
+dated status line that is rewritten, not appended, when an item closes. (4) The
+SESSION_HANDOFF top block gets a "Status changes this session" list naming each mark.
+(5) Numbers that appear in docs (step counts, video counts, tier counts) are re-read from
+the code at the time of writing, never copied from an older doc. A reconciliation
+(code vs ROADMAP) is due whenever a session inherits an arc it did not build.
+
+### 🧾 RECONCILIATION 2026-09-07 (code vs this doc; Peter-confirmed where noted)
+- Agreed build order: items 1 to 4 ✅ Peter confirmed 2026-09-07 (inbox parity, P23,
+  template readiness audit, dashboard actions). Item 5 **P25 NOT started** (no
+  Brandfetch / logo-builder code in server or CMS).
+- **P15 ✅ CLOSED**: walkthroughs shipped natively as the Visual Tour
+  (`stemfra_platform/docs/GUIDED_TOURS.md`); Supademo dropped entirely. The
+  reconciliation engine listed there as "not built" shipped 2026-08-11 (webhook secret
+  + RECON_ENABLED are in deploy.yml).
+- **Onboarding as built**: the CMS **Setup wizard** = 4 steps (Your business, Your
+  services, Opening hours, Your team; `stemfra_cms/src/components/onboarding/
+  SetupWizard.tsx`, 2026-09-01). **Stacy's checklist** = 12 server steps
+  (`lib/stacyOnboarding.js`) shown in 3 stages: "Make it yours" 6 · "Get found on
+  Google" 4 · "Before you publish" 2. Older "10-step checklist" wording is stale.
+- P18 NOT built (Stacy has only `clone`). P20 security page NOT built. P21: backups ✅,
+  Supabase org still on the **free** plan (Management API, 2026-09-07). P26 NOT started.
+- P24 IS pushed (origin/main 2026-08-31); handoff "local only" notes are stale.
+- **Wildcard Worker NOT live** (2026-09-07, Cloudflare API): zero Worker routes on the
+  stemfra.com zone, no `*` DNS record, `*.stemfra.com` hosts are per-site CNAMEs to the
+  vertical Pages projects. The August domain tests (cleancutsbarber.click,
+  argyleandsons.click) ran through the per-domain zone flow (Case 7), not the Worker.
+- YouTube tutorials: plan + two scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`
+  (supersedes the "First YouTube tutorial script" one-off below). 30 videos in 3
+  playlists; scripts checked against the live CMS labels on 2026-09-07.
+- Consequence of the Worker not being live: the "PREREQ for the self-serve funnel"
+  line above still holds (Pages caps custom domains per project; every provisioned
+  site burns a slot). Deploy steps unchanged: deploy platform → `setup-tenant-wildcard.js
+  --apply` → `wrangler deploy` → verify → `TENANT_WILDCARD_ROUTING=true` in deploy.yml.
+- CMS walk 2026-09-07 (demo owner, argyle-and-sons), small open items: (a) the
+  Dashboard paints a "Your site / Preview / Publish" placeholder before the owner
+  context loads (needs a skeleton state); (b) em-dashes survive in a few user-facing
+  strings (Profile subtitle, Stacy "Setup" label, Published tooltip, staff banner, the
+  "Payment confirmed" notification text) against the house rule; (c) Stacy opens on
+  Chat, not Setup, once a site's checklist is complete (expected; record tutorial
+  footage of the checklist on a fresh account).
+
 ### 🥇 AGREED BUILD ORDER (Peter, 2026-09-01 — cold calls + REAL-CLIENT ONBOARDING START 2026-09-02)
 After the wellness About/Contact visual pass closes and the push hold lifts, prioritize the
 surfaces that touch new-client onboarding, in THIS order:
@@ -1088,9 +1137,17 @@ Out of scope: credits/entitlement ledger, Stripe repairs, deposits, massage/spa
 real-plan tiers, the Display-only UX rework (separate task). Executor: Opus 4.8
 per ADVISOR_STRATEGY; commits only, NO push without Peter.
 
-## P15 — Video/demos arc + CMS UI polish (NEW, 2026-08-07)
+## P15 — Video/demos arc + CMS UI polish (NEW, 2026-08-07) — ✅ CLOSED 2026-09-07
 
-**Video/demos plan doc (source of truth): [`P15_VIDEO_DEMOS_PLAN.md`](P15_VIDEO_DEMOS_PLAN.md).**
+**Closed (Peter confirmed 2026-09-07): the walkthroughs shipped NATIVELY as the Visual
+Tour (`stemfra_platform/docs/GUIDED_TOURS.md`, 2026-08-08 to 08-18); Supademo is dropped
+entirely. Item 1b (reconciliation engine) shipped 2026-08-11. Still open from this block,
+tracked as ordinary follow-ups: phone validation (item 1), the CMS dashboard analytics
+upgrade (item 2), the wildcard Worker deploy + Custom Hostnames (items 6a/6b). The YouTube
+tutorial series is planned in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`. Text below
+kept for history.**
+
+**Video/demos plan doc (historical): [`P15_VIDEO_DEMOS_PLAN.md`](P15_VIDEO_DEMOS_PLAN.md).**
 Phase 0a (Stacy onboarding fixes + update_contact do-it-for-me) DONE + live-verified
 2026-08-07; the CMS UI-polish pass shipped alongside it (form kit `components/form/`,
 violet PrimaryButton standardization, refined Select dropdown + category creation,
@@ -1164,6 +1221,12 @@ CMS boot spinner, card active states, FAQ+legal onboarding steps).
    Verify button; render.com/docs/custom-domains is the reference).
 
 ## P16 — Interactive onboarding + What's New + Support system — ✅ CLOSED 2026-09-01 (items 2+3 shipped; item 1 DROPPED by Peter)
+
+_Added 2026-09-07: the onboarding that DID ship the same day is the 4-step **Setup
+wizard** (`stemfra_cms/src/components/onboarding/SetupWizard.tsx`, mounted in
+CmsLayout, dev override `?setupWizard=1`) which took the business / contact / hours /
+headline steps out of Stacy's list; Stacy now shows 12 steps in 3 stages (see the
+reconciliation block at the top)._
 
 Context: the native CMS walkthrough (P15) shipped 2026-08-08 (10 spotlight steps,
 Jessica voice @ 0.95, docs in P15_VIDEO_DEMOS_PLAN.md). Peter's goal: the setup
@@ -1598,9 +1661,8 @@ Timing: after the current onboarding-facing queue (inbox parity, P23,
 template audit, P25); pairs naturally with the Stacy native-mode migration.
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
-- First YouTube tutorial script ("Stemfra CMS in 5 minutes", ElevenLabs Studio
-  + Jessica @ 0.95) — draft when Peter wants to record.
-- Supademo pilot step-order fix (one reorder_steps call on demo
-  cmsj17qj000k5rq20fo7y47gy) — before any marketing use of the pilot.
+- ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
+  plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
+- ~~Supademo pilot step-order fix~~ ❌ DROPPED 2026-09-07 (Supademo no longer used).
 - ELEVENLABS_API_KEY into deploy.yml env block + GitHub secret AT PROD PUSH
   (deploys wipe unlisted vars).
