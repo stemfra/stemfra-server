@@ -2,7 +2,7 @@
 // Stacy launcher (data-tour stacy-launcher), rail with Chat / History / Setup,
 // four suggested questions, the composer, "Show me how" and "Set up, I can
 // draft it" on checklist rows, refine chips when a text field is focused.
-import { OUTRO, closeStacy } from '../lib/script.mjs';
+import { OUTRO, closeStacy, closePreview } from '../lib/script.mjs';
 
 export default {
   id: '19-stacy-copilot',
@@ -23,7 +23,8 @@ export default {
       run: async ({ cursor, page }) => { await cursor.click('textarea[placeholder*="Ask Stacy"]', { at: 'type your own', after: 300 }); await cursor.type('Where do I change my footer text?', { delay: 40 }); await cursor.sleep(1200); await page.locator('textarea[placeholder*="Ask Stacy"]').fill('').catch(() => {}); } },
     { id: 'draft-1', title: 'Draft and refine',
       say: 'On any text field, focus it and Stacy offers to rewrite what is there: simpler, shorter, longer, warmer or more professional. Drafts go into the field with one click, and you still Save.',
-      run: async ({ cursor, goto, base }) => { await goto(`${base}/content/about?section=rich_text`, 2500); await cursor.click('[data-tour="section-rich_text"] textarea', { at: 'focus it', after: 400, scroll: true }); await cursor.click('[data-tour="stacy-launcher"]', { after: 1400 }).catch(() => {}); await cursor.sweep([{ target: 'button:has-text("Simplify")', at: 'simpler' }, { target: 'button:has-text("Shorten")', at: 'shorter' }, { target: 'button:has-text("Warmer")', at: 'warmer' }]).catch(() => {}); } },
+      // Editor fields live in the page body, not inside the row's data-tour element (video 4 lesson); the content page auto-opens the live preview drawer, close it first.
+      run: async ({ cursor, goto, base, page }) => { await goto(`${base}/content/about?section=rich_text`, 2500); await closePreview(page); await page.waitForSelector('main textarea', { timeout: 15000 }).catch(() => {}); await cursor.click('main textarea', { at: 'focus it', after: 400, scroll: true }); await cursor.click('[data-tour="stacy-launcher"]', { after: 1400 }).catch(() => {}); await cursor.sweep([{ target: 'button:has-text("Simplify")', at: 'simpler' }, { target: 'button:has-text("Shorten")', at: 'shorter' }, { target: 'button:has-text("Warmer")', at: 'warmer' }]).catch(() => {}); } },
     { id: 'setup-1', title: 'The checklist',
       say: 'Setup is her checklist for a new site, in three stages. Each step opens the right page, Show me how walks you through it on screen, and Set up, I can draft it writes the text for you.',
       run: async ({ cursor, page }) => { await page.locator('button:has-text("Setup")').first().click({ timeout: 1500 }).catch(() => {}); await cursor.sweep([{ target: 'text=Make it yours', at: 'three stages' }, { target: 'text=Show me how', at: 'show me how' }, { target: 'text=Set up, I can draft it', at: 'draft it' }]).catch(() => {}); } },

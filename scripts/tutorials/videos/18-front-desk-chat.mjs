@@ -13,7 +13,8 @@ export default {
   segments: [
     { id: 'what-1', title: 'What it does',
       say: 'On your published site, visitors see a chat button. The assistant answers from your live information: opening hours, services, prices, team and pages. It never invents a price or a free slot.',
-      run: async ({ cursor, goto }) => { await goto(`${LIVE}/`, 3000); await cursor.hover('button[aria-label*="chat" i], button:has-text("Chat"), [class*="launcher"]', { at: 'chat button', settle: 1500 }).catch(() => {}); } },
+      // Argyle's "FIRST CUT $10 OFF" popup (video 20's subject) opens on the live home and covers the site: dismiss it first.
+      run: async ({ cursor, goto, page }) => { await goto(`${LIVE}/`, 3000); await page.locator('[role="dialog"] button[aria-label="Close"], button:has-text("No, Thanks")').first().click({ timeout: 4000 }).catch(() => {}); await cursor.sleep(500); await cursor.hover('button[aria-label*="chat" i], button:has-text("Chat"), [class*="launcher"]', { at: 'chat button', settle: 1500 }).catch(() => {}); } },
     { id: 'what-2',
       say: 'When a visitor leaves a name and email, it lands in your Inbox. When they want a time, it offers real slots and can book a free service on the spot.',
       run: async ({ cursor }) => { await cursor.hover('body', { at: 'inbox', settle: 1500 }); } },

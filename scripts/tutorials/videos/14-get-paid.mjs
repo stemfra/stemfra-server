@@ -28,7 +28,7 @@ export default {
       run: async ({ cursor, page }) => { await page.keyboard.press('Escape'); await cursor.hover('aside a:has-text("Operations")', { at: 'reports', settle: 1000 }); } },
     { id: 'currency-1',
       say: 'Currency sets the symbol shown on your site and in your reports.',
-      run: async ({ cursor, goto, base }) => { await goto(`${base}/billing/payments`, 2000); await cursor.hover('label:has-text("Currency"), text=Currency', { at: 'currency', settle: 1000 }); } },
+      run: async ({ cursor, goto, base, page }) => { await goto(`${base}/billing/payments`, 2000); await page.waitForSelector('label:has-text("Currency")', { timeout: 15000 }).catch(() => {}); await cursor.hover('label:has-text("Currency")', { at: 'currency', settle: 1000 }); } },
     { id: 'online-1',
       say: 'Online card payments at booking are coming. When they open for your account, you will connect them on this same page.',
       run: async ({ cursor }) => { await cursor.hover('text=Online payments', { at: 'online card payments', settle: 1200 }); }, hold: 0.8 },
