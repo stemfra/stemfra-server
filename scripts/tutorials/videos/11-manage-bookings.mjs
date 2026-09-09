@@ -20,7 +20,7 @@ export default {
       run: async ({ cursor }) => { await cursor.hover(side('Bookings'), { at: 'bookings' }); await cursor.hover('[data-tour="bookings-grid"]', { at: 'one column', settle: 900 }); } },
     { id: 'cal-2',
       say: 'The toolbar moves between days, jumps back to today, and switches between the day and the week view.',
-      run: async ({ cursor }) => { await cursor.sweep([{ target: 'button[aria-label="Next day"]', at: 'between days' }, { target: 'button:has-text("Today")', at: 'today' }, { target: 'button:has-text("week")', at: 'week view' }]); await cursor.click('button:has-text("week")', { after: 1500 }); await cursor.click('button:has-text("day")', { at: 'view', after: 900 }); } },
+      run: async ({ cursor }) => { await cursor.sweep([{ target: 'button[aria-label="Next day"]', at: 'between days' }, { target: 'button:has-text("Today")', at: 'today' }, { target: 'button:text-is("Week")', at: 'week view' }]); await cursor.click('button:text-is("Week")', { after: 1500 }); await cursor.click('button:text-is("Day")', { at: 'view', after: 900 }); } },
     { id: 'open-1', title: 'Open an appointment',
       say: 'Click any appointment to open it. You see the service, the time, the team member, the customer with one-click copy for email and phone, and any notes.',
       run: async ({ cursor }) => { await cursor.click('[data-tour="bookings-grid"] button', { at: 'click any', after: 1200 }); await cursor.sweep([{ target: '[role="dialog"] button[aria-label="Copy email"], [role="dialog"] button:has-text("Copy email")', at: 'copy' }, { target: '[role="dialog"] button:has-text("Save notes")', at: 'notes' }]); } },

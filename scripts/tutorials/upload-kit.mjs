@@ -11,6 +11,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..', '..', 'stemfra_video', 'tutorials');
 const SERIES = 'Part of "Getting started with Stemfra", the how-to series for the Stemfra CMS. The same steps apply whether you run a barbershop, a salon, a CrossFit box, a yoga studio, a massage practice or a spa.';
 const LINKS = 'Join Stemfra today: https://stemfra.com/start\nHelp: https://stemfra.com/help\nQuestions: leave a comment, or ask Stacy inside your CMS.';
+// Peter 2026-09-09: a Squarespace-style "about the company" paragraph at the foot of every
+// description, naming the business types, so the videos surface for those searches too.
+const ABOUT = 'About Stemfra\nStemfra gives local businesses a website that takes the bookings. Barbershops, hair salons, CrossFit boxes, yoga studios, massage practices and spas pick a theme made for their kind of business, add their services and team, and publish. Every Stemfra website comes with online booking, automatic reminders, a front desk assistant that answers customers, reviews, invoices and a simple CMS built for busy owners. Start for free and pay when you publish.\n\nWebsite builder and online booking for barbershops, hair salons, CrossFit gyms, yoga and pilates studios, massage therapists and day spas.';
 // Peter 2026-09-08: the Squarespace-style socials block waits until the handles exist and carry content.
 const TAGS = 'Stemfra, website builder, small business website, booking website, barbershop website, salon website, CrossFit website, yoga studio website, massage website, spa website, CMS tutorial';
 
@@ -44,6 +47,8 @@ Chapters
 ${chapters}
 
 ${LINKS}
+
+${ABOUT}
 \`\`\`
 `);
 }

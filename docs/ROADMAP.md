@@ -53,8 +53,12 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   - ⏳ Playlist 5, By business type (32 to 37, DECIDED 2026-09-08): not written.
   - Peter uploads playlists 1 + 4 first (descriptions carry "Join Stemfra today:
     stemfra.com/start"; the socials block waits for the handles), then 11 to 26 record.
-  - Two CMS fixes fell out of the launch review (local, hold): full sidebar always on new
-    sites (getting-started mode reversed), no dashboard flash before the setup wizard.
+    AGREED 2026-09-09: upload as Unlisted, flip Public once prod matches the footage.
+  - Two CMS fixes fell out of the launch review: full sidebar always on new sites
+    (getting-started mode reversed), no dashboard flash before the setup wizard. ✅ PUSHED
+    2026-09-09 (Peter lifted the hold: platform `36375d8`, server `d85de2e`) together with
+    the editor-reset fix (video 10) and the whole tutorial pipeline.
+  - 🎬 Recording 11 to 22 started 2026-09-09 (1080p review pass first, then 4K).
 - FIRST AD (DECIDED 2026-09-08): a 30s product montage in the Base44 register, cut with
   the tutorial recorder from the six demo sites + the CMS; plan + beat sheet in
   `stemfra_platform/docs/PRODUCT_MONTAGE_AD.md`. ⏳ Not started (after the tutorial upload).
