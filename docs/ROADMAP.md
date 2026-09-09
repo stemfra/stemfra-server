@@ -274,6 +274,25 @@ Review order + checklist (default ★ first; tick a theme once its About + Conta
   Umbra/Ellaris/Lumora have none. Nine mismatched clone photos replaced via the Unsplash →
   Cloudinary import (site_media rows with `metadata.purpose`): reveline For two / Recovery &
   sport / Prenatal care / Gift; aurea Spa for two / Mum-to-be / A full day / For a group / Gift.
+  Peter (evening): reveline "For two" → the couples-on-two-tables photo he chose himself for the
+  Couples Massage service (same asset on lull/umbra/reveline), delivered as a Cloudinary
+  `c_fill,ar_3:4,g_faces` crop so both guests stay in the portrait tile; the Unsplash import
+  YgmDZXzl5Z8 was destroyed + its site_media row removed. RULE: occasion tiles reuse the photos
+  Peter picked for the matching service/category before importing anything new. Then "do the
+  same for the other eight": reveline Recovery & sport ← lull Stretch Therapy, Prenatal care ←
+  reveline Prenatal Massage, Gift ← lull Aromatherapy still life; aurea Spa for two ← lull
+  Couples Ritual (g_faces), Mum-to-be ← aurea Prenatal Massage, A full day ← lull Four Hands,
+  Gift ← aurea's own gift-band photo. Lull assets were CLONED into the reveline/aurea folders
+  (site_media rows with `metadata.copied_from`), the 7 Unsplash imports destroyed. Aurea "For a
+  group" KEPT its Unsplash photo (no group shot among Peter's picks; flagged). Finding: the lull
+  photos dated 2026-07-09 (Deep Tissue, Sports Recovery, Hot Stone, Full Body & Foot) are yoga
+  clone leftovers (meditation, yoga class), Peter's real picks are the 2026-07-13/15 uploads.
+  Those four SERVICE photos fixed the same evening on lull + umbra: Deep Tissue ← umbra's
+  top-down back shot (3db40761), Sports Recovery ← the marble-table stretch (f8f725a9), Full
+  Body & Foot ← the sunny shoulders shot (514a01bf), all Peter's 2026-07-13 umbra uploads
+  (cloned into the lull folder); lull Hot Stone Ritual ← lull's 2026-09-02 hot-stone upload;
+  umbra's Hot Stone photo was already real. NOT touched: reveline Sports Recovery still shows a
+  facial (f4953cfb) and aurea Sports Recovery the same photo; swap when Peter asks.
   ✅ DONE 2026-09-09 (Peter: "Go ahead with the carousel and the anchors"): OccasionGrid becomes
   a scroll-snap row with Previous/Next arrows below when >4 tiles (grid unchanged at ≤4); tiles
   deep-link to `/services#<category-slug>` (massage catalog groups carry `id={slug}` +
