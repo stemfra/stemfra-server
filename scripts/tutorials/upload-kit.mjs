@@ -16,6 +16,13 @@ const LINKS = 'Join Stemfra today: https://stemfra.com/start\nHelp: https://stem
 const ABOUT = 'About Stemfra\nStemfra gives local businesses a website that takes the bookings. Barbershops, hair salons, CrossFit boxes, yoga studios, massage practices and spas pick a theme made for their kind of business, add their services and team, and publish. Every Stemfra website comes with online booking, automatic reminders, a front desk assistant that answers customers, reviews, invoices and a simple CMS built for busy owners. Start for free and pay when you publish.\n\nWebsite builder and online booking for barbershops, hair salons, CrossFit gyms, yoga and pilates studios, massage therapists and day spas.';
 // Peter 2026-09-08: the Squarespace-style socials block waits until the handles exist and carry content.
 const TAGS = 'Stemfra, website builder, small business website, booking website, barbershop website, salon website, CrossFit website, yoga studio website, massage website, spa website, CMS tutorial';
+// One series, three playlists (Peter 2026-09-08/09). Playlist 3 (23 to 27) is skipped for now.
+const PLAYLISTS = [
+  { name: 'Launch a new website with Stemfra', from: 28, to: 31, note: 'sign-up to domain, on a fresh barbershop; the first thing a prospect should watch' },
+  { name: 'Getting started with Stemfra', from: 1, to: 10, note: 'make the sample site yours' },
+  { name: 'Running your business with Stemfra', from: 11, to: 22, note: 'the day-to-day CMS' },
+];
+const playlistFor = (n) => PLAYLISTS.find((p) => n >= p.from && n <= p.to)?.name || 'Getting started with Stemfra';
 
 const dirs = readdirSync(root).filter((d) => /^\d\d-/.test(d)).sort();
 const blocks = [];
@@ -28,6 +35,7 @@ for (const d of dirs) {
   const mmss = `${Math.floor(m.total / 60)}:${String(Math.floor(m.total % 60)).padStart(2, '0')}`;
   blocks.push(`## ${d.slice(0, 2)}. ${m.title}
 
+- Playlist: ${playlistFor(Number(d.slice(0, 2)))}
 - Master: \`${mp4}\` (${m.size}, ${mmss})
 - Cover: \`${join(root, d, 'cover.png')}\`
 - Tags: ${TAGS}
@@ -53,5 +61,14 @@ ${ABOUT}
 `);
 }
 const out = join(root, 'UPLOAD.md');
-writeFileSync(out, `# YouTube upload kit: Getting started with Stemfra\n\nGenerated ${new Date().toISOString().slice(0, 10)} from the manifests in this folder. Playlist: "Getting started with Stemfra". Upload the master, set the cover as the thumbnail, paste the title and description, add the tags, add to the playlist.\n\n${blocks.join('\n')}`);
+const playlistLines = PLAYLISTS.map((p) => `- **${p.name}** (videos ${p.from} to ${p.to}): ${p.note}.`).join('\n');
+writeFileSync(out, `# YouTube upload kit: Stemfra CMS tutorials
+
+Generated ${new Date().toISOString().slice(0, 10)} from the manifests in this folder. One series, three playlists:
+
+${playlistLines}
+
+Per video: upload the master, set the cover as the thumbnail, paste the title and description, add the tags, add it to its playlist. Upload as Unlisted first, put the playlists in numeric order, then switch everything to Public in one pass.
+
+${blocks.join('\n')}`);
 console.log(`wrote ${out} (${blocks.length} videos)`);
