@@ -45,10 +45,10 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   pipeline `scripts/tutorials/`, Playwright + ElevenLabs + ffmpeg, 4K masters; upload kit
   `stemfra_video/tutorials/UPLOAD.md`). STATUS 2026-09-08, per video:
   - ✅ Playlist 1, Getting started (1 to 10): MASTERS CUT + approved by Peter.
-  - 🎬 Playlist 2, Running your business (11 to 22): 1080p review drafts ALL CUT + sent
-    2026-09-09 (11, 13, 15, 16 approved by Peter; 12, 14, 17 to 22 awaiting his review;
-    the demo lead "Peter Okeme" renamed "Peter Space" for privacy). 4K masters follow
-    the review.
+  - ✅ Playlist 2, Running your business (11 to 22): approved by Peter 2026-09-09, 4K
+    MASTERS CUT + sent the same evening (video 19's silent stretch fixed first: the Stacy
+    rail opened on Setup, so the chat sweep waited; the demo lead "Peter Okeme" renamed
+    "Peter Space" for privacy). UPLOAD.md carries all 26 videos.
   - ⏸ Playlist 3, Your account (23 to 26): scripts written, SKIPPED for now (Peter
     2026-09-09); 27 (logo builder) waits for P25.
   - ✅ Playlist 4, Launch a new website (28 to 31): MASTERS CUT + approved (recorded on a
