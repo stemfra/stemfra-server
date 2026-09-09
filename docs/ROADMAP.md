@@ -54,8 +54,10 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   - ✅ Playlist 4, Launch a new website (28 to 31): MASTERS CUT + approved (recorded on a
     fresh sign-up, account removed after).
   - ⏳ Playlist 5, By business type (32 to 37, DECIDED 2026-09-08): not written.
-  - Peter uploads playlists 1 + 4 first (descriptions carry "Join Stemfra today:
-    stemfra.com/start"; the socials block waits for the handles), then 11 to 26 record.
+  - 🎬 YOUTUBE UPLOAD started 2026-09-09: 14 of 26 up (28 to 31 + 01 to 10), daily limits hit;
+    rest + thumbnails 06 to 22 + video 07 description fix on 2026-09-10 per
+    `stemfra_video/youtube/TOMORROW.md`. Three playlists, Manual order, straight to Public.
+    Advanced features (clickable links, chapters) wait on channel history (no ID route offered).
     AGREED 2026-09-09: upload as Unlisted, flip Public once prod matches the footage.
   - Two CMS fixes fell out of the launch review: full sidebar always on new sites
     (getting-started mode reversed), no dashboard flash before the setup wizard. ✅ PUSHED
