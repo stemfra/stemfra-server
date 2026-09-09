@@ -92,8 +92,9 @@ surfaces that touch new-client onboarding, in THIS order:
 3. **Template readiness audit** (every image/text CMS-editable, per theme; yoga Sanctuary is the
    done model).
 4. **Peter's dashboard actions** (Supabase auth-email SMTP + paste the 4 branded templates;
-   CMS-origin redirect allowlist for magic links).
-5. **P25** logo toolkit (Brandfetch import + SVG builder).
+   CMS-origin redirect allowlist for magic links). ✅ Peter confirmed 2026-09-09.
+5. **P25** logo toolkit (Brandfetch import + SVG builder). 🟢 UNBLOCKED 2026-09-09 (theme-polish
+   arc closed); NEXT to build, after the YouTube upload finishes.
 Then the rest of the queue (P20 security, P21 items 2–3, P18, P22, **P26** agent
 inventory + archetype system, launch-plan tasks as they come due).
 
@@ -111,7 +112,7 @@ checklist + the marketing-funnel discussion live THERE. Read it after this block
   every provisioned site burns a slot.
 - Suspended until approval (NOT launch): Airwallex `invoice.paid` webhook + tax-aware ledger.
 
-_Previous active arc = **P13 commission model** (`docs/COMMISSION_MODEL.md`), shipped; theme-polish arc below closed 2026-08-17._
+_Previous active arc = **P13 commission model** (`docs/COMMISSION_MODEL.md`), shipped; theme-polish arc below closed 2026-09-09 (core four 2026-08-17, wellness 2026-09-09)._
 
 ### 📞 Cold-call + call-rails arc — ✅ DONE 2026-09-05 (real-client onboarding)
 The channel that makes cold outreach work, plus the CRM surfaces reps use on a call.
@@ -233,7 +234,11 @@ dashboards add: block or click-to-load remote images (tracking pixels leak
 the reader's IP and open-time; the Helen build allows https images as a
 single-operator trade-off).
 
-### 🎨 Theme polish — About Us + Contact page review (ACTIVE arc, started 2026-08-13)
+### 🎨 Theme polish — About Us + Contact page review (✅ CLOSED 2026-09-09; started 2026-08-13)
+_All six verticals reviewed and confirmed by Peter. Massage + spa closed 2026-09-09 (Escape ·
+Umbra · Reverie · Ellaris · Lumora · Respira, rulings (a) to (f) below). Platform commits local
+(391336e, f4d7df4, b18a351, d2f7b5a), push hold. Closing this arc releases the **P25 logo
+toolkit** build trigger (agreed build order item 5)._
 A cross-vertical walkthrough with Peter: review the **About Us** and **Contact** pages of
 every active theme, **vertical by vertical, default theme (★) first**, then the next theme
 after Peter's review, until the vertical is done, then the next vertical. Open each theme
@@ -246,8 +251,34 @@ Review order + checklist (default ★ first; tick a theme once its About + Conta
 - ✅ **salons** — DONE (2026-08-17, same call)
 - ✅ **crossfit** — DONE (2026-08-17, same call)
 - ✅ **yoga** — DONE (2026-08-17, same call)
-- [ ] **massage** — ★ Escape · Umbra (massage-zenhaven) · Reverie  ← **ACTIVE FOCUS** (Peter gave these pages least attention)
-- [ ] **spa** — ★ Ellaris · Lumora · Respira  ← **ACTIVE FOCUS**
+- ✅ **massage** — DONE 2026-09-09: Escape (on lull) · Umbra (on umbra) · Reverie (on reveline), all Peter confirmed
+- ✅ **spa** — DONE 2026-09-09: Ellaris (on ellaris-spa) · Lumora (on vela) · Respira (on aurea), all Peter confirmed
+- Rulings from the Reverie/Respira review (2026-09-09): (a) **wellness nav "About" → the `/about`
+  page** (was the home `#about` anchor); Services + Team stay home anchors (their home sections
+  ARE the full menu/team). The home **"Short introduction"** section (CMS label) is an intro note
+  under the hero, NOT an About section: its tagline-style headline stays ("Peace, at last",
+  "Creating Serene Spaces", "A Holistic Wellness Experience", "Rejuvenate your body & mind"), no
+  link, no scroll target needed. Platform commit local. (b) Reveline home services heading
+  "Our massages" → "Services" (data; the other five demos already read "Services"). (c) Featured
+  services trimmed to 4 per wellness demo (was 12 to 15 of ~20, so the Reverie category-showcase
+  showed "Most popular" on most cards); data only. (d) **Home services teaser** (Umbra as the
+  reference): the default ServiceMenu gained `max_items` (featured-first flat grid) + a CTA to
+  the full menu; CMS ServiceGridSectionEditor gained "Button link" + "Show at most"; Reveline
+  home = 4 services + "View all services" → /services (2 featured so the badge reads as a
+  highlight). (e) **"Services", not "treatments"** (Peter: spa/massage sites say services):
+  wellness home anchors renamed `#treatments`/`#therapists` → `#services`/`#team`, footer
+  "Treatments/Browse treatments" → "Services/Browse services", catalog group label
+  "Treatments" → "Services", every wellness demo's services CTA → "View all services".
+  (f) **Occasion tiles ("Find your massage" / "Find your escape")** exist on Reverie (reveline,
+  6 tiles) and Respira (aurea, 8 tiles) only; Escape (lull) has the category-card row instead;
+  Umbra/Ellaris/Lumora have none. Nine mismatched clone photos replaced via the Unsplash →
+  Cloudinary import (site_media rows with `metadata.purpose`): reveline For two / Recovery &
+  sport / Prenatal care / Gift; aurea Spa for two / Mum-to-be / A full day / For a group / Gift.
+  ✅ DONE 2026-09-09 (Peter: "Go ahead with the carousel and the anchors"): OccasionGrid becomes
+  a scroll-snap row with Previous/Next arrows below when >4 tiles (grid unchanged at ≤4); tiles
+  deep-link to `/services#<category-slug>` (massage catalog groups carry `id={slug}` +
+  `useCategoryHashScroll`; category-showcase section ids = bare slug; reveline tiles → #massage
+  / #couples / #bodywork-rituals / gift page). Platform commit d2f7b5a (local, push hold).
 - boutique_gyms (Facility ★ / Signal) exist in the catalog but the app (`stemfra_gyms`) is deferred — skip unless asked.
 
 _2026-08-17 (Peter): About/Contact for barbers · salons · crossfit · yoga marked DONE — now that every part
@@ -1665,7 +1696,7 @@ the toolkit has an import track and a creation track:
 Integration points: BrandingSection (upload stays the default path), the
 Stacy onboarding "logo" step deep-links the builder, publish-checklist logo
 gate counts a built logo. Build trigger: after the wellness theme-polish
-arc closes.
+arc closes. ✅ Trigger met 2026-09-09 (arc closed); not started.
 
 ## P26 — AI agent inventory + agent archetype system (recorded 2026-09-02, Peter)
 
@@ -1693,6 +1724,35 @@ timezone picker then had to be ported by hand. The inventory + archetype layer
 makes "check similar works first" a lookup instead of an archaeology dig.
 Timing: after the current onboarding-facing queue (inbox parity, P23,
 template audit, P25); pairs naturally with the Stacy native-mode migration.
+
+## P27 — Claim prefill from scraped business data (proposed 2026-09-09, Peter's ask)
+
+Peter, looking at Fresha's unclaimed-venue page for GD Barbershop (name, address, hours,
+map, "Suggest an update"): if we already scrape a business, the claim link should land the
+owner on a site that already knows them, so the setup wizard is a confirm-or-edit, not a
+form. "This people already know me" is the feeling to create.
+
+**Where we stand (verified in code 2026-09-09):** the n8n Google Maps run uses the Apify
+actor `compass~crawler-google-places`, which returns name, address, phone, website, rating,
+review count, opening hours, category and photos. Only `company_name`, `phone`, `region`
+(state) reach the `leads` table; `qualification` is empty on stored leads and the prompt
+uses `website` for scoring only. `lib/claimOffer.js` prefills nothing but the business name.
+So the data is fetched and thrown away.
+
+**Build (small, three steps):**
+1. Ingest: keep the scraper snapshot on the lead (`leads.qualification.scraped` or a new
+   `scraped` jsonb): address, city, state, zip, phone, website, opening hours, rating,
+   review count, category, place id, up to 3 photo URLs. n8n Build Prompt + the
+   `/api/leadgen/ingest` payload carry it through.
+2. Claim → provision: when the claim link provisions the site, write the snapshot into the
+   real fields: company name, `sites.business_hours` (from opening hours), the home
+   `location_map` section (address, phone), `sites.time_zone` from the state, the GBP
+   place id onto `metadata.gbp` (so video 22's "Yes, I have one" is pre-answered), the
+   scraped website as the "already have a domain?" hint in sign-up.
+3. Wizard step 1 shows those values prefilled with "Is this right?" instead of blanks.
+   Reviews: show the rating + count as a badge only; never copy review text (Google ToS).
+
+Not started. Trigger: after the theme polish arc (this week) and the YouTube upload.
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
