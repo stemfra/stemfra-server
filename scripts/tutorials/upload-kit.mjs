@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..', '..', 'stemfra_video', 'tutorials');
-const SERIES = 'Part of "Getting started with Stemfra", the how-to series for the Stemfra CMS. The same steps apply whether you run a barbershop, a salon, a CrossFit box, a yoga studio, a massage practice or a spa.';
+const seriesLine = (playlist) => `Part of "${playlist}", the how-to series for the Stemfra CMS. The same steps apply whether you run a barbershop, a salon, a CrossFit box, a yoga studio, a massage practice or a spa.`;
 const LINKS = 'Join Stemfra today: https://stemfra.com/start\nHelp: https://stemfra.com/help\nQuestions: leave a comment, or ask Stacy inside your CMS.';
 // Peter 2026-09-09: a Squarespace-style "about the company" paragraph at the foot of every
 // description, naming the business types, so the videos surface for those searches too.
@@ -49,7 +49,7 @@ ${m.title} | Stemfra CMS
 \`\`\`
 ${desc}
 
-${SERIES}
+${seriesLine(playlistFor(Number(d.slice(0, 2))))}
 
 Chapters
 ${chapters}
