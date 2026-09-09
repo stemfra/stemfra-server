@@ -1,0 +1,46 @@
+// Video 7: "How to add your team" (Team). Probed 2026-09-08: list rows with
+// quick toggles (Hide from site, Stop accepting new clients, Mark as owner,
+// Feature on home carousel); the editor: Name, Role, Pronouns, Email (private),
+// Phone (private), Copy on their bookings, Team photo, Bio, Specialties,
+// Certifications, Years of experience, Services this team member performs,
+// Working hours (+ Add hours, + Add split shift), Time off (Add time off).
+// No writes: the take walks an existing barber.
+import { side, OUTRO, closeStacy } from '../lib/script.mjs';
+
+export default {
+  id: '07-add-your-team',
+  title: 'How to add your team',
+  description: 'Add team members to your Stemfra website with their photo, services, working hours and time off.',
+  intro: 'In this video we will show you how to add your team: their photo, the services they do, their working hours and their time off.',
+  outro: OUTRO,
+  async start({ page, base }) { await page.goto(`${base}/team`, { waitUntil: 'load' }); await page.waitForSelector('[data-tour="team-list"]', { timeout: 20000 }); await closeStacy(page); },
+  segments: [
+    { id: 'list-1', title: 'Your team',
+      say: 'Click Team in the sidebar. Each row is one person on your website and one option in your booking flow.',
+      run: async ({ cursor }) => { await cursor.hover(side('Team'), { at: 'team' }); await cursor.hover('[data-tour="team-list"]', { at: 'each row', settle: 900 }); } },
+    { id: 'list-2',
+      say: 'The quick toggles work without opening anyone: hide a person from the site, stop them taking new clients, or feature them on the home carousel.',
+      run: async ({ cursor }) => { await cursor.sweep([{ target: 'button[aria-label="Hide from site"]', at: 'hide' }, { target: 'button[aria-label="Stop accepting new clients"]', at: 'stop them' }, { target: 'button[aria-label="Feature on home carousel"]', at: 'feature' }]); } },
+    { id: 'add-1', title: 'Add a person',
+      say: 'Add opens a blank profile. Let us open an existing one instead, so you can see every field filled in.',
+      run: async ({ cursor }) => { await cursor.hover('[data-tour="team-add"]', { at: 'add', settle: 800 }); await cursor.click('main button:has-text("Theo Bianchi")', { at: 'existing one', after: 1400 }); } },
+    { id: 'fields-1',
+      say: 'Name and Role are public. Email and phone are private: they are for booking notifications and your records, never shown on the site.',
+      run: async ({ cursor }) => { await cursor.sweep([{ target: 'label:has-text("Name")', at: 'name' }, { target: 'label:has-text("Role")', at: 'role' }, { target: 'label:has-text("Email")', at: 'email', scroll: true }, { target: 'label:has-text("Phone")', at: 'phone' }]); } },
+    { id: 'fields-2',
+      say: 'Copy on their bookings sends each new booking to that person as well as to you.',
+      run: async ({ cursor }) => { await cursor.hover('label:has-text("Copy on their bookings")', { at: 'copy on their bookings', settle: 1000, scroll: true }); } },
+    { id: 'fields-3',
+      say: 'Add a portrait, a short bio, and the specialties and years of experience the team card shows.',
+      run: async ({ cursor }) => { await cursor.sweep([{ target: 'label:has-text("Team photo")', at: 'portrait', scroll: true }, { target: 'label:has-text("Bio")', at: 'bio', scroll: true }, { target: 'label:has-text("Specialties")', at: 'specialties', scroll: true }, { target: 'label:has-text("Years of experience")', at: 'years', scroll: true }]); } },
+    { id: 'services-1', title: 'Services and hours',
+      say: 'Tick the services this person performs. A client booking one of them will be offered this person.',
+      run: async ({ cursor }) => { await cursor.hover('text=Services this team member performs', { at: 'tick the services', scroll: true, settle: 600 }); await cursor.hover('label:has-text("Skin fade")', { at: 'offered', settle: 800, scroll: true }); } },
+    { id: 'hours-1',
+      say: 'Working hours are their own schedule inside your business hours. Add hours per day, or a split shift for a lunch break.',
+      run: async ({ cursor }) => { await cursor.hover('text=Working hours', { at: 'working hours', scroll: true, settle: 600 }); await cursor.sweep([{ target: 'button:has-text("Add hours")', at: 'add hours', scroll: true }, { target: 'button:has-text("Add split shift")', at: 'split shift', scroll: true }]); } },
+    { id: 'hours-2',
+      say: 'Time off blocks the calendar for a holiday or a day off, with an optional reason. Changes on this page save as you go.',
+      run: async ({ cursor }) => { await cursor.hover('text=Time off', { at: 'time off', scroll: true, settle: 600 }); await cursor.hover('button:has-text("Add time off")', { at: 'day off', settle: 1000, scroll: true }); }, hold: 0.8 },
+  ],
+};

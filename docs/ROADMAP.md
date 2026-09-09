@@ -41,9 +41,23 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   stemfra.com zone, no `*` DNS record, `*.stemfra.com` hosts are per-site CNAMEs to the
   vertical Pages projects. The August domain tests (cleancutsbarber.click,
   argyleandsons.click) ran through the per-domain zone flow (Case 7), not the Worker.
-- YouTube tutorials: plan + two scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`
-  (supersedes the "First YouTube tutorial script" one-off below). 30 videos in 3
-  playlists; scripts checked against the live CMS labels on 2026-09-07.
+- YouTube tutorials (plan + scripts: `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`;
+  pipeline `scripts/tutorials/`, Playwright + ElevenLabs + ffmpeg, 4K masters; upload kit
+  `stemfra_video/tutorials/UPLOAD.md`). STATUS 2026-09-08, per video:
+  - ✅ Playlist 1, Getting started (1 to 10): MASTERS CUT + approved by Peter.
+  - ⏳ Playlist 2, Running your business (11 to 22): scripts written, NOT recorded.
+  - ⏳ Playlist 3, Your account (23 to 26): scripts written, NOT recorded. 27 (logo
+    builder) waits for P25.
+  - ✅ Playlist 4, Launch a new website (28 to 31): MASTERS CUT + approved (recorded on a
+    fresh sign-up, account removed after).
+  - ⏳ Playlist 5, By business type (32 to 37, DECIDED 2026-09-08): not written.
+  - Peter uploads playlists 1 + 4 first (descriptions carry "Join Stemfra today:
+    stemfra.com/start"; the socials block waits for the handles), then 11 to 26 record.
+  - Two CMS fixes fell out of the launch review (local, hold): full sidebar always on new
+    sites (getting-started mode reversed), no dashboard flash before the setup wizard.
+- FIRST AD (DECIDED 2026-09-08): a 30s product montage in the Base44 register, cut with
+  the tutorial recorder from the six demo sites + the CMS; plan + beat sheet in
+  `stemfra_platform/docs/PRODUCT_MONTAGE_AD.md`. ⏳ Not started (after the tutorial upload).
 - Consequence of the Worker not being live: the "PREREQ for the self-serve funnel"
   line above still holds (Pages caps custom domains per project; every provisioned
   site burns a slot). Deploy steps unchanged: deploy platform → `setup-tenant-wildcard.js
