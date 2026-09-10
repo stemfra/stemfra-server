@@ -1773,6 +1773,16 @@ So the data is fetched and thrown away.
 
 Not started. Trigger: after the theme polish arc (this week) and the YouTube upload.
 
+## P28 — Sales hours + "callable now" lead filter (decided 2026-09-10, Peter)
+
+Reps work from Nigeria (WAT, no DST); the target is the prospect's 11 AM to 4 PM local.
+Full analysis + tables: **`stemfra-ops/docs/SALES_HOURS.md`**. Decisions: first hires on the
+America shift (4 PM to midnight WAT, or 2 to 10 with a 4 to 10 calling core); a 12 to 8 PM
+squad for UK/Europe + US East when those lead lists exist; Australia dropped (night shift).
+CRM build to follow: a **"Callable now" facet** in `components/leads/leadFilters.js` (region →
+prospect local time, show only 11 to 4 local) + the same check as a dialer warning. Not
+started; build when the sales managers start (hiring in 1 to 2 weeks per 2026-09-05).
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
