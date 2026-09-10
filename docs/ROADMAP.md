@@ -1828,8 +1828,9 @@ unauthorised use before it becomes a legal problem. Design discussed 2026-09-10:
   company mail is audited; monitoring of company-owned accounts with notice is lawful (US)
   and NDPA-compatible (Nigeria) when scoped to business purpose. Use Workspace's own tools
   too (audit log, DLP rules; Vault needs Business Plus).
-Not started; after P29. Open decisions: sweep cadence (weekly), who else may see flags
-(super_admin only), whether to include received mail (recommend sent + settings only in v1).
+**DECIDED 2026-09-10 (Peter agrees with the recommendation):** domain-wide delegation, weekly
+sweep, sent mail + mailbox settings only in v1, flags visible to super_admin only, Acceptable
+Use Policy accepted at first login before the first sweep. Not started; after P29.
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
