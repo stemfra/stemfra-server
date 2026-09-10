@@ -18,7 +18,7 @@
 
 const { parsePhoneNumber } = require('libphonenumber-js');
 const supabase = require('../../config/supabase');
-const { twilioClient, twilioFrom, publicBaseUrl } = require('../../config/twilio');
+const { twilioClient, twilioFrom, smsFromForNumber, publicBaseUrl } = require('../../config/twilio');
 
 const SMS_CONSENT_VERSION = 'v2';
 const SMS_CONSENT_TEXT =
@@ -87,7 +87,7 @@ async function optIn(req, res) {
   try {
     await twilioClient.messages.create({
       to: e164,
-      from: twilioFrom,
+      from: smsFromForNumber(e164), // market sender by destination (P31)
       body: OPT_IN_MESSAGE,
       statusCallback: `${publicBaseUrl}/api/twilio/sms-status`,
     });

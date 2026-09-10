@@ -34,6 +34,7 @@ const {
   apiKeySecret,
   twilioFrom,
   smsFrom,
+  smsFromForNumber,
   twimlAppSid,
   publicBaseUrl,
   isVoiceConfigured,
@@ -159,7 +160,7 @@ router.post('/sms/send', async (req, res) => {
   try {
     const message = await twilioClient.messages.create({
       to:    toE164,
-      from:  twilioFrom,
+      from:  smsFromForNumber(toE164), // market sender by destination (P31)
       body,
       statusCallback: `${publicBaseUrl}/api/twilio/sms-status`,
     });

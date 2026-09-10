@@ -297,6 +297,7 @@ router.post('/send-outreach', async (req, res) => {
     return res.status(409).json({ success: false, message: 'Outreach has already been sent for this lead.' });
   }
   if (lead.do_not_email) return res.status(409).json({ success: false, message: 'This lead has unsubscribed.' });
+  { const gate = require('../lib/outreachCompliance').emailAllowed(lead); if (!gate.ok) return res.status(409).json({ success: false, message: gate.message }); }
 
   let mode = modeOverride;
   if (!mode) {
@@ -480,7 +481,7 @@ router.post('/call-with-ai', async (req, res) => {
 
   const { data: lead, error } = await supabase
     .from('leads')
-    .select('id, phone, phone_country, region, do_not_call, contact_name, company_name, pain_point_bucket, qualification, outreach_status, ai_draft_subject, ai_draft_message, outreach_reply_text, claim_token, outreach_sent_at, outreach_opened_at, outreach_step, raw_signal')
+    .select('id, phone, phone_country, region, do_not_call, contact_name, company_name, pain_point_bucket, qualification, outreach_status, ai_draft_subject, ai_draft_message, outreach_reply_text, claim_token, outreach_sent_at, outreach_opened_at, outreach_step, raw_signal, entity_type')
     .eq('id', leadId)
     .single();
   if (error || !lead) return res.status(404).json({ success: false, message: 'Lead not found.' });
@@ -661,7 +662,7 @@ router.get('/funnel', async (req, res) => {
   try {
     const since = new Date(Date.now() - Math.max(1, Number(days) || 90) * 86400_000).toISOString();
     let q = supabase.from('leads')
-      .select('id, company_name, first_name, email, template_slug, region, stage, is_test, outreach_status, outreach_sent_at, outreach_step, outreach_opened_at, outreach_open_count, outreach_replied_at, do_not_email, contact_id, claim_token')
+      .select('id, company_name, first_name, email, template_slug, region, stage, is_test, outreach_status, outreach_sent_at, outreach_step, outreach_opened_at, outreach_open_count, outreach_replied_at, do_not_email, contact_id, claim_token, entity_type, phone_country')
       .not('outreach_sent_at', 'is', null).gte('outreach_sent_at', since).order('outreach_sent_at', { ascending: false }).limit(2000);
     if (includeTest !== 'true') q = q.eq('is_test', false);
     const { data: leads, error } = await q;

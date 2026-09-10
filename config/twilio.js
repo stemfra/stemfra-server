@@ -67,6 +67,16 @@ const MARKET_SENDERS = {
   voice: { GB: process.env.VOICE_PHONE_NUMBER_GB,  CA: process.env.VOICE_PHONE_NUMBER_CA },
 };
 const smsFrom   = (country) => MARKET_SENDERS.sms[String(country || '').toUpperCase()] || twilioFrom;
+// Sender by DESTINATION number (tenant alerts, consent confirmations, CRM texts):
+// the country of the E.164 number decides, so a UK owner's booking alert goes
+// out from the UK number once it exists. Falls back to the default number.
+const smsFromForNumber = (to) => {
+  try {
+    const { parsePhoneNumber } = require('libphonenumber-js');
+    const parsed = parsePhoneNumber(String(to || ''));
+    return smsFrom(parsed && parsed.country);
+  } catch { return twilioFrom; }
+};
 const voiceFrom = (country) => MARKET_SENDERS.voice[String(country || '').toUpperCase()] || process.env.VOICE_PHONE_NUMBER || twilioFrom;
 const twimlAppSid   = process.env.TWILIO_TWIML_APP_SID  || null;
 const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'https://api.stemfra.com';
@@ -87,6 +97,7 @@ module.exports = {
   apiKeySecret,
   twilioFrom,
   smsFrom,
+  smsFromForNumber,
   voiceFrom,
   twimlAppSid,
   publicBaseUrl,

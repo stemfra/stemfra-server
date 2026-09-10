@@ -146,8 +146,10 @@ Prerequisites before the first Canadian or UK sequence:
   `.env` + `deploy.yml`; until then the footer identifies Stemfra by name + web
   only and the server logs one warning at boot. CAN-SPAM wants the address too,
   so this closes a US gap as well.
-- A TPS/CTPS subscription for UK call screening; a Companies House check in the
-  Review queue for UK email leads.
+- A TPS/CTPS subscription for UK call screening.
+- UK email leads: set **Entity type** on the lead (Companies House link on the
+  form). `emailAllowed()` refuses email to a GB lead unless it is a limited
+  company; the sequencer logs the skip, Send Claim explains it.
 - Twilio numbers per market: see ROADMAP P31 ("Twilio numbers for the UK and
   Canada").
 
@@ -160,4 +162,4 @@ Prerequisites before the first Canadian or UK sequence:
   to automated tenant sends (booking confirmations use their own hardcoded
   mail today).
 - Warm-track (`N8N_LEADGEN_WARM_URL`) workflow: same contract, separate n8n flow.
-- UK sole-trader detection is manual (Companies House in Review). A `leads.entity_type` flag + a PECR gate in the sequencer is the automated follow-up when UK volume justifies it.
+- UK sole-trader detection is manual (Companies House link on the lead form → `leads.entity_type`); the gate is automatic. A Companies House API lookup by name is the next step when UK volume justifies it.

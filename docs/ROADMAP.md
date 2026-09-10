@@ -1926,8 +1926,27 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   - Domains: `.co.uk` + `.uk` added to the suggestion list. `.ca` deliberately NOT: CIRA needs a
     Canadian-presence registrant and Stemfra LLC is the Porkbun registrant.
   - Section 3 checks: no "USD" wording on the stemfra.com Terms/Fees pages (grep clean).
-- Open after section 2: FX view for Books; automated UK sole-trader gate (`leads.entity_type`);
-  the Airwallex invoice mirror's per-currency product prices (still one USD price each).
+- ✅ 2026-09-10 (night) **Section 3 + the section-2 leftovers** ("go ahead with section 3 and
+  treat everything still open"):
+  - Checks: sales hours cover CA + UK (SALES_HOURS.md); `pricing_countries` carries CA = CAD /
+    HST 13, GB = GBP / VAT 20 (verified in the DB); Terms/Fees pages have no USD wording. Twilio
+    voice geo-permissions for GB + CA are a Console setting Peter confirms (both are in
+    Twilio's default-enabled low-risk set).
+  - FX view for Books: `getBooks` now returns one revenue row per month AND currency plus
+    `revenueTotalsByCurrency`; the CRM Books tab shows an "FX rates to USD" card (rates typed +
+    dated in `compliance_settings.fx_rates`, USD per unit) and USD-equivalent totals; USD-only
+    years render exactly as before.
+  - UK sole-trader gate: `leads.entity_type` (migration `leads_entity_type_v1`, applied) +
+    `outreachCompliance.emailAllowed(lead)`: a GB lead gets email only when entity_type =
+    company; the sequencer logs `lead_followup_skipped` (reason `pecr_entity_type`), the claim
+    send and `/send-outreach` refuse with the reason. CRM: Entity type select (with a Companies
+    House search link) on the lead form when region = GB, and an Entity fact in the drawer.
+  - Airwallex mirror: verified by reading that invoice lines use inline FLAT prices in the
+    invoice's currency (`flat_amount` + the product as a label), so no per-currency product
+    prices are needed. Confirm on the first CAD mirror.
+  - Tenant SMS sender by destination: `config/twilio.js` `smsFromForNumber(to)` picks the market
+    number from the recipient's country; owner booking alerts, the SMS-consent confirmation,
+    CRM texts and Mark's in-call text use it. Blank market numbers = today's behaviour.
 - Interac Autodeposit: the CAD account carries an Airwallex-generated e-transfer address;
   register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
   (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.

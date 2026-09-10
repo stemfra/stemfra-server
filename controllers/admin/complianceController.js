@@ -110,12 +110,19 @@ async function getBooks(req, res) {
   try {
     const year = String(req.query.year || new Date().getUTCFullYear());
     const paid = await loadBillableCharges({ statuses: ['paid'] });
+    // One row per month AND currency (P31): Canadian tenants pay in CAD, UK in
+    // GBP, and cents across currencies must never be summed. The CRM converts
+    // to USD with the rates recorded in compliance_settings.fx_rates.
     const revByMonth = new Map();
+    const totalsByCurrency = {};
     for (const c of paid) {
       const m = monthOf(c.paid_at || c.created_at);
       if (!m || !m.startsWith(year)) continue;
-      if (!revByMonth.has(m)) revByMonth.set(m, { month: m, saasCents: 0, domainsCents: 0, otherCents: 0, totalCents: 0 });
-      const r = revByMonth.get(m);
+      const cur = String(c.currency || 'USD').toUpperCase();
+      const k = `${m}|${cur}`;
+      if (!revByMonth.has(k)) revByMonth.set(k, { month: m, currency: cur, saasCents: 0, domainsCents: 0, otherCents: 0, totalCents: 0 });
+      const r = revByMonth.get(k);
+      totalsByCurrency[cur] = (totalsByCurrency[cur] || 0) + (Number(c.amount_cents) || 0);
       const cents = Number(c.amount_cents) || 0;
       if (c.category === 'saas') r.saasCents += cents;
       else if (c.category === 'domains') r.domainsCents += cents;
@@ -141,13 +148,15 @@ async function getBooks(req, res) {
       bucket.totalCents += cents;
     }
 
-    const revenueByMonth = [...revByMonth.values()].sort((a, b) => a.month.localeCompare(b.month));
+    const revenueByMonth = [...revByMonth.values()].sort((a, b) => a.month.localeCompare(b.month) || a.currency.localeCompare(b.currency));
     const expensesByMonth = [...expByMonth.values()].sort((a, b) => a.month.localeCompare(b.month));
     return res.json({
       year,
       revenueByMonth,
       expensesByMonth,
-      revenueTotalCents: revenueByMonth.reduce((s, r) => s + r.totalCents, 0),
+      // USD rows only; the CRM adds the other currencies at its stated FX rates.
+      revenueTotalCents: revenueByMonth.filter((r) => r.currency === 'USD').reduce((s, r) => s + r.totalCents, 0),
+      revenueTotalsByCurrency: totalsByCurrency,
       expensesTotalCents: expensesByMonth.reduce((s, r) => s + r.totalCents, 0),
     });
   } catch (e) {
