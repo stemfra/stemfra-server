@@ -1796,9 +1796,11 @@ idle (avatar lock screen, unlock = Google re-sign-in, windows restored from the 
 workspace session; time after idle start never counts); (3) shift-aware targets per rep
 (target 7h active inside the shift; green/amber/red) + `staff_absences` (request → manager
 approval, excused hours count) + a Team → Hours tab; (4) bell notification to managers at
-shift end for unexcused red days + a weekly summary. Open decisions for Peter: clock-stop
-threshold (proposed 5 min) vs lock (45 min); unlock via Google vs PIN; visibility (reps own
-days, manager+ the team). Not started; part of the sales-managers onboarding bundle with P28.
+shift end for unexcused red days + a weekly summary. **DECIDED 2026-09-10:** clock stop 5
+min, lock 45 min, both super_admin-adjustable in Settings → Work time (`crm_settings.
+work_time`, ranges 5 to 10 / 15 to 240) with a lock mode + daily target; unlock = lock-screen
+PIN (Google fallback; `tap` mode available, not default); managers+ see the team. Build plan
+(5 phases, ~4 days) in `SALES_HOURS.md`. Not started; awaiting "go".
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
