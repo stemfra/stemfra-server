@@ -55,36 +55,38 @@ const apiKeySid     = process.env.TWILIO_API_KEY_SID    || null;
 const apiKeySecret  = process.env.TWILIO_API_KEY_SECRET || null;
 const twilioFrom    = process.env.TWILIO_PHONE_NUMBER;
 
-// Per-market senders (P31 section 2, 2026-09-10). A UK prospect texted from a
-// US long code is unreliable and expensive (Twilio does not deliver
-// international long codes to UK handsets), and a +1 caller ID answers worse
-// in the UK. When TWILIO_PHONE_NUMBER_GB / _CA (SMS) or VOICE_PHONE_NUMBER_GB /
-// _CA (calls) are set, that market uses them; otherwise the default number.
-// The Console still needs the market number's Voice URL pointed at
-// /api/twilio/voice (SMS at /sms-inbound) for inbound to keep working.
-const MARKET_SENDERS = {
-  sms:   { GB: process.env.TWILIO_PHONE_NUMBER_GB, CA: process.env.TWILIO_PHONE_NUMBER_CA },
-  voice: { GB: process.env.VOICE_PHONE_NUMBER_GB,  CA: process.env.VOICE_PHONE_NUMBER_CA },
+// ─── Two lines per market (P31, Peter 2026-09-10) ────────────────────────────
+// A prospect expects the text to come from the number that just called them,
+// and a callback to reach whoever called. So each market has TWO identities:
+//   STAFF line  = TWILIO_PHONE_NUMBER[_GB|_CA]: the reps' CRM dialer caller ID,
+//                 the Claim SMS, owner alerts, consent confirmations; its
+//                 inbound Voice URL is /api/twilio/inbound-voice (rings the
+//                 reps), inbound SMS /api/twilio/sms-inbound.
+//   MARK line   = VOICE_PHONE_NUMBER[_GB|_CA]: Mark's outbound calls AND the
+//                 texts he sends in-call; its inbound Voice URL is
+//                 /api/voice/concierge/incoming (Mark answers).
+// A market with no number configured falls back to the US lines. Never point
+// one number at both roles: a lead a rep called would then call back into Mark.
+const MARKET_LINES = {
+  staff: { GB: process.env.TWILIO_PHONE_NUMBER_GB, CA: process.env.TWILIO_PHONE_NUMBER_CA },
+  mark:  { GB: process.env.VOICE_PHONE_NUMBER_GB,  CA: process.env.VOICE_PHONE_NUMBER_CA },
 };
-const smsFrom   = (country) => MARKET_SENDERS.sms[String(country || '').toUpperCase()] || twilioFrom;
-// Sender by DESTINATION number (tenant alerts, consent confirmations, CRM texts):
-// the country of the E.164 number decides, so a UK owner's booking alert goes
-// out from the UK number once it exists. Falls back to the default number.
-const smsFromForNumber = (to) => {
+const countryOf = (to) => {
   try {
     const { parsePhoneNumber } = require('libphonenumber-js');
     const parsed = parsePhoneNumber(String(to || ''));
-    return smsFrom(parsed && parsed.country);
-  } catch { return twilioFrom; }
+    return parsed && parsed.country;
+  } catch { return null; }
 };
-const voiceFromForNumber = (to) => {
-  try {
-    const { parsePhoneNumber } = require('libphonenumber-js');
-    const parsed = parsePhoneNumber(String(to || ''));
-    return voiceFrom(parsed && parsed.country);
-  } catch { return process.env.VOICE_PHONE_NUMBER || twilioFrom; }
-};
-const voiceFrom = (country) => MARKET_SENDERS.voice[String(country || '').toUpperCase()] || process.env.VOICE_PHONE_NUMBER || twilioFrom;
+const staffLine = (country) => MARKET_LINES.staff[String(country || '').toUpperCase()] || twilioFrom;
+const markLine  = (country) => MARKET_LINES.mark[String(country || '').toUpperCase()] || process.env.VOICE_PHONE_NUMBER || twilioFrom;
+const staffLineForNumber = (to) => staffLine(countryOf(to));
+const markLineForNumber  = (to) => markLine(countryOf(to));
+// Older names kept for the call sites: smsFrom = the staff line, voiceFrom = Mark's line.
+const smsFrom   = staffLine;
+const smsFromForNumber = staffLineForNumber;
+const voiceFrom = markLine;
+const voiceFromForNumber = markLineForNumber;
 const twimlAppSid   = process.env.TWILIO_TWIML_APP_SID  || null;
 const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'https://api.stemfra.com';
 
@@ -107,6 +109,10 @@ module.exports = {
   smsFromForNumber,
   voiceFrom,
   voiceFromForNumber,
+  staffLine,
+  markLine,
+  staffLineForNumber,
+  markLineForNumber,
   twimlAppSid,
   publicBaseUrl,
   isVoiceConfigured,

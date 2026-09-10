@@ -455,7 +455,7 @@ router.post('/voice', async (req, res) => {
   const whisperUrl   = `${publicBaseUrl}/api/twilio/recording-disclosure`;
 
   const dialOpts = {
-    callerId: require('../config/twilio').voiceFromForNumber(To), // UK / Canadian caller ID for those destinations (P31)
+    callerId: require('../config/twilio').staffLineForNumber(To), // the reps' line for that market: the number the lead will text and call back (P31)
     action:   statusUrl,
   };
   if (shouldRecord) {

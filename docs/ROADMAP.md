@@ -1893,7 +1893,15 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
      the SAME currency, an empty Interac reference falls to T2 exact-amount matching, and
      the 8-char reference fits EFT, Interac and Faster Payments memos. Untested against a
      real CAD/GBP deposit: verify on the first one (dry-run sweep, then arm).
-- ⏳ **Twilio numbers for the UK and Canada** (advice given 2026-09-10, buy later): one UK
+- 🟡 **Twilio numbers for the UK and Canada.** 2026-09-10 evening: Peter bought UK mobile
+  **+44 7723 497148** (bundle approved instantly from the account profile; SMS to UK handsets
+  only). Decision the same evening: TWO lines per market like the US, a staff line (reps' calls +
+  Claim SMS + owner alerts, inbound rings the reps) and Mark's line (his calls + in-call texts,
+  inbound = concierge); `config/twilio.js` `staffLine`/`markLine`. This first number = the STAFF
+  line: set its Voice URL to `/api/twilio/inbound-voice`, SMS to `/api/twilio/sms-inbound`, secret
+  `TWILIO_PHONE_NUMBER_GB`. ⏳ A second UK mobile for Mark → concierge URL + `VOICE_PHONE_NUMBER_GB`.
+  Canada next (staff local + Mark local, plus a verified toll-free for A2P texts). Original advice:
+  one UK
   number for caller ID (local geographic numbers need a UK address; a UK **mobile** or
   toll-free number accepts a non-UK address, and international long codes cannot text
   UK handsets, so the mobile number is the practical pick for calls + Claim SMS); one

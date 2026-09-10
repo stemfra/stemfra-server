@@ -161,13 +161,13 @@ async function textClaimLinkForLead(session) {
       : '';
     if (!lead?.claim_token) return 'Action failed: no claim link exists for this lead. Offer to take their email instead.';
     if (!lead.phone) return 'Action failed: no phone number is on file to text.';
-    const { twilioClient, twilioFrom, smsFromForNumber } = require('../config/twilio');
+    const { twilioClient, twilioFrom, markLineForNumber } = require('../config/twilio');
     if (!twilioClient || !twilioFrom) return 'Action failed: texting is not configured. Offer to take their email instead.';
     // Country-aware (P31): a UK or Canadian lead's number parses in its own country.
     const to = require('../lib/leadgenCall').toE164(lead.phone, require('../lib/leadCountry').countryForLead(lead));
     if (!to) return 'Action failed: the phone number on file does not look valid for texting. Offer to take their email instead.';
     await twilioClient.messages.create({
-      from: smsFromForNumber(to), to,
+      from: markLineForNumber(to), to, // Mark texts from the number that just called (P31)
       body: `Hi${smsFirstName ? ` ${smsFirstName}` : ''}, here is the link to your website:\nhttps://stemfra.com/claim/${lead.claim_token}\nEnjoy! Mark at Stemfra. Reply STOP to opt out.`,
     });
     await supabase.from('leads').update({ last_activity_at: new Date().toISOString() }).eq('id', lead.id);
