@@ -1971,6 +1971,62 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
   (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.
 
+## P32 — Staff handover + offboarding (Peter's ask 2026-09-10, recorded before P25)
+
+When a rep leaves, a successor takes their clients: the clients are told, correspondence
+moves, the old mailbox is forwarded, then retired. Today the CRM can only deactivate the
+profile (Team page, super_admin) and every ownership change is manual. There is no system
+administrator; the proposal is to give super_admin the buttons instead of hiring one.
+
+**What we already have to build on:** staff identity = Google Workspace `@stemfra.com`
+(CRM entry gate); `lib/gmailOutreach.js sendAsRep` already impersonates ANY staff mailbox via
+the service account's domain-wide delegation (mark@ is just the default); P30 planned the same
+delegation for the mailbox audit; ownership lives on `leads.assigned_to` (+ contacts / deals
+owners); Email Templates manager for the copy.
+
+**Phase 1 (CRM only, ~1 day): "Hand over" wizard on the Team page** (super_admin / admin).
+Pick leaver → successor → (a) bulk reassign leads, contacts, companies, deals, open
+follow-ups and scheduled outreach (`assigned_to` / `outreach_sent_by`), logged to the feed;
+(b) client introduction email from the SUCCESSOR's mailbox via `sendAsRep` (new template
+"New account manager", merge fields old/new name, phone, email; per-client include/exclude
+list, human-paced sends, only relationships past first contact); (c) deactivate the profile
+(login blocked, presence offline, lock PIN + saved views cleared, work-time history kept);
+(d) a checklist of the Workspace steps still done by hand (forward mail, suspend, alias).
+**Phase 2: Workspace automation** (Admin SDK Directory + Gmail settings scopes on the P30
+service account): suspend / force sign-out / temporary password with change-at-next-login,
+mail forwarding to the successor (same-domain forwarding needs no verification), old address
+added as an ALIAS on the successor for 90 days (aliases are free), then delete with Drive +
+Calendar transfer. Onboarding mirror: create the Workspace user + CRM profile + role + shift.
+**Phase 3: "Your account manager" on the tenant side**: `sites.account_manager_id` (staff
+profile), shown in the CMS support panel and signed in tenant emails, so correspondence
+switches with one field. Passwords are never stored by us: Workspace owns auth, 2-step
+verification enforced there; the CRM only ever sets a temporary password through the API.
+**Advice given:** do NOT hand a used mailbox to a new hire (privacy, stale threads, no
+saving: Workspace bills per seat, so delete + create costs the same); alias-then-delete is
+the standard.
+
+## P33 — Colour visibility test tool + Remix validator (Peter's ask 2026-09-10, Figma shots)
+
+Figma's picker shows the contrast ratio, an AA/AAA badge and a boundary curve in the picker
+where the pair stops passing. We need the same in the CMS for theme palettes, in the real
+pairings the templates render, and as the gate for the coming Remix (palette variations).
+
+**A. Shared contrast module** `packages/site-data/src/contrast.ts`: WCAG 2.x relative
+luminance + contrast ratio, pass levels (body 4.5, large text 3, UI 3, AAA 7), and
+`paletteReport(tokens)` = the theme's REAL pairings (text/background, text/paper,
+muted/background, on-accent/accent, on-deep/deep, on-band, accent-as-link/background,
+hairlines) with ratio + pass/fail. `resolveTheme`'s derived on-* tokens must switch to this
+module so the checker and the runtime agree. A test validates every curated palette in
+`stemfra_cms/src/lib/colorPalettes.ts` at build time.
+**B. CMS panel** (Settings → Style, under Brand colours + Colour palette): a live matrix of
+those pairings with ratio chips and AA/AAA badges, the picker gains Figma's boundary curve
+(for the chosen foreground, compute the AA boundary across the saturation/value plane) and a
+"fix it" nudge (nearest passing shade). Failing pairs block Save with an explanation, not a
+hard error. CRM Templates page gets the same report per theme for staff QA.
+**C. Remix** (the future palette generator): `remixPalette(seed, constraints)` produces
+variations and keeps only those where `paletteReport` passes everywhere; the same report
+labels each suggestion. Build A + B before Remix exists; C rides on them.
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
