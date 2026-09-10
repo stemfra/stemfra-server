@@ -1843,6 +1843,29 @@ unauthorised use before it becomes a legal problem. Design discussed 2026-09-10:
 sweep, sent mail + mailbox settings only in v1, flags visible to super_admin only, Acceptable
 Use Policy accepted at first login before the first sweep. Not started; after P29.
 
+## P31 — Markets: US + Canada + UK first, EU later (discussed 2026-09-10)
+
+Peter opened Airwallex Global Accounts for **Canada (CAD)** and the **UK (GBP)** next to the
+USD ones (2026-09-10) and proposes selling in the US, Canada and the UK first, Europe later.
+Recommendation given the same day: agree. Rationale: one language, one sales script, one
+shift (the America shift covers the US + Canada; the UK rides the 2 PM WAT hours), no VAT
+per member state, Airwallex collection in place. EU later needs only ONE EUR SEPA Global
+Account (Airwallex's EU entity is Dutch; a NL or DE SEPA IBAN serves every Eurozone customer),
+plus Denmark (DKK) / a SEK account only if the Nordics come in. First EU markets when they do:
+Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then the Nordics.
+**Follow-ups before the first non-US client:**
+- Invoices + the CMS "pay by bank" block read `crm_settings.commission_bank` = USD details
+  only; add per-currency bank details (CAD EFT: institution + transit + account; GBP: sort
+  code + account; Interac email for Canada) and pick them by the tenant's country. Airwallex
+  recon (`lib/reconEngine.js`) must fetch CAD/GBP deposits too (today USD).
+- Compliance engine: UK VAT on B2C digital services has no threshold for a non-established
+  supplier; B2B = reverse charge (collect the client's VAT number at signup). Canada: the
+  simplified GST/HST regime kicks in above CAD 30k in 12 months (plus QST in Québec). Both are
+  CPA questions; record the positions in `complianceCatalog.js` when decided.
+- Interac Autodeposit: the CAD account carries an Airwallex-generated e-transfer address;
+  register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
+  (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
