@@ -1863,9 +1863,11 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   `replyTo: billing@stemfra.com`; every surface says "Questions? billing@stemfra.com".
   Peter created the mailbox, registered it on the Airwallex CAD account and confirmed the
   Interac Autodeposit registration (2026-09-10): e-Transfers to billing@stemfra.com now land
-  in the CAD wallet automatically. ⚠ **GBP sort code still empty** in `by_currency.GBP`
-  (not visible in the dashboard screenshot): until it is filled, GBP invoices print the USD
-  (SWIFT) details. Airwallex recon (`lib/reconEngine.js`) still fetches USD deposits only.
+  in the CAD wallet automatically. ✅ Both blocks complete from Peter's full
+  Airwallex details (2026-09-10 evening): CAD (EFT + Interac + bank address) and GBP (sort
+  code + IBAN + SWIFT + bank address); test invoices rendered per currency. Airwallex recon
+  (`lib/reconEngine.js`) still fetches USD deposits only; extend when the first CAD/GBP
+  invoice goes out.
 - Compliance engine: UK VAT on B2C digital services has no threshold for a non-established
   supplier; B2B = reverse charge (collect the client's VAT number at signup). Canada: the
   simplified GST/HST regime kicks in above CAD 30k in 12 months (plus QST in Québec). Both are
