@@ -1802,8 +1802,11 @@ work_time`, ranges 5 to 10 / 15 to 240) with a lock mode + daily target; unlock 
 PIN (Google fallback; `tap` mode available, not default); managers+ see the team. Build plan
 (5 phases, ~4 days) in `SALES_HOURS.md`. **Phase 1 ✅ BUILT 2026-09-10** (migration
 `work_time_v1.sql` applied; server `lib/workTime.js` + `routes/workTime.js`; CRM idle clock,
-Settings → Work time, My hours widget; verified live). Phases 2 (lock + PIN), 3 (absences +
-Team → Hours), 4 (alerts), 5 (callable-now filter) next. CRM pushed; server commits local (hold).
+Settings → Work time, My hours widget; verified live). **Phase 2 ✅ BUILT 2026-09-10** (lock
+overlay over both shells after `lock_minutes` idle or from the user menu, PIN in
+`staff_lock_pins` via scrypt, 5-try lockout, Google fallback, Settings → Security PIN card;
+migration `work_time_v2_lock_pin.sql`; verified live). Phases 3 (absences + Team → Hours),
+4 (alerts), 5 (callable-now filter) next. CRM pushed; server commits local (hold).
 
 ## P30 — Staff email audit (proposed 2026-09-10, Peter; super_admin only)
 
