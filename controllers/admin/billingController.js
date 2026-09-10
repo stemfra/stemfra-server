@@ -81,7 +81,7 @@ async function invoicePdf(req, res) {
     contact = data || null;
   }
   // Widened 2026-08-04 to every unpaid charge — keep in step with the CMS path.
-  const bank = charge.status !== 'paid' ? await getCommissionBank().catch(() => null) : null;
+  const bank = charge.status !== 'paid' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
   // P19: bill-to = the SITE's company identity (contact fallback inside).
   const identity = await require('../../lib/billingProfile').resolveBillingIdentity(charge.site_id).catch(() => null);
   const bp = identity?.profile || contact?.billing_profile || {};

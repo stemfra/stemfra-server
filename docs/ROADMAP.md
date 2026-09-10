@@ -1854,10 +1854,17 @@ Account (Airwallex's EU entity is Dutch; a NL or DE SEPA IBAN serves every Euroz
 plus Denmark (DKK) / a SEK account only if the Nordics come in. First EU markets when they do:
 Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then the Nordics.
 **Follow-ups before the first non-US client:**
-- Invoices + the CMS "pay by bank" block read `crm_settings.commission_bank` = USD details
-  only; add per-currency bank details (CAD EFT: institution + transit + account; GBP: sort
-  code + account; Interac email for Canada) and pick them by the tenant's country. Airwallex
-  recon (`lib/reconEngine.js`) must fetch CAD/GBP deposits too (today USD).
+- ✅ 2026-09-10 **per-currency bank details + billing@stemfra.com**: `crm_settings.
+  commission_bank` gained `contact_email` + `by_currency.{CAD,GBP}`; `getCommissionBank({
+  currency })` picks the block by the invoice currency and falls back to USD when a block is
+  incomplete (CAD needs transit + institution, GBP a sort code, EUR an IBAN). The invoice
+  PDF, the Airwallex invoice memo and the new CMS "Pay by bank transfer" panel print the CAD
+  rows + the Interac Autodeposit address; invoice / reminder / receipt emails carry
+  `replyTo: billing@stemfra.com`; every surface says "Questions? billing@stemfra.com".
+  Peter created the mailbox and registered it on the Airwallex CAD account (Interac
+  confirmation pending, 24h window). ⚠ **GBP sort code still empty** in `by_currency.GBP`
+  (not visible in the dashboard screenshot): until it is filled, GBP invoices print the USD
+  (SWIFT) details. Airwallex recon (`lib/reconEngine.js`) still fetches USD deposits only.
 - Compliance engine: UK VAT on B2C digital services has no threshold for a non-established
   supplier; B2B = reverse charge (collect the client's VAT number at signup). Canada: the
   simplified GST/HST regime kicks in above CAD 30k in 12 months (plus QST in Québec). Both are

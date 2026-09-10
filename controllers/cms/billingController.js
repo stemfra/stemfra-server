@@ -58,7 +58,9 @@ async function getBilling(req, res) {
   // Bank details for the Invoices "pay by bank transfer" copy panel (only when the
   // owner has commission/adjustment invoices, which are paid by transfer).
   const hasBankTransfer = charges.some((c) => c.kind === 'commission' || c.kind === 'adjustment');
-  const commissionBank = hasBankTransfer ? await getCommissionBank() : null;
+  // Pick the account by the currency of the newest unpaid transfer invoice (USD default).
+  const bankCurrency = (charges.find((c) => c.status !== 'paid' && (c.kind === 'commission' || c.kind === 'adjustment')) || charges[0])?.currency || 'USD';
+  const commissionBank = hasBankTransfer ? await getCommissionBank({ currency: bankCurrency }) : null;
 
   // P19: the invoice identity for THIS business (company profile, contact
   // fallback) — what the Billing details tab edits + invoices print.
@@ -203,7 +205,7 @@ async function invoicePdf(req, res) {
   // EVERY unpaid invoice is paid by bank transfer (2026-08-04, was gated to
   // commission/adjustment) → include our Airwallex bank details so the tenant
   // knows exactly where to pay. Matches the emailed attachment.
-  const bank = charge.status !== 'paid' ? await getCommissionBank().catch(() => null) : null;
+  const bank = charge.status !== 'paid' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
   // P19: bill-to = the SITE's company identity (contact fallback inside).
   const identity = await resolveBillingIdentity(charge.site_id);
   const bp = identity?.profile || contact?.billing_profile || {};
