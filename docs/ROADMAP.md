@@ -2011,6 +2011,7 @@ Figma's picker shows the contrast ratio, an AA/AAA badge and a boundary curve in
 where the pair stops passing. We need the same in the CMS for theme palettes, in the real
 pairings the templates render, and as the gate for the coming Remix (palette variations).
 
+**A ✅ + B ✅ BUILT 2026-09-10 night** (platform commit, local): `contrast.ts` (ratio, levels, `paletteReport` over 8 real pairings, `onColor` now flips the ink only when the threshold's pick is under 3:1, `nearestPassingShade`, `passMap`), `npm run check:palettes` in the CMS (esbuild-bundled; body text gates, accent pairs warn: 11 curated accents sit under 3:1 as eyebrow/link text, none unreadable), CMS Brand colours = live matrix + Fix nudges + Figma-style pass maps on the primary/accent/text pickers + Save gate on body text, palette cards carry AA / Review badges. ⏳ Visual check in the CMS needs Peter signed in; CRM Templates report not done (CRM is JS, needs a twin of the module).
 **A. Shared contrast module** `packages/site-data/src/contrast.ts`: WCAG 2.x relative
 luminance + contrast ratio, pass levels (body 4.5, large text 3, UI 3, AAA 7), and
 `paletteReport(tokens)` = the theme's REAL pairings (text/background, text/paper,
