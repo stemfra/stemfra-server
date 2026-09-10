@@ -1783,6 +1783,23 @@ CRM build to follow: a **"Callable now" facet** in `components/leads/leadFilters
 prospect local time, show only 11 to 4 local) + the same check as a dialer warning. Not
 started; build when the sales managers start (hiring in 1 to 2 weeks per 2026-09-05).
 
+## P29 — Staff working-time monitor + CRM idle lock (proposed 2026-09-10, Peter)
+
+Goal: know that sales staff work at least 7 of 8 hours per shift unless a superior excused
+them, and lock the CRM after 45 minutes of inactivity (the per-device Mac lock screen cannot
+be set on staff machines; the CRM lock is what we control). Design in
+`stemfra-ops/docs/SALES_HOURS.md` ("Working-time monitor"). Four parts, in build order:
+(1) activity clock: the presence heartbeat gains `idle` (5 min without input; a live call is
+always active) → `work_sessions` + a per-person per-day rollup (active/idle minutes, first +
+last seen, calls, emails); no screenshots, no keylogging; (2) CRM lock overlay after 45 min
+idle (avatar lock screen, unlock = Google re-sign-in, windows restored from the persisted
+workspace session; time after idle start never counts); (3) shift-aware targets per rep
+(target 7h active inside the shift; green/amber/red) + `staff_absences` (request → manager
+approval, excused hours count) + a Team → Hours tab; (4) bell notification to managers at
+shift end for unexcused red days + a weekly summary. Open decisions for Peter: clock-stop
+threshold (proposed 5 min) vs lock (45 min); unlock via Google vs PIN; visibility (reps own
+days, manager+ the team). Not started; part of the sales-managers onboarding bundle with P28.
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
