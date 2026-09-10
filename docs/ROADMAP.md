@@ -1805,8 +1805,11 @@ PIN (Google fallback; `tap` mode available, not default); managers+ see the team
 Settings → Work time, My hours widget; verified live). **Phase 2 ✅ BUILT 2026-09-10** (lock
 overlay over both shells after `lock_minutes` idle or from the user menu, PIN in
 `staff_lock_pins` via scrypt, 5-try lockout, Google fallback, Settings → Security PIN card;
-migration `work_time_v2_lock_pin.sql`; verified live). Phases 3 (absences + Team → Hours),
-4 (alerts), 5 (callable-now filter) next. CRM pushed; server commits local (hold).
+migration `work_time_v2_lock_pin.sql`; verified live). **Phase 3 ✅ BUILT 2026-09-10**
+(`staff_absences` + approval endpoints + `crm_notify` bells; Activities → **Hours** tab with
+team/own scope, per-day rows, requests card, per-rep shift editor; migration
+`work_time_v3_absences.sql`; verified live). Phases 4 (alerts at shift end + weekly summary)
+and 5 (callable-now filter) next. CRM pushed; server commits local (hold).
 
 ## P30 — Staff email audit (proposed 2026-09-10, Peter; super_admin only)
 
