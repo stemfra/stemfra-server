@@ -1808,8 +1808,11 @@ overlay over both shells after `lock_minutes` idle or from the user menu, PIN in
 migration `work_time_v2_lock_pin.sql`; verified live). **Phase 3 ✅ BUILT 2026-09-10**
 (`staff_absences` + approval endpoints + `crm_notify` bells; Activities → **Hours** tab with
 team/own scope, per-day rows, requests card, per-rep shift editor; migration
-`work_time_v3_absences.sql`; verified live). Phases 4 (alerts at shift end + weekly summary)
-and 5 (callable-now filter) next. CRM pushed; server commits local (hold).
+`work_time_v3_absences.sql`; verified live). **Phase 4 ✅ BUILT 2026-09-10** (shift-end close
++ frozen status, `work_day_short` bells to team roles + the person for tracked roles on work
+days, Monday 09:00 `work_week` bell + branded email; settings gained work days / tracked
+roles / weekly switch; migration `work_time_v4_alerts.sql`). Phase 5 (callable-now filter)
+next. CRM pushed; server commits local (hold).
 
 ## P30 — Staff email audit (proposed 2026-09-10, Peter; super_admin only)
 
