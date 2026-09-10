@@ -1811,8 +1811,10 @@ team/own scope, per-day rows, requests card, per-rep shift editor; migration
 `work_time_v3_absences.sql`; verified live). **Phase 4 ✅ BUILT 2026-09-10** (shift-end close
 + frozen status, `work_day_short` bells to team roles + the person for tracked roles on work
 days, Monday 09:00 `work_week` bell + branded email; settings gained work days / tracked
-roles / weekly switch; migration `work_time_v4_alerts.sql`). Phase 5 (callable-now filter)
-next. CRM pushed; server commits local (hold).
+roles / weekly switch; migration `work_time_v4_alerts.sql`). **Phase 5 ✅ BUILT 2026-09-10**
+(`lib/leadTimezone.js` region → zone, "Callable now" preset + Local time facet, dialer guard
+modal + local-time chip; CRM only). **P29 COMPLETE, all five phases.** CRM pushed; server
+commits local (hold). Follow-ups: P28's "callable now" is delivered by this phase.
 
 ## P30 — Staff email audit (proposed 2026-09-10, Peter; super_admin only)
 
