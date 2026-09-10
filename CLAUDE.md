@@ -109,6 +109,8 @@ On success: streams the file directly into `cloudinary.uploader.upload_stream` (
 - **`GET /?siteId=`** `status` — current `custom_domain` + live CF status.
 - **`DELETE /`** `{ siteId }` — `disconnect` (detach + clear). The admin/CRM path (`controllers/admin/sitesController.js`) is intentionally NOT refactored — staff can still assign domains too; keep the two CF blocks in sync.
 
+**Brand logo import (`/api/cms/brand-logo`, P25 phase 1, 2026-09-10)** — `controllers/cms/brandLogoController.js`: `GET /lookup?siteId=&domain=` (domain → `companies.website` → `custom_domain`; candidates from Brandfetch [`BRANDFETCH_API_KEY`, optional], the site's HTML icons, Google's favicon service) and `POST /import {siteId, src, source, label}` (Cloudinary into the site folder, SVG kept, rasters capped WebP, `site_media` provenance `metadata.source = brand-logo:<source>`). Same shape as the stock-photos controller; keys never reach the browser.
+
 **Owner "buy a domain" (`/api/cms/site-domain/{search,check,register}`, added 2026-07-05)** — same controller/routes, Hostinger-style self-serve purchase (Peter's call: instant buy + invoice, gated on an ACTIVE platform subscription). Registrar = Porkbun via `lib/registrar`:
 - **`GET /search?siteId=&q=`** — ONE live `checkDomain` for the exact query (`q` without a dot → `q.com`; ⚠️ Porkbun rate-limits checkDomain ~1/10s account-wide — never call per keystroke) + alternates from the curated TLD set (`com net co studio salon spa shop online`) priced from **`getPricing()`** (new in `lib/registrar/porkbun.js` — public `/pricing/get`, cached 24h in-process, NOT rate-limited). Alternates return `available: null`.
 - **`GET /check?siteId=&domain=`** — one live availability check for an alternate row (on-demand "Check" button).

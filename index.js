@@ -176,6 +176,7 @@ app.use('/api/cms/activity', cmsActivityRouter);
 app.use('/api/cms/customers', cmsCustomersRouter);
 app.use('/api/cms/site-uploads', cmsSiteUploadsRouter);
 app.use('/api/cms/stock-photos', cmsStockPhotosRouter);
+app.use('/api/cms/brand-logo', require('./routes/cms/brandLogo')); // P25: find + import an existing logo
 app.use('/api/cms/payments', cmsPaymentsRouter);
 app.use('/api/cms/site-publish', cmsPublishRouter);
 app.use('/api/cms/site-domain', cmsSiteDomainRouter);

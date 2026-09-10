@@ -1715,7 +1715,16 @@ the toolkit has an import track and a creation track:
 Integration points: BrandingSection (upload stays the default path), the
 Stacy onboarding "logo" step deep-links the builder, publish-checklist logo
 gate counts a built logo. Build trigger: after the wellness theme-polish
-arc closes. ✅ Trigger met 2026-09-09 (arc closed); not started.
+arc closes. ✅ Trigger met 2026-09-09 (arc closed).
+**Phase 1 ✅ BUILT 2026-09-10 (local, push hold)**: server `/api/cms/brand-logo` (`lookup` = Brandfetch
+when `BRANDFETCH_API_KEY` is set, else the website's own apple-touch-icon / rel=icon ≥64px /
+og:image, plus Google's 256px favicon service as the last resort; `import` = Cloudinary into the
+site folder, SVG kept, rasters capped WebP, `site_media` row with `metadata.source =
+brand-logo:<source>` + `imported_from`), CMS `LogoFinder` inside Branding (domain prefilled from
+`custom_domain`; "Use as logo" / "Favicon" feed the existing upload fields, so Save / Discard /
+cleanup behave like an upload). Verified on Argyle with stemfra.com (2 candidates, import → logo
+field → Discard cleaned up). ⏳ Peter: a Brandfetch key (free) as the `BRANDFETCH_API_KEY` secret
+for typed SVG logos; Logo.dev is the alternative. Phase 2 (SVG builder) next.
 
 ## P26 — AI agent inventory + agent archetype system (recorded 2026-09-02, Peter)
 

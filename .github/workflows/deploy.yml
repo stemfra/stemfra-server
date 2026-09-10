@@ -131,6 +131,7 @@ jobs:
             GOOGLE_SA_PRIVATE_KEY=${{ secrets.GOOGLE_SA_PRIVATE_KEY }}
             MARK_EMAIL=mark@stemfra.com
             STEMFRA_MAILING_ADDRESS=${{ secrets.STEMFRA_MAILING_ADDRESS }}
+            BRANDFETCH_API_KEY=${{ secrets.BRANDFETCH_API_KEY }}
             CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
             CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
             CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
