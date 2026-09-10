@@ -1904,7 +1904,12 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   verified from the Active Numbers page 2026-09-10; both US numbers stay on the 10DLC Messaging
   Service, the UK ones on plain webhooks (UK mobiles text UK handsets only). ⏳ Peter: the two
   secrets + a deploy re-run.
-  Canada next (staff local + Mark local, plus a verified toll-free for A2P texts). Original advice:
+  ✅ Canada bought the same evening: staff **+1 365 361 5576** (inbound-voice + sms-inbound,
+  `TWILIO_PHONE_NUMBER_CA`) and Mark **+1 365 696 5918** (concierge + sms-inbound,
+  `VOICE_PHONE_NUMBER_CA`), Markham ON (Twilio has no 416/647 inventory). No emergency address
+  on any number (must be in-country; nothing dials emergency services and the CRM dialer now
+  refuses 911/999/112). A verified toll-free for Canadian A2P texts only if the Messages Log
+  shows 30007 filtering. Original advice:
   one UK
   number for caller ID (local geographic numbers need a UK address; a UK **mobile** or
   toll-free number accepts a non-UK address, and international long codes cannot text

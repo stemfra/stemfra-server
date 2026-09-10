@@ -368,6 +368,14 @@ router.post('/voice', async (req, res) => {
 
   const { To, From, CallSid, contactId, leadId, recordOverride } = req.body || {};
 
+  // Emergency numbers are never dialled from the CRM (2026-09-10): the reps sit
+  // in Nigeria, the numbers have no registered emergency address, and Twilio
+  // bills $75 per emergency call. Refuse before any TwiML is built.
+  if (/^(\+?1)?(911|933)$|^\+?(999|112|000|911)$/.test(String(To || '').replace(/[\s()-]/g, ''))) {
+    res.type('text/xml');
+    return res.send(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>Emergency calls cannot be placed from this system. Please use a local phone.</Say><Hangup/></Response>`);
+  }
+
   // Extract the Supabase user id from the Voice SDK identity. Identity comes
   // from /token as "user_<uuid>" but the Voice SDK wraps it as "client:user_<uuid>"
   // when speaking to Twilio. Be liberal about both forms.
