@@ -1899,7 +1899,11 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   Claim SMS + owner alerts, inbound rings the reps) and Mark's line (his calls + in-call texts,
   inbound = concierge); `config/twilio.js` `staffLine`/`markLine`. This first number = the STAFF
   line: set its Voice URL to `/api/twilio/inbound-voice`, SMS to `/api/twilio/sms-inbound`, secret
-  `TWILIO_PHONE_NUMBER_GB`. ⏳ A second UK mobile for Mark → concierge URL + `VOICE_PHONE_NUMBER_GB`.
+  `TWILIO_PHONE_NUMBER_GB`. ✅ Mark's UK mobile **+44 7449 911044** bought the same evening (Voice →
+  concierge, SMS → sms-inbound), secret `VOICE_PHONE_NUMBER_GB`. All four numbers' webhooks
+  verified from the Active Numbers page 2026-09-10; both US numbers stay on the 10DLC Messaging
+  Service, the UK ones on plain webhooks (UK mobiles text UK handsets only). ⏳ Peter: the two
+  secrets + a deploy re-run.
   Canada next (staff local + Mark local, plus a verified toll-free for A2P texts). Original advice:
   one UK
   number for caller ID (local geographic numbers need a UK address; a UK **mobile** or
