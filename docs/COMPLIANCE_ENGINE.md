@@ -56,6 +56,39 @@ Peter's curated cross-border analysis and the canonical fact base.
   dollars). Today Stemfra is far below everywhere → 0% posture is correct;
   the registry's job is to see a threshold coming.
 
+### 3b. Canada + United Kingdom (P31, 2026-09-10)
+
+Both are digital-services regimes for a non-resident supplier; both tax our two
+categories the same way (SaaS commission and domain fees are "digital services"
+everywhere in both). Positions recorded in `complianceCatalog.js`
+(`CA_PROVINCES`, `UK`, `intlCategoryTax`) and mirrored server-side in
+`lib/geo.js` (`CA-ON` … / `GB` jurisdiction keys) + `lib/taxThresholds.js`
+(threshold per key, `firstSale` for GB). Guidance for the CPA, not advice.
+
+- **Canada.** Federal GST 5%; the HST provinces (ON 13, NB/NL/PE 15, NS 14 since
+  1 Apr 2025) fold the provincial part in; QC (QST 9.975), BC (PST 7), SK (PST 6),
+  MB (RST 7) charge their own tax on top of GST; AB + the territories are GST
+  only. A non-resident vendor of digital services falls under the **simplified
+  GST/HST regime**: register once sales to "specified Canadian recipients" (no
+  GST number given) pass **CAD 30,000 in any 12 months**; a customer with a GST
+  number is out of scope. QST has the same CAD 30k rule; BC PST applies to
+  software at CAD 10k; SK and MB register from the first sale. Threshold key =
+  the province (`CA-ON`), progress in CAD because Canadian tenants are billed in
+  CAD since P31. Returns are quarterly, one month after the quarter.
+- **United Kingdom.** VAT 20%. Not UK-established, so **no registration
+  threshold**: B2C digital sales register from the first sale; B2B = **reverse
+  charge** (the customer accounts for the VAT) provided we hold evidence they are
+  in business (VAT number, company number, trading website). The GBP 90k
+  threshold is for UK-established businesses only. Threshold key `GB`, progress
+  reads 100% on the first sale (the trigger to confirm the evidence standard or
+  register). Returns quarterly via Making Tax Digital, one month + 7 days after
+  the period.
+- **What this means for the product:** collect GST/HST and VAT numbers from
+  business customers at onboarding (billing profile field, checklist item
+  `tax_numbers_at_signup`); the Calendar shows the CA/UK quarterly returns only
+  once a registration in that country is active; the nexus sweeper alerts at
+  80% for `CA-*` and `GB` like US states.
+
 ## 4. v1 scope
 
 ### 4a. CRM Billing page → tabs

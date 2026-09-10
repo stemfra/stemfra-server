@@ -755,7 +755,8 @@ function staffOrphanPaymentAlert({ amountLabel, paymentIntentId, siteId }) {
 // with a nudge subject + a ghost "See it live" CTA (Bentley's "Enquire to buy").
 // Sent as mark@stemfra.com; the sequencer supplies claimUrl (signed lead token)
 // and unsubscribeUrl. Plain-text alternative built by the caller from `text`.
-function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel = 'business', heroImageUrl, claimUrl, demoUrl, unsubscribeUrl, senderName = 'Mark', bonusLine }) {
+function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel = 'business', heroImageUrl, claimUrl, demoUrl, unsubscribeUrl, senderName = 'Mark', bonusLine, senderIdentification = '' }) {
+  const ident = senderIdentification ? ` ${senderIdentification}.` : '';
   const first = touch === 1;
   const who = firstName || businessName;
   // Touch-1 subject rotates between two proven-Primary lines (Peter,
@@ -812,13 +813,14 @@ function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel 
     cta: { label: 'Claim my website', url: claimUrl },
     cta2: first ? undefined : { label: 'See it live', url: demoUrl || claimUrl },
     reason: first
-      ? `You are receiving this because ${senderName} at Stemfra reached out to ${businessName}. Not for you? Reply "stop" and we will not email again.`
-      : `You are receiving this because ${senderName} at Stemfra reached out to ${businessName}. Not for you? Unsubscribe below and we will not email again.`,
+      ? `You are receiving this because ${senderName} at Stemfra reached out to ${businessName}.${ident} Not for you? Reply "stop" and we will not email again.`
+      : `You are receiving this because ${senderName} at Stemfra reached out to ${businessName}.${ident} Not for you? Unsubscribe below and we will not email again.`,
     unsubscribeUrl: first ? undefined : unsubscribeUrl,
     plainFooter: first,
     footerLinks: first ? undefined : [{ label: 'stemfra.com', url: 'https://stemfra.com' }, { label: 'Privacy', url: 'https://stemfra.com/privacy/' }, { label: 'Terms', url: 'https://stemfra.com/terms/' }],
   });
   const text = [heading, '', `Hi ${firstName || 'there'}, we built a website for your business, ${businessName}. It is already set up for you, so you never miss a client.`, '', ...features.map((f) => `- ${f}`), '', 'Click "Claim" if you need this website.', '', `Claim my website: ${claimUrl}`, note, ...(first ? [] : [`See it live: ${demoUrl || claimUrl}`]), '',
+    ...(senderIdentification ? [senderIdentification] : []),
     first ? 'Not for you? Reply "stop" and we will not email again.' : `Unsubscribe: ${unsubscribeUrl}`].join('\n');
   return { subject, html, text };
 }

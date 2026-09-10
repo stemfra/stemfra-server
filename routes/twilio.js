@@ -217,7 +217,7 @@ router.post('/claim-sms', async (req, res) => {
 
   const { data: lead } = await supabase
     .from('leads')
-    .select('id, first_name, contact_name, company_name, phone, phone_country, claim_token, do_not_call')
+    .select('id, first_name, contact_name, company_name, phone, phone_country, region, claim_token, do_not_call')
     .eq('id', lead_id).maybeSingle();
   if (!lead) return res.status(404).json({ error: 'Lead not found' });
   if (!lead.phone) return res.status(400).json({ error: 'Lead has no phone number' });
@@ -240,7 +240,8 @@ router.post('/claim-sms', async (req, res) => {
   const link = `${process.env.MARKETING_URL || 'https://stemfra.com'}/claim/${lead.claim_token}`;
   // Peter's copy (2026-09-04). The link sits before a newline, not a period,
   // so SMS clients never swallow trailing punctuation into the URL.
-  const body = `Hi${first ? ` ${first}` : ''}, Great speaking with you. Here is your website: ${link}\nEnjoy! Reply STOP to opt out.`;
+  // Canada / UK leads get the sender named in the text (CASL; lib/outreachCompliance).
+  const body = `Hi${first ? ` ${first}` : ''}, Great speaking with you. Here is your website: ${link}\n${require('../lib/outreachCompliance').smsSignOff(lead)}`;
 
   try {
     const message = await twilioClient.messages.create({

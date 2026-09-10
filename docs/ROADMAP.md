@@ -1865,13 +1865,45 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   Interac Autodeposit registration (2026-09-10): e-Transfers to billing@stemfra.com now land
   in the CAD wallet automatically. ✅ Both blocks complete from Peter's full
   Airwallex details (2026-09-10 evening): CAD (EFT + Interac + bank address) and GBP (sort
-  code + IBAN + SWIFT + bank address); test invoices rendered per currency. Airwallex recon
-  (`lib/reconEngine.js`) still fetches USD deposits only; extend when the first CAD/GBP
-  invoice goes out.
-- Compliance engine: UK VAT on B2C digital services has no threshold for a non-established
-  supplier; B2B = reverse charge (collect the client's VAT number at signup). Canada: the
-  simplified GST/HST regime kicks in above CAD 30k in 12 months (plus QST in Québec). Both are
-  CPA questions; record the positions in `complianceCatalog.js` when decided.
+  code + IBAN + SWIFT + bank address); test invoices rendered per currency.
+- ✅ 2026-09-10 **Section 1 of the GBP/CAD platform plan** (Peter: "go ahead with all of
+  section 1 in that order"):
+  1. Commission invoices follow the site currency (`commissionMeter` charges
+     `sites.currency`; `getCommissionBank({currency})` picks the bank block). Server ea60140.
+  2. Signup country → site currency / locale / time zone (`lib/localeDefaults.js`
+     `defaultsForCountry` + `siteOverrides` on `provisionSite`/`cloneSite`, via
+     `onboardSite`); the CMS `/signup` and the stemfra.com Start form gained Country +
+     State/Province (`stemfra_cms/src/lib/regions.ts`, `stemfra_client/src/app/data/regions.js`).
+     Platform 4b1b6d3, client 6d19739f (both on the push hold).
+  3. Compliance engine for Canada + UK: CRM `complianceCatalog.js` (`CA_PROVINCES` rates +
+     thresholds, `UK`, `intlCategoryTax`, `resolveJurisdiction` scopes `ca`/`gb`,
+     `thresholdFor` in CAD/GBP + `thresholdLabel`, CA/UK quarterly returns gated by
+     `registeredIn`, checklist + open items); `Compliance.jsx` Tenants-by-location, Tax
+     rates (Canada per province, UK one row), nexus cell, Calendar; server `lib/geo.js`
+     (`CA-XX` / `GB`), `lib/taxThresholds.js`, `nexusSweeper` alerts on CA/GB too. Doc
+     `COMPLIANCE_ENGINE.md` §3b.
+  4. CASL / PECR outreach: `lib/outreachCompliance.js` (market from `leads.region`,
+     identification + opt-out footer on sequencer emails and the claim email, Stemfra
+     named in the Claim SMS for CA/UK leads) + `docs/OUTREACH.md` §6 (the three-market
+     rules table, UK sole-trader + CTPS prerequisites). ⏳ Peter: set
+     `STEMFRA_MAILING_ADDRESS` (.env + deploy.yml) and buy a TPS/CTPS licence before UK
+     calling.
+  5. Recon for CAD/GBP verified by reading: `fetchDeposits` has no currency filter (all
+     Global Accounts' deposits come back), `matchDeposit` pairs a deposit with charges of
+     the SAME currency, an empty Interac reference falls to T2 exact-amount matching, and
+     the 8-char reference fits EFT, Interac and Faster Payments memos. Untested against a
+     real CAD/GBP deposit: verify on the first one (dry-run sweep, then arm).
+- ⏳ **Twilio numbers for the UK and Canada** (advice given 2026-09-10, buy later): one UK
+  number for caller ID (local geographic numbers need a UK address; a UK **mobile** or
+  toll-free number accepts a non-UK address, and international long codes cannot text
+  UK handsets, so the mobile number is the practical pick for calls + Claim SMS); one
+  Canadian local number (Toronto) for caller ID, with the Claim SMS to Canada sent from a
+  **verified toll-free** number (Canadian carriers filter A2P on long codes; US 10DLC does
+  not cover Canada). Do nothing until Twilio lifts the 2026-09-08 account restriction
+  (number buys are blocked under it), then buy through the Console, never a script.
+- Sections 2 and 3 of the plan remain: lead-gen country on leads + `+44` parsing, UK SMS
+  sender, template price locale, State/ZIP labels per country, CRM currency helpers,
+  .co.uk/.ca TLD suggestions; Terms/Fees USD wording check.
 - Interac Autodeposit: the CAD account carries an Airwallex-generated e-transfer address;
   register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
   (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.

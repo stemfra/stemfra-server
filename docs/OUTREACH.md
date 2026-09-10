@@ -126,7 +126,32 @@ the single source of truth for the first email's structure. n8n paste files:
 | Cadence + switches | `crm_settings`: `leadgen_sequence`, `leadgen_auto_send`, `leadgen_auto_call`, `leadgen_sequencer`, `leadgen_daily_call_cap` |
 | n8n paste files | `n8n-workflows/leadgen-build-prompt.js` + `leadgen-system-prompt.txt` |
 
-## 6. Open items
+## 6. Canada + UK outreach rules (CASL / PECR, P31, 2026-09-10)
+
+One module knows the three markets: **`lib/outreachCompliance.js`**
+(`marketFor(lead)` from `leads.region` / `phone_country`, `emailFooter`,
+`reasonLine`, `smsSignOff`). The sequencer (`sendEmailStep`), the branded claim
+email (`claimSend` → `prospectClaimEmail senderIdentification`) and the Claim
+SMS (`POST /api/twilio/claim-sms`) all append from it. Plain text, no links, so
+the deliverability rules above still hold.
+
+| | Email (cold, B2B) | SMS | Phone |
+|---|---|---|---|
+| **US** (CAN-SPAM, TCPA) | Sender identity + postal address + opt-out honoured in 10 business days. | Consent first (the Claim SMS records verbal consent); STOP honoured. | 10DLC number; internal do-not-call list. |
+| **Canada** (CASL, CRTC rules) | Implied consent when the business conspicuously published its address and the message concerns their business (our scraped listings qualify; keep the source). Footer = "Stemfra LLC, <address> · stemfra.com" + reply-stop; unsubscribe must work for 60 days and be honoured within 10 business days. | SMS is a "commercial electronic message" too: the Claim SMS names Stemfra + STOP for Canadian leads. Needs the same consent as email (the call gives express consent). | B2B calls are exempt from the National DNCL but the Unsolicited Telecommunications Rules apply: identify yourself and the purpose, respect the internal do-not-call list, call 9:00 to 21:30 weekdays / 10:00 to 18:00 weekends in the prospect's local time (CallGuard's 11 to 4 window sits inside). |
+| **UK** (PECR, ICO) | Only **corporate subscribers** (Ltd / LLP / plc) may be emailed without consent; a **sole trader or partnership is an individual** and needs consent, which cold email does not have. Most barbershops and small salons are sole traders: in Review, check Companies House and route non-companies to phone, not email. Identity + opt-out in every message (the footer). | Same corporate-vs-individual split; the Claim SMS is consent-based (recorded on the call), so it is fine for both. | Cold B2B calls are allowed but must be **screened against the CTPS** (Corporate Telephone Preference Service) and the TPS for sole traders, with a monthly re-screen; identify the caller and offer an opt-out. We have no TPS/CTPS licence yet: obtain one (paid, from the TPS) before the first UK calling shift. |
+
+Prerequisites before the first Canadian or UK sequence:
+- Set `STEMFRA_MAILING_ADDRESS` (the LLC's mailing / registered-agent address) in
+  `.env` + `deploy.yml`; until then the footer identifies Stemfra by name + web
+  only and the server logs one warning at boot. CAN-SPAM wants the address too,
+  so this closes a US gap as well.
+- A TPS/CTPS subscription for UK call screening; a Companies House check in the
+  Review queue for UK email leads.
+- Twilio numbers per market: see ROADMAP P31 ("Twilio numbers for the UK and
+  Canada").
+
+## 7. Open items
 
 - **Case 9** (P10) reworks the transactional side: one branded base template,
   migrate all system mail, Supabase auth emails via our SMTP — the B-family
@@ -135,3 +160,4 @@ the single source of truth for the first email's structure. n8n paste files:
   to automated tenant sends (booking confirmations use their own hardcoded
   mail today).
 - Warm-track (`N8N_LEADGEN_WARM_URL`) workflow: same contract, separate n8n flow.
+- UK sole-trader detection is manual (Companies House in Review). A `leads.entity_type` flag + a PECR gate in the sequencer is the automated follow-up when UK volume justifies it.
