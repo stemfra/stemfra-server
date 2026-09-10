@@ -1861,8 +1861,9 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   PDF, the Airwallex invoice memo and the new CMS "Pay by bank transfer" panel print the CAD
   rows + the Interac Autodeposit address; invoice / reminder / receipt emails carry
   `replyTo: billing@stemfra.com`; every surface says "Questions? billing@stemfra.com".
-  Peter created the mailbox and registered it on the Airwallex CAD account (Interac
-  confirmation pending, 24h window). ⚠ **GBP sort code still empty** in `by_currency.GBP`
+  Peter created the mailbox, registered it on the Airwallex CAD account and confirmed the
+  Interac Autodeposit registration (2026-09-10): e-Transfers to billing@stemfra.com now land
+  in the CAD wallet automatically. ⚠ **GBP sort code still empty** in `by_currency.GBP`
   (not visible in the dashboard screenshot): until it is filled, GBP invoices print the USD
   (SWIFT) details. Airwallex recon (`lib/reconEngine.js`) still fetches USD deposits only.
 - Compliance engine: UK VAT on B2C digital services has no threshold for a non-established
