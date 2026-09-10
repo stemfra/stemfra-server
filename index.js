@@ -8,6 +8,8 @@ const insightsRoutes   = require('./routes/insights');
 const twilioRoutes     = require('./routes/twilio');
 const userSettingsRoutes = require('./routes/userSettings');
 const presenceRoutes   = require('./routes/presence');
+const workTimeRoutes   = require('./routes/workTime');
+const { startWorkTimeSweeper } = require('./lib/workTime');
 const { startStalePresenceSweeper } = require('./routes/presence');
 const { startOutreachReplySweeper } = require('./lib/outreachReplySweeper');
 const { startCommissionScheduler } = require('./lib/commissionScheduler');
@@ -153,6 +155,7 @@ app.use('/api/business', require('./routes/business')); // stemfra_business app:
 app.use('/api/twilio',        twilioRoutes);
 app.use('/api/user-settings', userSettingsRoutes);
 app.use('/api/presence',      presenceRoutes);
+app.use('/api/work-time',     workTimeRoutes);
 app.use('/api/leadgen',       leadgenRoutes);
 app.use('/api/speed-to-lead', speedToLeadRoutes);
 app.use('/api/site-forms',    siteFormsRoutes);
@@ -231,6 +234,8 @@ server.listen(PORT, () => {
   // Flip stale user_presence rows to offline once a minute. Browsers don't
   // reliably fire the offline beacon on tab close, so this is the fallback.
   startStalePresenceSweeper();
+  // P29: heartbeats (idle / in_call) → work_sessions → work_days, once a minute.
+  startWorkTimeSweeper();
   // P21: nightly compressed-JSON dumps of the business-critical tables to the
   // VPS disk (compose volume ./backups) — the free-plan Supabase safety net.
   startBackupSweeper();

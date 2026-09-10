@@ -27,18 +27,33 @@ async function validateUserSession(req) {
   return data.user;
 }
 
+// Body (optional, P29 work-time monitor 2026-09-10): { idle, in_call,
+// last_active_at, dnd }. `idle` = no input for work_time.idle_stop_minutes;
+// `in_call` keeps the clock running through a call; `dnd` = Quick Actions
+// "Do not disturb": the person is NOT rung (is_online false) but their
+// activity still counts as work. Old clients send no body → online, active.
 router.post('/heartbeat', async (req, res) => {
   const user = await validateUserSession(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
-    await supabase.from('user_presence').upsert({
+    const b = req.body || {};
+    const now = new Date();
+    const idle = b.idle === true;
+    const inCall = b.in_call === true;
+    let lastActive = b.last_active_at ? new Date(b.last_active_at) : null;
+    if (!lastActive || Number.isNaN(lastActive.getTime()) || lastActive > now) lastActive = idle ? null : now;
+    const row = {
       user_id:         user.id,
-      is_online:       true,
+      is_online:       b.dnd !== true,
       twilio_identity: `user_${user.id}`,
-      last_heartbeat:  new Date().toISOString(),
-      updated_at:      new Date().toISOString(),
-    }, { onConflict: 'user_id' });
+      last_heartbeat:  now.toISOString(),
+      updated_at:      now.toISOString(),
+      idle,
+      in_call:         inCall,
+    };
+    if (lastActive) row.last_active_at = lastActive.toISOString();
+    await supabase.from('user_presence').upsert(row, { onConflict: 'user_id' });
     res.json({ ok: true });
   } catch (err) {
     console.error('[presence] heartbeat error:', err);
@@ -54,6 +69,8 @@ router.post('/offline', async (req, res) => {
     await supabase.from('user_presence').upsert({
       user_id:    user.id,
       is_online:  false,
+      idle:       true,   // closes the open work session at last_active_at
+      in_call:    false,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id' });
     res.json({ ok: true });

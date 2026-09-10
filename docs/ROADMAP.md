@@ -1800,7 +1800,36 @@ shift end for unexcused red days + a weekly summary. **DECIDED 2026-09-10:** clo
 min, lock 45 min, both super_admin-adjustable in Settings → Work time (`crm_settings.
 work_time`, ranges 5 to 10 / 15 to 240) with a lock mode + daily target; unlock = lock-screen
 PIN (Google fallback; `tap` mode available, not default); managers+ see the team. Build plan
-(5 phases, ~4 days) in `SALES_HOURS.md`. Not started; awaiting "go".
+(5 phases, ~4 days) in `SALES_HOURS.md`. **Phase 1 ✅ BUILT 2026-09-10** (migration
+`work_time_v1.sql` applied; server `lib/workTime.js` + `routes/workTime.js`; CRM idle clock,
+Settings → Work time, My hours widget; verified live). Phases 2 (lock + PIN), 3 (absences +
+Team → Hours), 4 (alerts), 5 (callable-now filter) next. CRM pushed; server commits local (hold).
+
+## P30 — Staff email audit (proposed 2026-09-10, Peter; super_admin only)
+
+Goal: keep company mailboxes (@stemfra.com) for Stemfra business; catch personal or
+unauthorised use before it becomes a legal problem. Design discussed 2026-09-10:
+- **Access = Google Workspace domain-wide delegation** (a service account authorised ONCE by
+  the Workspace admin for `gmail.readonly` + `gmail.settings.basic`), NOT per-person OAuth
+  like mark@'s outreach token: covers every staff mailbox incl. new hires, revocable in one
+  place, no consent dance per rep. Peter action at build time (Admin console).
+- **Weekly sweep** (server sweeper, Sunday night): per mailbox, list the week's SENT mail +
+  metadata only (to, subject, size, attachments, external domains) + the mailbox's
+  forwarding rules, filters and delegates (the real exfiltration vectors). Candidates =
+  external recipients that are not a CRM lead / contact / tenant / vendor, personal domains
+  (gmail, yahoo…), bulk BCC, attachments, auto-forward to outside. Only candidates go to the
+  AI classifier (business / personal / suspicious, with a one-line reason); bodies are never
+  stored, flags keep message id + ≤200-char snippet. Tables `email_audit_runs` +
+  `email_audit_flags`, super_admin RLS + server endpoints.
+- **CRM surface**: Compliance → Email audit tab (super_admin): runs, flags per person,
+  Reviewed / Dismiss / Escalate, weekly digest to super_admin. Never visible to managers.
+- **Policy first** (legal): an Acceptable Use Policy every staff member accepts at first
+  login (reuse the `legal_acceptances` ledger pattern) + a standing notice in Settings that
+  company mail is audited; monitoring of company-owned accounts with notice is lawful (US)
+  and NDPA-compatible (Nigeria) when scoped to business purpose. Use Workspace's own tools
+  too (audit log, DLP rules; Vault needs Business Plus).
+Not started; after P29. Open decisions: sweep cadence (weekly), who else may see flags
+(super_admin only), whether to include received mail (recommend sent + settings only in v1).
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
