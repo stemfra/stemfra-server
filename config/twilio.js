@@ -77,6 +77,13 @@ const smsFromForNumber = (to) => {
     return smsFrom(parsed && parsed.country);
   } catch { return twilioFrom; }
 };
+const voiceFromForNumber = (to) => {
+  try {
+    const { parsePhoneNumber } = require('libphonenumber-js');
+    const parsed = parsePhoneNumber(String(to || ''));
+    return voiceFrom(parsed && parsed.country);
+  } catch { return process.env.VOICE_PHONE_NUMBER || twilioFrom; }
+};
 const voiceFrom = (country) => MARKET_SENDERS.voice[String(country || '').toUpperCase()] || process.env.VOICE_PHONE_NUMBER || twilioFrom;
 const twimlAppSid   = process.env.TWILIO_TWIML_APP_SID  || null;
 const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'https://api.stemfra.com';
@@ -99,6 +106,7 @@ module.exports = {
   smsFrom,
   smsFromForNumber,
   voiceFrom,
+  voiceFromForNumber,
   twimlAppSid,
   publicBaseUrl,
   isVoiceConfigured,
