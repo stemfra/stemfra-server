@@ -199,6 +199,7 @@ app.use('/api/admin/billing', require('./routes/admin/billing'));
 app.use('/api/admin/compliance', require('./routes/admin/compliance'));
 app.use('/api/admin/recon', require('./routes/admin/recon'));
 app.use('/api/admin/backups', require('./routes/admin/backups')); // P21 nightly data backups
+app.use('/api/admin/handover', require('./routes/admin/handover')); // P32 staff handover + offboarding
 app.use('/api/admin/bookings', require('./routes/admin/bookings'));
 app.use('/api/admin/memberships', require('./routes/admin/memberships'));
 app.use('/api/admin/mockups', require('./routes/admin/mockups'));

@@ -1984,7 +1984,7 @@ the service account's domain-wide delegation (mark@ is just the default); P30 pl
 delegation for the mailbox audit; ownership lives on `leads.assigned_to` (+ contacts / deals
 owners); Email Templates manager for the copy.
 
-**Phase 1 (CRM only, ~1 day): "Hand over" wizard on the Team page** (super_admin / admin).
+**Phase 1 ✅ BUILT 2026-09-10 (same evening; server + CRM pushed): "Hand over" wizard on the Team page** (super_admin / admin). Template H1 seeded in `email_templates`.
 Pick leaver → successor → (a) bulk reassign leads, contacts, companies, deals, open
 follow-ups and scheduled outreach (`assigned_to` / `outreach_sent_by`), logged to the feed;
 (b) client introduction email from the SUCCESSOR's mailbox via `sendAsRep` (new template
