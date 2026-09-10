@@ -1911,8 +1911,8 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   refuses 911/999/112). A verified toll-free for Canadian A2P texts only if the Messages Log
   shows 30007 filtering. ✅ 2026-09-10 late: all four market secrets + `STEMFRA_MAILING_ADDRESS` set and
   deployed (deploy.yml 1048e21 carries the address); TwiML app needs nothing (one app, caller ID per
-  call). Twilio setup for the three markets is COMPLETE; no test send by design. Open: confirm the
-  10DLC Messaging Service's Incoming Messages setting reaches /api/twilio/sms-inbound. Original advice:
+  call). Twilio setup for the three markets is COMPLETE; no test send by design. The 10DLC Messaging
+  Service defers to the sender's webhook (verified), so the per-number sms-inbound URLs apply. Original advice:
   one UK
   number for caller ID (local geographic numbers need a UK address; a UK **mobile** or
   toll-free number accepts a non-UK address, and international long codes cannot text
