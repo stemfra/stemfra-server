@@ -77,6 +77,7 @@ async function getRegistry(req, res) {
       if (!byJur.has(key)) {
         byJur.set(key, {
           jurisdiction: key, label: c.juris.label, country: c.juris.country,
+          currency: String(c.currency || 'USD').toUpperCase(), // Canadian tenants bill in CAD, UK in GBP (P31)
           billedCents: 0, invoiceCount: 0, clientCount: 0, _sites: new Set(),
           saasCents: 0, domainsCents: 0, otherCents: 0,
           saasCount: 0, domainsCount: 0,

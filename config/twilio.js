@@ -54,6 +54,20 @@ const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const apiKeySid     = process.env.TWILIO_API_KEY_SID    || null;
 const apiKeySecret  = process.env.TWILIO_API_KEY_SECRET || null;
 const twilioFrom    = process.env.TWILIO_PHONE_NUMBER;
+
+// Per-market senders (P31 section 2, 2026-09-10). A UK prospect texted from a
+// US long code is unreliable and expensive (Twilio does not deliver
+// international long codes to UK handsets), and a +1 caller ID answers worse
+// in the UK. When TWILIO_PHONE_NUMBER_GB / _CA (SMS) or VOICE_PHONE_NUMBER_GB /
+// _CA (calls) are set, that market uses them; otherwise the default number.
+// The Console still needs the market number's Voice URL pointed at
+// /api/twilio/voice (SMS at /sms-inbound) for inbound to keep working.
+const MARKET_SENDERS = {
+  sms:   { GB: process.env.TWILIO_PHONE_NUMBER_GB, CA: process.env.TWILIO_PHONE_NUMBER_CA },
+  voice: { GB: process.env.VOICE_PHONE_NUMBER_GB,  CA: process.env.VOICE_PHONE_NUMBER_CA },
+};
+const smsFrom   = (country) => MARKET_SENDERS.sms[String(country || '').toUpperCase()] || twilioFrom;
+const voiceFrom = (country) => MARKET_SENDERS.voice[String(country || '').toUpperCase()] || process.env.VOICE_PHONE_NUMBER || twilioFrom;
 const twimlAppSid   = process.env.TWILIO_TWIML_APP_SID  || null;
 const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'https://api.stemfra.com';
 
@@ -72,6 +86,8 @@ module.exports = {
   apiKeySid,
   apiKeySecret,
   twilioFrom,
+  smsFrom,
+  voiceFrom,
   twimlAppSid,
   publicBaseUrl,
   isVoiceConfigured,

@@ -23,6 +23,7 @@
 
 const express = require('express');
 const { parsePhoneNumber } = require('libphonenumber-js');
+const { countryForLead } = require('../lib/leadCountry');
 const supabase = require('../config/supabase');
 const {
   twilio,
@@ -32,6 +33,7 @@ const {
   apiKeySid,
   apiKeySecret,
   twilioFrom,
+  smsFrom,
   twimlAppSid,
   publicBaseUrl,
   isVoiceConfigured,
@@ -226,7 +228,7 @@ router.post('/claim-sms', async (req, res) => {
 
   let parsed;
   try {
-    parsed = parsePhoneNumber(lead.phone, lead.phone_country || 'US');
+    parsed = parsePhoneNumber(lead.phone, countryForLead(lead));
     if (!parsed || !parsed.isValid()) throw new Error('invalid');
   } catch {
     return res.status(400).json({ error: `Lead phone "${lead.phone}" is not a valid number` });
@@ -245,7 +247,7 @@ router.post('/claim-sms', async (req, res) => {
 
   try {
     const message = await twilioClient.messages.create({
-      to: toE164, from: twilioFrom, body,
+      to: toE164, from: smsFrom(countryForLead(lead)), body, // UK / Canadian sender when configured (config/twilio)
       statusCallback: `${publicBaseUrl}/api/twilio/sms-status`,
     });
 

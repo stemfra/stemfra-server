@@ -147,7 +147,9 @@ async function disconnect(req, res) {
 // (getPricing, 24h cache); each alternate has its own on-demand /check.
 
 const SUGGEST_TLDS = [
-  'com', 'net', 'org', 'co', 'us', 'biz', 'info', 'online', 'site', 'xyz',
+  'com', 'net', 'org', 'co', 'co.uk', 'uk', 'us', 'biz', 'info', 'online', 'site', 'xyz',
+  // .ca is deliberately absent: CIRA requires a Canadian-presence registrant and the
+  // Porkbun account (Stemfra LLC) is the registrant, so it cannot be registered here.
   'store', 'shop', 'club', 'vip', 'studio', 'salon', 'spa', 'care', 'company',
   'services', 'work', 'fit', 'yoga', 'click', 'cc',
 ];

@@ -24,6 +24,7 @@
 //                           reject anything that didn't come from this server.
 
 const express  = require('express');
+const { countryForLead } = require('../lib/leadCountry');
 const crypto   = require('crypto');
 const supabase = require('../config/supabase');
 const { refineDraft, refineTemplate, isConfigured: leadgenAiConfigured } = require('../lib/leadgenDraft');
@@ -479,7 +480,7 @@ router.post('/call-with-ai', async (req, res) => {
 
   const { data: lead, error } = await supabase
     .from('leads')
-    .select('id, phone, phone_country, do_not_call, contact_name, company_name, pain_point_bucket, qualification, outreach_status, ai_draft_subject, ai_draft_message, outreach_reply_text, claim_token, outreach_sent_at, outreach_opened_at, outreach_step, raw_signal')
+    .select('id, phone, phone_country, region, do_not_call, contact_name, company_name, pain_point_bucket, qualification, outreach_status, ai_draft_subject, ai_draft_message, outreach_reply_text, claim_token, outreach_sent_at, outreach_opened_at, outreach_step, raw_signal')
     .eq('id', leadId)
     .single();
   if (error || !lead) return res.status(404).json({ success: false, message: 'Lead not found.' });
@@ -493,7 +494,7 @@ router.post('/call-with-ai', async (req, res) => {
   if (!aiSwitch?.value?.enabled) {
     return res.status(403).json({ success: false, message: 'Outbound AI calls are disabled (Mark is inbound-only). Call this lead yourself with the dialer.' });
   }
-  if (!leadgenCall.toE164(lead.phone, lead.phone_country)) {
+  if (!leadgenCall.toE164(lead.phone, countryForLead(lead))) {
     return res.status(400).json({ success: false, message: 'This lead has no usable phone number.' });
   }
 

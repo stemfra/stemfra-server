@@ -107,6 +107,10 @@ jobs:
             TWILIO_API_KEY_SID=${{ secrets.TWILIO_API_KEY_SID }}
             TWILIO_API_KEY_SECRET=${{ secrets.TWILIO_API_KEY_SECRET }}
             TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
+            TWILIO_PHONE_NUMBER_GB=${{ secrets.TWILIO_PHONE_NUMBER_GB }}
+            TWILIO_PHONE_NUMBER_CA=${{ secrets.TWILIO_PHONE_NUMBER_CA }}
+            VOICE_PHONE_NUMBER_GB=${{ secrets.VOICE_PHONE_NUMBER_GB }}
+            VOICE_PHONE_NUMBER_CA=${{ secrets.VOICE_PHONE_NUMBER_CA }}
             TWILIO_TWIML_APP_SID=${{ secrets.TWILIO_TWIML_APP_SID }}
             PUBLIC_BASE_URL=https://api.stemfra.com
             N8N_LEADGEN_COLD_URL=https://n8n.srv1555257.hstgr.cloud/webhook/leadgen-cold

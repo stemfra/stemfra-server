@@ -18,7 +18,7 @@ async function listBookings(req, res) {
   try {
     let q = supabase
       .from('site_bookings')
-      .select('id, starts_at, status, payment_status, amount_cents, metadata, service_name_snapshot, site:sites(subdomain, company:companies(name)), customer:site_customers(first_name, last_name, email)')
+      .select('id, starts_at, status, payment_status, amount_cents, metadata, service_name_snapshot, site:sites(subdomain, currency, company:companies(name)), customer:site_customers(first_name, last_name, email)')
       .order('starts_at', { ascending: false })
       .limit(200);
     if (req.query.siteId) q = q.eq('site_id', req.query.siteId);
@@ -30,6 +30,7 @@ async function listBookings(req, res) {
       status: b.status,
       paymentStatus: b.payment_status,
       amountCents: b.amount_cents,
+      currency: b.site?.currency || 'USD',
       // Pay-at-venue: online payment_status stays 'none'; the tenant marks it
       // collected in person (metadata.collected). Surfaced so the CRM shows
       // "At venue" / "Collected" instead of a bare "none" next to a price.
@@ -51,7 +52,7 @@ async function listMemberships(req, res) {
   try {
     const { data, error } = await supabase
       .from('site_subscriptions')
-      .select('id, status, amount_cents, current_period_end, cancel_at_period_end, site:sites(subdomain, company:companies(name)), customer:site_customers(first_name, last_name, email), product:site_products(name)')
+      .select('id, status, amount_cents, current_period_end, cancel_at_period_end, site:sites(subdomain, currency, company:companies(name)), customer:site_customers(first_name, last_name, email), product:site_products(name)')
       .order('created_at', { ascending: false })
       .limit(300);
     if (error) throw new Error(error.message);
@@ -59,6 +60,7 @@ async function listMemberships(req, res) {
       id: s.id,
       status: s.status,
       amountCents: s.amount_cents,
+      currency: s.site?.currency || 'USD',
       periodEnd: s.current_period_end,
       cancelAtPeriodEnd: s.cancel_at_period_end,
       business: s.site?.company?.name || s.site?.subdomain || '—',

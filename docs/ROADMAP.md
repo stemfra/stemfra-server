@@ -1899,11 +1899,35 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   UK handsets, so the mobile number is the practical pick for calls + Claim SMS); one
   Canadian local number (Toronto) for caller ID, with the Claim SMS to Canada sent from a
   **verified toll-free** number (Canadian carriers filter A2P on long codes; US 10DLC does
-  not cover Canada). Do nothing until Twilio lifts the 2026-09-08 account restriction
-  (number buys are blocked under it), then buy through the Console, never a script.
-- Sections 2 and 3 of the plan remain: lead-gen country on leads + `+44` parsing, UK SMS
-  sender, template price locale, State/ZIP labels per country, CRM currency helpers,
-  .co.uk/.ca TLD suggestions; Terms/Fees USD wording check.
+  not cover Canada). The 2026-09-08 account restriction was lifted 2026-09-09 (Peter), so the
+  numbers can be bought any time, through the Console, never a script.
+- ✅ 2026-09-10 (later) **Section 2** (Peter: "go ahead with section 2"):
+  - Leads: `lib/leadCountry.js` `countryForLead` (phone_country → region's country → US) feeds
+    `leadgenCall.toE164` (now libphonenumber in that country, so a UK "020 7946 0000" becomes
+    +44…) and every caller (sequencer, sweepers, Claim SMS). CRM Add/Edit Lead Region select =
+    US states + Canadian provinces + United Kingdom as CODES (the scraper's field), and a new
+    lead's phone country + currency follow the region. n8n system prompt gained the
+    region/phone_country rule (Peter pastes `n8n-workflows/leadgen-system-prompt.txt`).
+  - Per-market senders: `config/twilio.js` `smsFrom(country)` / `voiceFrom(country)` read
+    `TWILIO_PHONE_NUMBER_GB|CA` and `VOICE_PHONE_NUMBER_GB|CA` (blank = today's numbers); the
+    Claim SMS and Mark's outbound calls use them. Env documented in `.env.example` +
+    deploy.yml. ⏳ Peter: buy the UK mobile + Toronto numbers, set the secrets, point each
+    number's Voice / SMS webhooks at api.stemfra.com in the Console.
+  - Tenant websites: ONE money formatter, `formatMoney` in `@stemfra/site-data`
+    (`narrowSymbol`, cents only when non-zero); every archetype and template page that
+    rendered `$` literals or `en-US` currency now formats in the site's currency (CAD reads
+    "$45" at home, GBP "£45"). Hero overlay-booking + the multi-service form gained a
+    `currency` prop. All 9 workspaces typecheck clean. The State/ZIP claim was wrong: the
+    forms have no address fields, and the CMS billing form already says "Postal / ZIP code"
+    with a country-aware LocationPicker; PhoneField was already country-aware.
+  - CRM money: Client Bookings / Client Payments rows carry `currency` from the site (server
+    `operationsController`); the Compliance registry rows carry the jurisdiction's currency.
+    Books stays USD (mixed-currency P&L needs an FX view: open item).
+  - Domains: `.co.uk` + `.uk` added to the suggestion list. `.ca` deliberately NOT: CIRA needs a
+    Canadian-presence registrant and Stemfra LLC is the Porkbun registrant.
+  - Section 3 checks: no "USD" wording on the stemfra.com Terms/Fees pages (grep clean).
+- Open after section 2: FX view for Books; automated UK sole-trader gate (`leads.entity_type`);
+  the Airwallex invoice mirror's per-currency product prices (still one USD price each).
 - Interac Autodeposit: the CAD account carries an Airwallex-generated e-transfer address;
   register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
   (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.
