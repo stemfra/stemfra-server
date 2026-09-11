@@ -646,11 +646,31 @@ router.post('/recording-status', async (req, res) => {
       recording_url:              RecordingUrl,
       recording_duration_seconds: parseInt(RecordingDuration || '0', 10),
     }).eq('id', callRowId);
+    // Transcribe + summarise in the background (lib/callTranscripts, 2026-09-11).
+    if (parseInt(RecordingDuration || '0', 10) >= require('../lib/callTranscripts').MIN_SECONDS) {
+      require('../lib/callTranscripts').queueTranscription(callRowId);
+    }
   } catch (err) {
     console.error('[twilio] /recording-status update error:', err);
   }
 
   res.status(200).send('OK');
+});
+
+// ─── Call transcripts (2026-09-11) ──────────────────────────────────────────
+// POST /api/twilio/recording/:callId/transcribe — staff: transcribe now (or
+// re-run with {force:true}); returns { transcript, summary }. Backfills calls
+// recorded before the webhook auto-run existed. Production only (Twilio rule).
+router.post('/recording/:callId/transcribe', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const out = await require('../lib/callTranscripts').transcribeCall(req.params.callId, { force: !!(req.body && req.body.force) });
+    res.json({ ok: true, ...out });
+  } catch (err) {
+    console.error('[twilio] transcribe failed:', err.message);
+    res.status(400).json({ error: err.message || 'Transcription failed' });
+  }
 });
 
 // ─── Inbound calling (Phase 3a) ──────────────────────────────────────────────

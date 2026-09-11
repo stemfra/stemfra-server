@@ -2125,6 +2125,15 @@ locked, "Contact rules" facet, "Callable now" excludes DNC + unreachable, activi
 internal do-not-call list). Server enforcement was already in place. Same slice: the Leads Table
 view shares the Pipeline toolbar (country, verticals, search, Filters, presets, saved views).
 
+**Call transcripts + lead notes (2026-09-11, Peter's asks on the first calling shift) ✅ BUILT
+(local, push after the shift):** every recorded CRM call is transcribed and summarised on the
+server after the recording lands (`lib/callTranscripts.js`, OpenAI; migration
+`call_transcripts_v1` applied), shown under the recording in the drawer's Activity panel
+(Transcribe button backfills older calls); the drawer's Notes section gained Add note (stamped)
+and Edit. Also fixed the same evening: the `<Dial action>` "application error" voice. Next
+ideas from this: a "Calls" insights page that aggregates the summaries' questions and
+objections across reps (feeds the call script and the FAQ), and "Add to notes" from a summary.
+
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
 
 `stemfra.com/claim/<token>` showed "<Business>, your website is ready", "Reserved for <Business>.
