@@ -2095,6 +2095,27 @@ only from Send Claim during a call or an inbound message.
 **Not built:** MMS, scheduled texts, per-rep sender numbers, a text sequencer (cold SMS is
 prohibited anyway).
 
+**Follow-ups same day (Peter's review):** composer sized like the email ReplyBox (120 to 320px,
+Enter = new line, Cmd/Ctrl+Enter sends); **Not relevant** tag for texts meant for a recycled
+number's previous holder (`sms_ignored_numbers` + `sms_messages.dismissed_at`, migration
+`sms_ignored_numbers_v1.sql` applied; the webhook files future texts dismissed with no bell; Inbox
+→ Texts hides them behind "Show not relevant (n)" with Restore; threads tied to a lead or contact
+cannot be dismissed). First real case: TM Legal (Blackpool debt collector) texting "saeid" on our
+UK line, 2026-09-11.
+
+## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
+
+`stemfra.com/claim/<token>` showed "<Business>, your website is ready", "Reserved for <Business>.
+Claim within N days" and "Congratulations <First name>". The exposure was in the claims around the
+name, not the name itself: a limited-time claim that is not real (UK CPRs banned practice / FTC
+deceptive urgency) and a trade name next to "your website is ready". **✅ BUILT 2026-09-11 (client,
+local, push hold):** one page for everyone (the token-less copy: "Free website with booking built
+in. Free to claim, free to publish." + "Your website is ready to claim"), no name, no first name, no
+countdown; the token stays for attribution events, unsubscribe and the signup prefill (name and
+details appear on the signup form only after the owner clicks Claim). Server offer unchanged
+(fields kept for the prefill). No email template said "your website is ready", so no wording pass
+was needed; S3 ("We built this website to help {{business_name}}") goes only to consented numbers.
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
