@@ -2078,7 +2078,7 @@ Peter's ask: a chat window on the lead sidebar to text a lead with his four amoC
 (#1 missed you on the phone, #2 website built for you, #3 free booking website, #4 voicemail
 script), reply notifications for the assigned rep, plain texts without a template too.
 
-**✅ BUILT 2026-09-11 (CRM + server, local, push hold).** Server: `POST /api/twilio/sms/send`
+**✅ BUILT + PUSHED 2026-09-11 (server fa2b0d2, CRM b5a9a43).** Server: `POST /api/twilio/sms/send`
 merges `{{first_name}} {{business_name}} {{rep_name}} {{demo_link}} {{claim_link}}` from the
 lead, appends the CA/UK sign-off, stores the merged text; `POST /sms-inbound` bells the lead's
 `assigned_to` (`crm_notify` kind `sms_reply`, route `/leads?lead=<id>`). Migration
@@ -2112,7 +2112,7 @@ deceptive urgency) and a trade name next to "your website is ready". **✅ BUILT
 local, push hold):** one page for everyone (the token-less copy: "Free website with booking built
 in. Free to claim, free to publish." + "Your website is ready to claim"), no name, no first name, no
 countdown; the token stays for attribution events, unsubscribe and the signup prefill (name and
-details appear on the signup form only after the owner clicks Claim). Server offer unchanged
+details appear on the signup form only after the owner clicks Claim). PUSHED 2026-09-11 (client 18acfd84). Server offer unchanged
 (fields kept for the prefill). No email template said "your website is ready", so no wording pass
 was needed; S3 ("We built this website to help {{business_name}}") goes only to consented numbers.
 
