@@ -37,7 +37,9 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
 - P18 NOT built (Stacy has only `clone`). P20 security page NOT built. P21: backups ✅,
   Supabase org still on the **free** plan (Management API, 2026-09-07). P26 NOT started.
 - P24 IS pushed (origin/main 2026-08-31); handoff "local only" notes are stale.
-- **Wildcard Worker NOT live** (2026-09-07, Cloudflare API): zero Worker routes on the
+- **Wildcard Worker NOT live** (2026-09-07, Cloudflare API; re-verified 2026-09-11: no `*` DNS,
+  flag unset, remix-barbers attached as a Pages domain, 9/100 slots on stemfra-barbers; go-live
+  ⏸ DEFERRED by Peter 2026-09-11): zero Worker routes on the
   stemfra.com zone, no `*` DNS record, `*.stemfra.com` hosts are per-site CNAMEs to the
   vertical Pages projects. The August domain tests (cleancutsbarber.click,
   argyleandsons.click) ran through the per-domain zone flow (Case 7), not the Worker.
@@ -93,10 +95,15 @@ surfaces that touch new-client onboarding, in THIS order:
    done model).
 4. **Peter's dashboard actions** (Supabase auth-email SMTP + paste the 4 branded templates;
    CMS-origin redirect allowlist for magic links). ✅ Peter confirmed 2026-09-09.
-5. **P25** logo toolkit (Brandfetch import + SVG builder). 🟢 UNBLOCKED 2026-09-09 (theme-polish
-   arc closed); NEXT to build, after the YouTube upload finishes.
+5. **P25** logo toolkit (Brandfetch import + SVG builder). Phase 2 (SVG builder) ✅ DONE
+   2026-09-11 (platform, pushed); phase 1 (Brandfetch) ⏳ Peter: API key.
 Then the rest of the queue (P20 security, P21 items 2–3, P18, P22, **P26** agent
 inventory + archetype system, launch-plan tasks as they come due).
+**Status 2026-09-11 (rewritten, not appended):** items 1 to 5 closed except P25 phase 1
+(key). Built alongside, all pushed 2026-09-11: P33 A/B/C + Section styles + Auto remix, P31
+addendum (markets + `leads.vertical`), P34 lead text conversations + consent provenance, P35
+Claim page. 🔜 NEXT: P32 phase 2 (needs the P30 service account); wildcard Worker go-live
+⏸ DEFERRED by Peter 2026-09-11 (sales calls first). Peter began US sales calls 2026-09-11.
 
 ### 🚀 ACTIVE ARC (2026-08-18): LAUNCH — phased, barbershop first → **[`LAUNCH_PLAN.md`](LAUNCH_PLAN.md)**
 Peter's 10 launch tasks (VSL video · 3-contact prospecting sequence · Stacy+routes refresh ·
@@ -1727,7 +1734,7 @@ brand-logo:<source>` + `imported_from`), CMS `LogoFinder` inside Branding (domai
 cleanup behave like an upload). Verified on Argyle with stemfra.com (2 candidates, import → logo
 field → Discard cleaned up). ⏳ Peter: a Brandfetch key (free) as the `BRANDFETCH_API_KEY` secret
 for typed SVG logos; Logo.dev is the alternative.
-**Phase 2 ✅ BUILT 2026-09-11 (local, push hold)**: the SVG builder inside Branding ("Build a logo",
+**Phase 2 ✅ BUILT 2026-09-11 (platform, pushed 064346d)**: the SVG builder inside Branding ("Build a logo",
 `stemfra_cms/src/components/settings/LogoBuilder.tsx` + `lib/logoCompose.ts`). Business name (prefilled)
 + optional tagline, a Google Font (the theme's display font first, then 16 logo faces; Bold / Regular /
 UPPERCASE), an optional icon from the Iconify corpus (search + grid), ink + accent seeded from the theme,
