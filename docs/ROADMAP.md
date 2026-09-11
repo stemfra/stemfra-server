@@ -2151,8 +2151,15 @@ commissioned right now. **Build:** `metadata.source` set at creation (`web`, `ch
 walk-in default), reports + `commissionMeter` + the sweeper exclude `owner_*` from the
 basis (still shown in the calendar and Reports as "walk-in, no commission"), the Fees page
 and the concierge context say so in one sentence, and a monthly ratio in the CRM billing
-view (walk-ins vs online per tenant) as the sanity check. Not started; do before the first
-paying tenant's first statement.
+view (walk-ins vs online per tenant) as the sanity check.
+**✅ BUILT 2026-09-11 (server + CMS + client, local):** `site_bookings.source` (migration
+applied; 355 existing rows are NULL = web, none were owner-made), `source` param on the three
+booking cores (chat passes `chat`), CMS New booking asks "How did they book?" (Walked in /
+Called us → `owner_walk_in` / `owner_phone`), Reports classify `walkIn` (own row "Walk-ins and
+phone bookings you entered … no Stemfra commission", excluded from totals), meter excludes them
+(line item `walk_in_cents` for transparency), auto-collect sweeper skips them, Fees page bullet +
+concierge sentence. The CRM billing ratio is deferred (reads the line item when the first
+statement exists). Voice-agent bookings pass `voice` once that agent books (not built).
 
 **Readiness tier (decided 2026-09-11 with Peter, NOT a filter yet):** no founding-year data
 exists in the Google record (81 fields, none is an opening date) and public registries miss
@@ -2162,6 +2169,15 @@ unclaimed listing, no website, no booking link, no socials). The scrape already 
 direct signals of tech literacy; the "digital readiness" score (claimed listing, website,
 booking link, socials, owner description/posts, owner photos, owner replies to reviews,
 recent reviews) → Modern / Middle / Old school is parked until Peter wants it in n8n.
+**✅ DECIDED + BUILT 2026-09-11 (Peter: "go with your recommendation"):** scored ten Bronx
+barbershop leads live (Apify, from the server token): claimed 7/10, socials 0/10 (the scraper
+only reads socials off a website and our pool has none), first review 2012 to 2019 for all ten
+(a six-year cut would empty the pool). Final rule: old_school = unclaimed listing; middle =
+claimed only; modern = claimed + owner description/post, 20+ photos, booking link or social.
+Owner replies and recency are NOT factors (Peter). `leads.readiness` column (applied), n8n
+v13 pastes (`leadgen-normalize-v13.paste.md`, build-prompt, parse, insert; ⏳ Peter pastes
+four nodes), CRM Readiness facet + pills (card, drawer with the signals as tooltip). Ortiz
+Barbershop matched an empty listing (0 reviews, 0 photos): re-check that lead.
 
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
 

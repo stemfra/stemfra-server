@@ -270,6 +270,7 @@ const placeBooking = async ({
   siteId, teamMemberId, serviceId, date, time, customer, notes, paymentIntentId,
   pending = false, collectInPerson = false, allowedStatuses = ['live'], emailFromName = null,
   customerTimeZone,
+  source = 'web', // P36: who created it (web | chat | voice); owner_* only from the CMS
 }) => {
   if (!siteId || !teamMemberId || !serviceId || !date || !time || !customer) {
     return { ok: false, code: 400, message: 'Missing required fields.' };
@@ -336,6 +337,7 @@ const placeBooking = async ({
         payment_status: 'pending',
         customer_notes: notes?.trim() || null,
         confirmation_sent_at: null,
+        source,
       }]).select().single();
     if (heldErr) return { ok: false, code: 500, message: heldErr.message };
     return {
@@ -405,6 +407,7 @@ const placeBooking = async ({
       status: 'confirmed',
       customer_notes: notes?.trim() || null,
       confirmation_sent_at: null,
+      source,
       ...(custZone ? { metadata: { customer_time_zone: custZone } } : {}),
       ...paymentFields,
     }]).select().single();
@@ -611,6 +614,7 @@ const getMonthAvailability = async (req, res) => {
 const placeBookingGroup = async ({
   siteId, customer, notes, items,
   pending = false, collectInPerson = false, allowedStatuses = ['live'],
+  source = 'web', // P36
 }) => {
   if (!siteId || !customer || !Array.isArray(items) || items.length === 0) {
     return { ok: false, code: 400, message: 'Missing required fields.' };
@@ -780,6 +784,7 @@ const placeBookingGroup = async ({
           starts_at: h.startsAt.toUTC().toISO(),
           ends_at:   h.endsAt.toUTC().toISO(),
           duration_minutes: h.duration,
+          source,
           status: pending ? 'pending_payment' : 'confirmed',
           // Each child carries its OWN amount so per-child refunds + the CMS
           // booking modal work; 'pending' flips to 'paid' at finalize.
@@ -1033,7 +1038,7 @@ const listClassSessions = async ({ siteId, serviceId, days = 21, allowedStatuses
 };
 
 // Core: reserve a spot in a class session. Returns { ok, code?, message?, idempotent?, booking }.
-const bookClassSession = async ({ siteId, sessionId, customer, notes, paymentIntentId, allowedStatuses = ['live'], emailFromName = 'Bookings' }) => {
+const bookClassSession = async ({ siteId, sessionId, customer, notes, paymentIntentId, allowedStatuses = ['live'], source = 'web', emailFromName = 'Bookings' }) => {
   if (!siteId || !sessionId || !customer) return { ok: false, code: 400, message: 'Missing required fields.' };
   if (!customer.email && !customer.phone) return { ok: false, code: 400, message: 'Please provide an email or phone.' };
 
@@ -1110,6 +1115,7 @@ const bookClassSession = async ({ siteId, sessionId, customer, notes, paymentInt
     starts_at: s.starts_at, ends_at: s.ends_at,
     duration_minutes: Math.max(1, Math.round(end.diff(start, 'minutes').minutes)),
     status: 'confirmed', customer_notes: notes?.trim() || null,
+    source,
     ...paymentFields,
   }]).select().single();
   if (bErr) return { ok: false, code: 500, message: bErr.message };

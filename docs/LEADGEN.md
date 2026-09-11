@@ -218,3 +218,15 @@ state and/or city, optional leads_found/notes/requested_at); `PATCH
 | `index.js` | Mounts the router at `/api/leadgen` |
 | `.github/workflows/deploy.yml` | Injects the three env vars |
 | `.env.example` | Documents the same vars for local dev |
+
+## Digital readiness (2026-09-11)
+
+`leads.readiness` = `modern` | `middle` | `old_school`, computed ONCE at ingest in the n8n
+"Normalize Candidate" Set node (v13 pastes in `n8n-workflows/leadgen-*-v13.paste.*`) from the
+Google Maps record: old_school = the owner never claimed the listing; middle = claimed, nothing
+else; modern = claimed + one sign of life (owner description or post, 20+ photos, a booking
+link, a social profile). The signals that fired are in `qualification.readiness_signals` (the
+CRM drawer shows them as the pill's tooltip). Not factors, by Peter's rule: owner replies to
+reviews, review recency, business age (age is a call question; the first-review date needs the
+paid reviews fetch). The scoring agent sees `digital_readiness:` in its prompt. The CRM filters
+on the Readiness facet; old-school leads go to the done-for-you track, not the bin.

@@ -30,7 +30,7 @@ function periodRange(q) {
 async function loadBookings(siteId, fromIso, toIso) {
   const { data } = await supabase
     .from('site_bookings')
-    .select('id, starts_at, service_name_snapshot, payment_status, amount_cents, status, customer_id, metadata')
+    .select('id, starts_at, service_name_snapshot, payment_status, amount_cents, status, customer_id, metadata, source')
     .eq('site_id', siteId)
     .gte('starts_at', fromIso).lte('starts_at', toIso)
     .limit(100000);
@@ -94,14 +94,18 @@ async function loadMembershipCash(siteId, fromIso, toIso) {
 //   atVisit  → Task #20 pay-at-visit: confirmed/completed, unpaid, has an amount
 //   refunded → info only, not revenue
 //   none     → free $0 / canceled / pending → excluded
+//   walkIn   → P36: typed in by the owner (walk-in / phone), blocks the calendar,
+//              shown for the owner's own picture, NEVER in the commission basis
 function classify(b) {
   const amt = b.amount_cents || 0;
   if (b.payment_status === 'paid') return { kind: 'online', cents: amt };
   if (b.payment_status === 'refunded') return { kind: 'refunded', cents: amt };
+  const ownerMade = typeof b.source === 'string' && b.source.startsWith('owner_');
+  if (ownerMade && amt > 0 && (b.status === 'confirmed' || b.status === 'completed')) return { kind: 'walkIn', cents: amt };
   if (b.payment_status === 'none' && amt > 0 && (b.status === 'confirmed' || b.status === 'completed')) return { kind: 'atVisit', cents: amt };
   return { kind: 'none', cents: 0 };
 }
-const HOW_PAID = { online: 'Online (card)', atVisit: 'At visit (in person)', refunded: 'Refunded' };
+const HOW_PAID = { online: 'Online (card)', atVisit: 'At visit (in person)', refunded: 'Refunded', walkIn: 'Walk-in (no commission)' };
 
 // One model that powers the on-screen report AND every export.
 async function buildModel(siteId, fromIso, toIso) {
@@ -114,6 +118,7 @@ async function buildModel(siteId, fromIso, toIso) {
 
   let onlineCents = 0, atVisitCents = 0, refundedCents = 0, onlineCount = 0, atVisitCount = 0;
   let atVisitCollectedCents = 0, atVisitDueCents = 0; // Task #28 — pay-at-visit split
+  let walkInCents = 0, walkInCount = 0; // P36 — owner-entered, outside the commission
   const svc = new Map();     // name → { name, count, cents }
   const months = new Map();  // 'YYYY-MM' → { month, onlineCents, atVisitCents }
   const custIds = new Set();
@@ -135,6 +140,7 @@ async function buildModel(siteId, fromIso, toIso) {
     });
 
     if (c.kind === 'refunded') { refundedCents += c.cents; continue; }
+    if (c.kind === 'walkIn') { walkInCents += c.cents; walkInCount++; continue; } // not revenue through the site
     if (c.kind === 'online') { onlineCents += c.cents; onlineCount++; }
     else {
       atVisitCents += c.cents; atVisitCount++;
@@ -171,6 +177,7 @@ async function buildModel(siteId, fromIso, toIso) {
     totalCents: onlineCents + atVisitCents,
     onlineCents, atVisitCents, refundedCents, onlineCount, atVisitCount,
     atVisitCollectedCents, atVisitDueCents,
+    walkInCents, walkInCount, // P36: owner-entered, outside the commission
     membershipMrrCents: memberships.membershipMrrCents, membershipCount: memberships.membershipCount,
     membershipCollectedCents: membershipCash.membershipCollectedCents, membershipCollectedCount: membershipCash.membershipCollectedCount,
     membershipDueCents: membershipCash.membershipDueCents, membershipDueCount: membershipCash.membershipDueCount,
@@ -198,6 +205,7 @@ async function getReport(req, res) {
       totalCents: m.totalCents, onlineCents: m.onlineCents, atVisitCents: m.atVisitCents,
       refundedCents: m.refundedCents, onlineCount: m.onlineCount, atVisitCount: m.atVisitCount,
       atVisitCollectedCents: m.atVisitCollectedCents, atVisitDueCents: m.atVisitDueCents,
+      walkInCents: m.walkInCents, walkInCount: m.walkInCount,
       membershipMrrCents: m.membershipMrrCents, membershipCount: m.membershipCount,
       membershipCollectedCents: m.membershipCollectedCents, membershipCollectedCount: m.membershipCollectedCount,
       membershipDueCents: m.membershipDueCents, membershipDueCount: m.membershipDueCount,
