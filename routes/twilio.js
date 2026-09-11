@@ -157,11 +157,33 @@ router.post('/sms/send', async (req, res) => {
   }
   const toE164 = parsed.format('E.164');
 
+  // Merge fields (SMS templates, 2026-09-11): {{first_name}} {{business_name}}
+  // {{rep_name}} {{demo_link}} {{claim_link}}, filled from the lead; the market
+  // sign-off (CASL / PECR) is appended for CA / UK numbers when missing.
+  let text = String(body);
+  if (lead_id) {
+    try {
+      const { data: lead } = await supabase.from('leads').select('id, first_name, contact_name, company_name, template_slug, vertical, claim_token, region, phone_country').eq('id', lead_id).maybeSingle();
+      if (lead) {
+        const first = lead.first_name || String(lead.contact_name || '').replace(/^Owner\s*[—-]\s*/i, '').split(' ')[0] || 'there';
+        const rep = (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || (user.email ? user.email.split('@')[0] : 'Stemfra');
+        text = text
+          .replace(/\{\{\s*first_name\s*\}\}/g, first)
+          .replace(/\{\{\s*business_name\s*\}\}/g, lead.company_name || 'your business')
+          .replace(/\{\{\s*rep_name\s*\}\}/g, rep)
+          .replace(/\{\{\s*claim_link\s*\}\}/g, lead.claim_token ? require('../lib/claimTokens').claimUrl(lead.claim_token) : 'https://stemfra.com/pricing');
+        text = require('../lib/demoLinks').fillOutreachLinks(text, { templateSlug: lead.template_slug || lead.vertical });
+        const off = require('../lib/outreachCompliance').smsSignOff(lead);
+        if (off && !text.includes(off)) text = `${text}\n${off}`;
+      }
+    } catch (e) { console.warn('[twilio] sms merge skipped:', e.message); }
+  }
+
   try {
     const message = await twilioClient.messages.create({
       to:    toE164,
       from:  smsFromForNumber(toE164), // market sender by destination (P31)
-      body,
+      body:  text,
       statusCallback: `${publicBaseUrl}/api/twilio/sms-status`,
     });
 
@@ -173,7 +195,7 @@ router.post('/sms/send', async (req, res) => {
         direction:    'outbound',
         from_number:  twilioFrom,
         to_number:    toE164,
-        body,
+        body:         text,
         status:       message.status || 'queued',
         num_segments: parseInt(message.numSegments || '1', 10),
         contact_id:   contact_id || null,
@@ -193,7 +215,7 @@ router.post('/sms/send', async (req, res) => {
         entityId:   contact_id || lead_id,
         actorId:    user.id,
         actorName:  user.email || null,
-        details:    { to: toE164, body: body.slice(0, 200), twilio_sid: message.sid },
+        details:    { to: toE164, body: text.slice(0, 200), twilio_sid: message.sid },
       });
     }
 
@@ -333,6 +355,16 @@ router.post('/sms-inbound', async (req, res) => {
     }]);
   } catch (err) {
     console.error('[twilio] sms-inbound insert error:', err);
+  }
+
+  // Bell the assigned rep (Peter, 2026-09-11): a reply must not sit unseen.
+  if (link.lead_id) {
+    try {
+      const { data: lead } = await supabase.from('leads').select('assigned_to, company_name, contact_name').eq('id', link.lead_id).maybeSingle();
+      if (lead && lead.assigned_to) {
+        await supabase.rpc('crm_notify', { p_user: lead.assigned_to, p_kind: 'sms_reply', p_title: `Text from ${lead.company_name || lead.contact_name || From}`, p_body: String(Body).slice(0, 140), p_route: `/leads?lead=${link.lead_id}`, p_entity_type: 'lead', p_entity_id: link.lead_id });
+      }
+    } catch (e) { console.warn('[twilio] sms reply bell failed:', e.message); }
   }
 
   if (link.entity_type && link.entity_id) {

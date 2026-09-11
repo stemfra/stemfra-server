@@ -2072,6 +2072,29 @@ from the cloned logo mark, "Deeper accent" applied → Brand colours #221B16 / #
 check Passed on all 8. Headless sweep of 9 seeds × 2 registers: 5 candidates each, never a body failure.
 Not built (deliberate): AI, per-section colours, dark-mode inversion. **Walk findings 2026-09-11 (both fixed, local)**: the "theme reverts on inner pages" Peter saw is the DEV `?site=` preview param being dropped by in-site links (now remembered per browser session in every template's `siteResolution.ts`, platform 4baace9; production resolves by hostname on every page, verified on `remix-barbers.stemfra.com`); and clones kept the source brand name inside content, so `cloneContent` now rewrites it for clones and Starter-provisioned tenants (server ad612ad, Remix Barbers repaired; no real tenant was affected).
 
+## P34 — Lead text conversations in the drawer (Peter's ask 2026-09-11, amoCRM parity)
+
+Peter's ask: a chat window on the lead sidebar to text a lead with his four amoCRM scripts
+(#1 missed you on the phone, #2 website built for you, #3 free booking website, #4 voicemail
+script), reply notifications for the assigned rep, plain texts without a template too.
+
+**✅ BUILT 2026-09-11 (CRM + server, local, push hold).** Server: `POST /api/twilio/sms/send`
+merges `{{first_name}} {{business_name}} {{rep_name}} {{demo_link}} {{claim_link}}` from the
+lead, appends the CA/UK sign-off, stores the merged text; `POST /sms-inbound` bells the lead's
+`assigned_to` (`crm_notify` kind `sms_reply`, route `/leads?lead=<id>`). Migration
+`docs/migrations/sms_templates_v1.sql` (applied): `email_templates.channel` (email | sms |
+voicemail) with S1/S2/S3 + V1 seeded, `sms_messages.read_at`. CRM: drawer **Messages** button
+(unread badge) → second-layer panel hosting `ConversationPanel` (consent gate: `sms_consent_at`
+or an inbound text, otherwise locked with the reason; **Templates ▾** picker with client-side
+merge; marks the thread read on open); `hooks/useSmsInbox.js` (unread map, mark-read, threads);
+Email Templates page → **Templates** with Outbound / Lifecycle / SMS / Voicemail tabs (subject
+hidden off email); Inbox **Texts** tab (works without Gmail); lead card unread chip. Verified in
+the CRM. Not test-sent (Twilio production-only rule). Compliance stands: no cold texts, consent
+only from Send Claim during a call or an inbound message.
+
+**Not built:** MMS, scheduled texts, per-rep sender numbers, a text sequencer (cold SMS is
+prohibited anyway).
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
