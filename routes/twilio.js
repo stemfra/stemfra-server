@@ -341,7 +341,17 @@ router.post('/sms-inbound', async (req, res) => {
 
   const link = await findEntityByPhone(From);
 
+  // "Not relevant" numbers (sms_ignored_numbers, 2026-09-11): texts meant for a
+  // recycled number's previous holder are filed dismissed + read, no bell, no
+  // activity. Staff restore a number from Inbox → Texts → Show dismissed.
+  let ignored = false;
   try {
+    const { data: ign } = await supabase.from('sms_ignored_numbers').select('phone').eq('phone', From).maybeSingle();
+    ignored = !!ign;
+  } catch { /* table missing or transient: treat as relevant */ }
+
+  try {
+    const now = new Date().toISOString();
     await supabase.from('sms_messages').insert([{
       twilio_sid:   MessageSid,
       direction:    'inbound',
@@ -352,9 +362,15 @@ router.post('/sms-inbound', async (req, res) => {
       num_segments: parseInt(NumSegments || '1', 10),
       contact_id:   link.contact_id,
       lead_id:      link.lead_id,
+      ...(ignored ? { dismissed_at: now, read_at: now } : {}),
     }]);
   } catch (err) {
     console.error('[twilio] sms-inbound insert error:', err);
+  }
+
+  if (ignored) {
+    res.set('Content-Type', 'text/xml');
+    return res.send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
   }
 
   // Bell the assigned rep (Peter, 2026-09-11): a reply must not sit unseen.
