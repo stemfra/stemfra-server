@@ -615,7 +615,15 @@ router.post('/voice-status', async (req, res) => {
     }
   }
 
-  res.status(200).send('OK');
+  // This URL is BOTH the <Dial action> and the status callback. The action
+  // request expects TwiML that takes over the caller's leg once the dial ends;
+  // a plain "OK" body made Twilio raise 12100 (document parse failure) and read
+  // "We're sorry, an application error has occurred. Goodbye." to the REP after
+  // every no-answer / busy / hang-up (Peter heard it on the first calling shift,
+  // 2026-09-11). An empty <Response/> ends the leg quietly and is harmless for
+  // the status callbacks, which ignore the body.
+  res.set('Content-Type', 'text/xml');
+  res.status(200).send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
 });
 
 // ─── POST /api/twilio/recording-status — recording ready webhook ────────────
