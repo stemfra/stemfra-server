@@ -1738,9 +1738,15 @@ Google Fonts (empty User-Agent → TrueType; falls back to 400 for single-weight
 validates the SVG (no script / foreignObject / image / handlers, 400 KB cap) and stores it like an
 import (`site_media` `metadata.source = brand-logo:builder` + the builder params for a later rebuild);
 `/api/cms/brand-logo` carries a 600 KB JSON limit ahead of the global 10 KB. Verified headlessly (real
-Playfair Display TTF + mdi:content-cut, all lockups + favicons rasterised by Chromium). ⏳ In-CMS walk once
-Peter signs in (the Browser pane session was lost). Not built: Stacy onboarding deep-link to the builder,
-publish-checklist count (both trivial once the walk passes).
+Playfair Display TTF + mdi:content-cut, all lockups + favicons rasterised by Chromium) and ✅ walked in the
+CMS with Peter watching 2026-09-11 (Argyle: tagline, icon search, badge lockup, Use as logo → SVG in the
+field, Use as favicon → PNG, Discard deleted both session assets). Fix on the way: Iconify alias chains
+(`mdi:scissors` → `content-cut`) are followed server-side. ✅ Follow-ups done 2026-09-11: `CMS_ROUTES.logoBuilder`
+(`/settings/style#branding-build`, the anchor scrolls to AND opens the builder, clearing the sticky top bar);
+Stacy's pending "Add your logo" step and the publish checklist's Logo item route there with hints naming
+upload / find / build, and Stacy's guidance walks the owner through the builder. A built logo counts in both
+because saving it sets `logo_url`, the signal they already read. Verified in the CMS (deep link opens the builder).
+**P25 COMPLETE** (phase 3, AI generation, stays deliberately skipped).
 
 ## P26 — AI agent inventory + agent archetype system (recorded 2026-09-02, Peter)
 
@@ -2049,9 +2055,20 @@ those pairings with ratio chips and AA/AAA badges, the picker gains Figma's boun
 (for the chosen foreground, compute the AA boundary across the saturation/value plane) and a
 "fix it" nudge (nearest passing shade). Failing pairs block Save with an explanation, not a
 hard error. CRM Templates page gets the same report per theme for staff QA.
-**C. Remix** (the future palette generator): `remixPalette(seed, constraints)` produces
-variations and keeps only those where `paletteReport` passes everywhere; the same report
-labels each suggestion. Build A + B before Remix exists; C rides on them.
+**C. Remix ✅ BUILT 2026-09-11 (platform 16c7b41, local, push hold)**: `packages/site-data/src/remix.ts`
+`remixPalette(seedHex, register)` implements the colour-guide recipe (§3 of `docs/COLOR_GUIDE.md`):
+button-safe accent, neutrals as visible tints of one hue (seed-tinted / cool / warm, 20-26% saturation at
+96.5% lightness, since 5% reads as white), a "Deeper accent" when the seed is too faint as link text
+(else "Muted accent"), a complementary accent, and a `pop` for the deep band; every candidate scored with
+`paletteVerdict`, body-text failures dropped, AA first, always 3-5 cards. CMS: a **Remix row** at the top
+of Colour palette (seed = the accent in use, "From my logo" = the logo's dominant colour sampled on a
+canvas via `lib/logoColor.ts`, or a typed hex); candidates render as palette cards with the AA / Review
+badge and a one-line note, and save exactly like a curated palette (`remix:<id>` choice). Test tenant:
+**Remix Barbers** (cloned from Argyle via the CMS Duplicate flow, owner peechizzy, previewing). Verified
+there: 5 candidates from #C97C4A (Deeper + Complementary AA, three Review), "From my logo" seeded #D1814D
+from the cloned logo mark, "Deeper accent" applied → Brand colours #221B16 / #CB7035 / #F8F6F4, visibility
+check Passed on all 8. Headless sweep of 9 seeds × 2 registers: 5 candidates each, never a body failure.
+Not built (deliberate): AI, per-section colours, dark-mode inversion. **Walk findings 2026-09-11 (both fixed, local)**: the "theme reverts on inner pages" Peter saw is the DEV `?site=` preview param being dropped by in-site links (now remembered per browser session in every template's `siteResolution.ts`, platform 4baace9; production resolves by hostname on every page, verified on `remix-barbers.stemfra.com`); and clones kept the source brand name inside content, so `cloneContent` now rewrites it for clones and Starter-provisioned tenants (server ad612ad, Remix Barbers repaired; no real tenant was affected).
 
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
