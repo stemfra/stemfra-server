@@ -128,3 +128,34 @@ self-description, which is exactly what we wanted to know.
 - GoHighLevel customers by country (technologychecker): https://technologychecker.io/technology/highlevel
 - UK barbershop counts (Claight, April 2026): https://hub.claight.com/statistics/barber-shops-in-the-uk
 - UK cold-calling rules (TPS/CTPS): https://tpscheck.uk/blog/2025/12/31/are-cold-calls-illegal-uk/
+
+## 6. Custom-build targets (agency-priced sites), Peter's question 2026-09-11
+
+Criteria for a custom-build prospect: a job or client worth enough that a USD 3,000 to 15,000
+site is rational; a credibility-driven buyer (people research before they call) rather than a
+booking-driven one; found on Google Maps with no website; the owner is the decision maker;
+and few agencies already cold calling. Market prices for 2026 (WebFX, PaperStreet, Civille,
+Routeless, Campbell Digital): small business custom site USD 2,000 to 8,000; contractor site
+1,500 to 6,000 freelance, 6,000 to 25,000 agency; law firm 5,500 median solo, 16,500 partner
+firm; professional firm around 12,500; managed care plan 150 to 500 a month.
+
+| Business type | No website | Job or client value | Agency crowd | Fit for a custom build |
+|---|---|---|---|---|
+| Remodelers, custom home builders, design-build landscaping | 25 to 40% (contractors); 35 to 55% (landscaping) | USD 10,000 to 150,000 per job; 81% of homeowners research online first; 68% of remodelers still rely on word of mouth | GHL agencies chase HVAC, roofing and plumbing for lead-gen retainers; remodelers and custom builders are the quieter corner | Best. Portfolio site + quote request + missed-call answering |
+| Accountants, bookkeepers, CPAs | 15 to 25% | Clients worth thousands a year, multi-year | Rarely on agency lists; existing sites "look like Word documents" | Strong. Trust site, service pages, intake form |
+| Small law firms, solo attorneys | 15 to 25% | Cases worth 5,000 to 500,000 | Medium; personal injury is crowded, family, estate and immigration less so | Strong outside personal injury; buyers are sceptical, referrals matter |
+| Consulting firms, engineering consultancies, architects | Many have no Maps listing at all (no storefront); those that do and lack a site are a small, high-value pool | Engagements 5,000 to 100,000+ | Almost none cold call them | Good, but a thin list; better sourced from LinkedIn than Maps |
+| Small manufacturers, fabrication, industrial services | Listed on Maps; older sites or none | RFQs to six figures | Specialist B2B agencies sell 20,000+ sites, nobody cold calls the small shops | Good; needs product or capability pages, not booking |
+| Specialty clinics (physio, optometry, vets, private practices) | 20 to 30% | Long patient relationships | Dental and med spa are crowded; the rest are not | Good for the uncrowded specialties; compliance copy needed |
+| Funeral homes, private schools and daycares, event venues, auto body | 25 to 45% (mixed) | High-trust, high-value decisions | Off every agency list | Good secondary list |
+
+Not for custom builds: plumbers, HVAC, roofers (the densest agency crowd, quote-based jobs,
+owners used to USD 1,000+ retainers), restaurants (small budgets), and anything that books by
+the hour, which is our commission product, not a custom build.
+
+How this fits Stemfra: the same Google Maps scrape with the category switched and a "no
+website + 20 or more reviews" filter finds these; the CRM's Custom Pricing quotes already
+exist for the build fee (`leads.deal_value`, sales type "custom"). The hook that no template
+seller or agency has is the Front Desk: for a remodeler a missed call is a lost 20,000 dollar
+job, so "your calls answered and quoted 24/7" sells the build. Suggested package: build fee
+3,000 to 8,000 by scope, plus the optional care plan at the market's 150 to 500 a month.
