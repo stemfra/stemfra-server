@@ -1266,8 +1266,10 @@ CMS boot spinner, card active states, FAQ+legal onboarding steps).
    real domain through the CMS Porkbun flow and walk the new 3-step connect
    card end to end against Cloudflare (first real registration; Porkbun
    account email/phone verification + funded balance are prerequisites).
-6. **Domain scale infra — (a) wildcard Worker ✅ BUILT 2026-08-18, awaiting deploy;
-   (b) Custom Hostnames still pending.** The `*.stemfra.com` tenant-router Worker
+6. **Domain scale infra — (a) wildcard Worker ✅ BUILT 2026-08-18, awaiting deploy
+   (Peter deferred the go-live on 2026-09-11 to start sales calls; still NOT live, no wildcard
+   DNS, `TENANT_WILDCARD_ROUTING` unset; remix-barbers was attached the old way, stemfra-barbers
+   holds 9 of 100 custom-domain slots); (b) Custom Hostnames still pending.** The `*.stemfra.com` tenant-router Worker
    lives at `stemfra_platform/workers/tenant-router/` (README = runbook + rollout +
    rollback). Verified locally against real Supabase + Pages origins (barbers →
    stemfra-barbers, spa → stemfra-spa, unknown → branded noindex 404, infra hosts
