@@ -10,7 +10,7 @@ async function listTemplates(req, res) {
   try {
     const { data, error } = await supabase
       .from('templates')
-      .select('id, slug, display_name, description, is_active, is_default, display_order, preview_image_url, design_tokens, vertical:verticals(id, slug, display_name, display_order)')
+      .select('id, slug, display_name, description, is_active, is_default, display_order, preview_image_url, design_tokens, archetype_variants, home_arrangement, vertical:verticals(id, slug, display_name, display_order)')
       .order('display_order');
     if (error) throw new Error(error.message);
 
@@ -23,6 +23,8 @@ async function listTemplates(req, res) {
       slug: t.slug,
       displayName: t.display_name,
       designTokens: t.design_tokens || null, // P33: the CRM scores the palette's contrast
+      archetypeVariants: t.archetype_variants || null, // Remix space: the theme's default per surface
+      homeArrangement: t.home_arrangement || null,
       description: t.description,
       isActive: t.is_active,
       isDefault: t.is_default,
