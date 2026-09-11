@@ -2002,6 +2002,8 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   register a Stemfra address (e.g. billing@stemfra.com) when Canadian invoicing goes live
   (see the handoff note). Recipient name shows "Airwallex (Canada) International" either way.
 
+**P31 addendum, 2026-09-11 (CRM 90b7e68 + server 004600c, local):** Leads page country pills (All / US / Canada / UK, no counts) left of the search + a Verticals chip mirroring the Filters facet + Group by Country + mass-email mixed-country guard. Root cause of "The Barber Box" in the Vertical facet: it read the legacy 16-box `template_slug`; fixed at the source with **`leads.vertical`** (migration applied + trigger, `lib/leadVertical.js`, `stemfra-ops/src/lib/leadCountry.js`). **Live bug found and fixed**: the marketing contact form's "<Vertical> website" subjects were rejected server-side ("Invalid subject selected"), so only "General" enquiries ever reached the CRM; the six subjects are accepted now (service 'website' + vertical). Ships with the next server push.
+
 ## P32 — Staff handover + offboarding (Peter's ask 2026-09-10, recorded before P25)
 
 When a rep leaves, a successor takes their clients: the clients are told, correspondence
