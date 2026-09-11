@@ -87,6 +87,22 @@ for every seller, which is why the phone rings, but well below the trades.
    scrapes toward them and toward yoga and pilates studios, where the lists put agencies at
    "high density" but on social media retainers, not booking.
 
+## 5. UK, Canada and the EU (added the same evening, Peter's follow-up)
+
+| Market | Businesses with no website | Agency crowd | Booking-app incumbents in beauty | Notes |
+|---|---|---|---|---|
+| US | about 27% overall; barbers and salons 38 to 44% | GoHighLevel's home market: 73% of its 60,000+ agencies | Booksy, Fresha, Square, Vagaro | The loudest market by far |
+| UK | 32% of all businesses; 35% of sole traders (UK Business Data Survey 2024) | 8% of GHL agencies; a handful of barber-specialist web shops selling sites "from £90"; cold calling legal B2B but TPS/CTPS screening is law | Fresha (UK-born), Treatwell, Booksy strong with barbers | 21,405 barbershops in England (April 2026), up 50% since 2018: a growing, fragmented pool |
+| Canada | 22% of small businesses; 30% of micro firms with 0 to 4 staff (CFIB, September 2025) | 7% of GHL agencies | Fresha, Booksy, Vagaro, Setmore | Same playbook as the US at a tenth of the volume; CASL makes cold email harder, which thins the crowd |
+| EU | 21% of enterprises with 10+ staff have no website; micro firms are not in the Eurostat series and sit far lower | GHL is marginal outside the UK; local agencies sell in-language | Treatwell (DE, FR, IT, ES, NL), Fresha, Planity (FR), Booksy (PL) | Country by country, in language; not a 2026 market for us |
+
+Reading: the UK and Canada have the same website gap as the US and a much thinner agency
+crowd calling into it. The incumbents there are the booking marketplaces (Fresha and Treatwell
+take a per-booking commission of their own on marketplace clients, Booksy charges a
+subscription), so the objection changes from "I get ten website calls a week" to "I already
+have Fresha". Our answer is the same fact: your own site, your own bookings, no marketplace
+fee, 5% only on what comes through it.
+
 ## Sources (opened in the browser pane on 2026-09-11)
 
 - NetPartners, Best niches for GoHighLevel agencies 2026, 15 verticals ranked:
@@ -106,3 +122,9 @@ for every seller, which is why the phone rings, but well below the trades.
 Caveat: the "no website" percentages are vendor estimates published to sell lead lists, not
 census data; treat them as order-of-magnitude. The niche lists are the agencies' own
 self-description, which is exactly what we wanted to know.
+- UK Business Data Survey 2024 via money.co.uk: https://www.money.co.uk/business/business-statistics/small-business-statistics
+- CFIB, Small Business Digital Presence (September 2025): https://www.cfib-fcei.ca/en/research-economic-analysis/sme-digital-presence
+- Eurostat, Digitalisation in Europe 2025: https://ec.europa.eu/eurostat/web/interactive-publications/digitalisation-2025
+- GoHighLevel customers by country (technologychecker): https://technologychecker.io/technology/highlevel
+- UK barbershop counts (Claight, April 2026): https://hub.claight.com/statistics/barber-shops-in-the-uk
+- UK cold-calling rules (TPS/CTPS): https://tpscheck.uk/blog/2025/12/31/are-cold-calls-illegal-uk/

@@ -2175,8 +2175,9 @@ only reads socials off a website and our pool has none), first review 2012 to 20
 (a six-year cut would empty the pool). Final rule: old_school = unclaimed listing; middle =
 claimed only; modern = claimed + owner description/post, 20+ photos, booking link or social.
 Owner replies and recency are NOT factors (Peter). `leads.readiness` column (applied), n8n
-v13 pastes (`leadgen-normalize-v13.paste.md`, build-prompt, parse, insert; ⏳ Peter pastes
-four nodes), CRM Readiness facet + pills (card, drawer with the signals as tooltip). Ortiz
+v13 pastes (`leadgen-normalize-v13.paste.md`, build-prompt, parse, insert; ⏸ Peter DEFERRED
+the pastes 2026-09-11: keep testing calls first, the column and CRM facet stay ready), CRM
+Readiness facet + pills (card, drawer with the signals as tooltip). Ortiz
 Barbershop matched an empty listing (0 reviews, 0 photos): re-check that lead.
 
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
