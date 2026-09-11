@@ -2134,6 +2134,35 @@ and Edit. Also fixed the same evening: the `<Dial action>` "application error" v
 ideas from this: a "Calls" insights page that aggregates the summaries' questions and
 objections across reps (feeds the call script and the FAQ), and "Add to notes" from a summary.
 
+## P36 — Walk-ins block the calendar but carry no commission (Peter's rule, 2026-09-11)
+
+From the Neil's Barbershop call ("what if someone walks in and someone else booked
+online?"). Peter's rule: the shop enters the walk-in in the CMS calendar so the availability
+engine blocks the slot, and Stemfra takes NO commission on it, because it did not come
+through our software. Fair to owners, and fraud-proof if the origin is set by whoever
+CREATED the booking, never edited: website / chat (Front Desk) / voice agent = online,
+commissionable; owner-created in the CMS (walk-in or phone taken by a human) = not.
+**As built today (verified 2026-09-11):** the CMS manual booking (`queries.ts` "Manual
+(owner-created) booking") inserts with `payment_status='none'` and no origin; the reports
+model counts any confirmed/completed priced booking with `payment_status='none'` as
+at-visit, and `bookingAutoCollectSweeper` marks it collected after 24 h, so walk-ins ARE
+commissioned right now. **Build:** `metadata.source` set at creation (`web`, `chat`,
+`voice`, `owner_walk_in`, `owner_phone`; the CMS form asks "How did they book?" with
+walk-in default), reports + `commissionMeter` + the sweeper exclude `owner_*` from the
+basis (still shown in the calendar and Reports as "walk-in, no commission"), the Fees page
+and the concierge context say so in one sentence, and a monthly ratio in the CRM billing
+view (walk-ins vs online per tenant) as the sanity check. Not started; do before the first
+paying tenant's first statement.
+
+**Readiness tier (decided 2026-09-11 with Peter, NOT a filter yet):** no founding-year data
+exists in the Google record (81 fields, none is an opening date) and public registries miss
+sole traders, so business age stays a qualifying QUESTION on the call plus the first-review
+date as a soft floor (Neil's: first review 14 March 2016, 64 reviews, zero owner replies,
+unclaimed listing, no website, no booking link, no socials). The scrape already carries the
+direct signals of tech literacy; the "digital readiness" score (claimed listing, website,
+booking link, socials, owner description/posts, owner photos, owner replies to reviews,
+recent reviews) → Modern / Middle / Old school is parked until Peter wants it in n8n.
+
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
 
 `stemfra.com/claim/<token>` showed "<Business>, your website is ready", "Reserved for <Business>.
