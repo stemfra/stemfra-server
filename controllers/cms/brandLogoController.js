@@ -272,4 +272,4 @@ function healthcheck(req, res) {
   res.json({ ok: true, brandfetch: !!BRANDFETCH_KEY, cloudinary: isCloudinaryConfigured(), builder: true });
 }
 
-module.exports = { lookup, importLogo, iconSearch, iconData, fontFile, buildLogo, healthcheck, normaliseDomain };
+module.exports = { lookup, importLogo, iconSearch, iconData, fontFile, buildLogo, healthcheck, normaliseDomain, siteCandidates };
