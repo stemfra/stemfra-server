@@ -126,6 +126,8 @@ app.use('/api/export', require('./routes/export'));
 // controller; ~34MB as base64) — parse them BEFORE the global 10kb limit.
 // body-parser marks the body parsed, so the global parser skips these.
 app.use('/api/cms/leads', express.json({ limit: '40mb' }));
+// The SVG logo builder posts a composed vector (outlined text, up to ~400kb).
+app.use('/api/cms/brand-logo', express.json({ limit: '600kb' }));
 
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: false }));
