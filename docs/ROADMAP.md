@@ -2118,6 +2118,13 @@ SID) and logs it. Research behind the gate (Twilio policy, CTIA, TCPA, PECR, CAS
 monday / HubSpot handle it) is in `docs/OUTREACH.md` §6b. Verified in the CRM (confirm card, Cancel);
 not stamped on a real lead.
 
+**Do not call (2026-09-11, Peter's ask during the first calling shift) ✅ BUILT (CRM, local, push
+after Peter's shift):** `leads.do_not_call` / `do_not_email` finally have a UI (drawer button with
+confirm + "also stop emails", red pills, dialer refusal, Send Claim / outreach hidden, composer
+locked, "Contact rules" facet, "Callable now" excludes DNC + unreachable, activity row as the
+internal do-not-call list). Server enforcement was already in place. Same slice: the Leads Table
+view shares the Pipeline toolbar (country, verticals, search, Filters, presets, saved views).
+
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
 
 `stemfra.com/claim/<token>` showed "<Business>, your website is ready", "Reserved for <Business>.
