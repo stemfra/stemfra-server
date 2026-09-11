@@ -3,14 +3,31 @@ const { sendMail } = require('../lib/mailer');
 const buildNotificationEmail = require('../templates/notificationEmail');
 const buildConfirmationEmail = require('../templates/confirmationEmail');
 const { fireSpeedToLead } = require('../routes/speedToLead');
+const { normalise: normaliseVertical } = require('../lib/leadVertical');
 
 // Form subject (label) → leads.service (snake_case) mapping
+// The marketing contact form (stemfra_client Contact.jsx) offers "General" plus
+// one "<Vertical> website" subject per vertical we sell. Those six were missing
+// here since the verticals replaced the old service list, so the form returned
+// "Invalid subject selected." for every vertical (found 2026-09-11). Each maps
+// to service 'website' + the lead's vertical (leads.vertical).
 const SUBJECT_TO_SERVICE = {
+  'General':                   'general',
+  'Barbershops website':       'website',
+  'Beauty Salons website':     'website',
+  'CrossFit website':          'website',
+  'Yoga website':              'website',
+  'Massage Studios website':   'website',
+  'Day Spas website':          'website',
+  // legacy subjects (older clients / bookmarks)
   'AI Automation':         'ai_automation',
   'Software Development':  'software_development',
   'Consultancy':           'consultancy',
   'Support':               'support',
-  'General':               'general',
+};
+const SUBJECT_TO_VERTICAL = {
+  'Barbershops website': 'barbershop', 'Beauty Salons website': 'beauty_salon', 'CrossFit website': 'crossfit',
+  'Yoga website': 'yoga_pilates', 'Massage Studios website': 'massage', 'Day Spas website': 'spa',
 };
 const ALLOWED_SUBJECTS = Object.keys(SUBJECT_TO_SERVICE);
 
@@ -58,11 +75,15 @@ const submitContact = async (req, res) => {
     const service     = SUBJECT_TO_SERVICE[subject];
     // Validate template against the known set. Unknown / missing → null.
     const cleanTemplate = template && KNOWN_TEMPLATE_SLUGS.has(template) ? template : null;
+    // The subject names the vertical ("Barbershops website"): store it as
+    // leads.vertical, the column the CRM filters on (2026-09-11).
+    const vertical = SUBJECT_TO_VERTICAL[subject] || normaliseVertical((subject || '').replace(/\s+website$/i, '')) || null;
 
     // Shared fields for insert/update. KYC/KYB: store first/last granular.
     const baseRow = {
       contact_name: contactName, first_name: firstName.trim(), last_name: lastName.trim(),
       email: cleanEmail, service, template_slug: cleanTemplate, last_activity_at: new Date().toISOString(),
+      ...(vertical ? { vertical } : {}),
     };
     if (cleanCompany) baseRow.company_name = cleanCompany;  // don't null an existing company on re-submit
 
