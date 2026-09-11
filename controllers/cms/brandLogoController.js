@@ -194,7 +194,10 @@ async function iconData(req, res) {
     const r = await fetchWithTimeout(`${ICONIFY}/${m[1]}.json?icons=${m[2]}`);
     if (!r.ok) return res.status(502).json({ error: 'Icon service is unavailable right now' });
     const j = await r.json();
-    const ic = j.icons && j.icons[m[2]];
+    // Many names are aliases (mdi:scissors → content-cut); follow the parent chain.
+    let key = m[2];
+    for (let i = 0; i < 4 && !(j.icons && j.icons[key]) && j.aliases && j.aliases[key]; i++) key = j.aliases[key].parent;
+    const ic = j.icons && j.icons[key];
     if (!ic) return res.status(404).json({ error: 'Icon not found' });
     res.json({ name, body: ic.body, width: ic.width || j.width || 24, height: ic.height || j.height || 24 });
   } catch (err) {
