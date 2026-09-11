@@ -159,3 +159,8 @@ exist for the build fee (`leads.deal_value`, sales type "custom"). The hook that
 seller or agency has is the Front Desk: for a remodeler a missed call is a lost 20,000 dollar
 job, so "your calls answered and quoted 24/7" sells the build. Suggested package: build fee
 3,000 to 8,000 by scope, plus the optional care plan at the market's 150 to 500 a month.
+
+**Peter's pick (2026-09-11 night) → ROADMAP P37:** accountants, bookkeepers and CPAs ·
+consulting firms, engineering consultancies and architects · small manufacturers and
+fabrication shops · private schools, event venues and auto body shops. Remodelers and custom
+builders stay on the bench as a possible fifth.

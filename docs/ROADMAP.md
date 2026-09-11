@@ -102,8 +102,12 @@ inventory + archetype system, launch-plan tasks as they come due).
 **Status 2026-09-11 (rewritten, not appended):** items 1 to 5 closed except P25 phase 1
 (key). Built alongside, all pushed 2026-09-11: P33 A/B/C + Section styles + Auto remix, P31
 addendum (markets + `leads.vertical`), P34 lead text conversations + consent provenance, P35
-Claim page. 🔜 NEXT: P32 phase 2 (needs the P30 service account); wildcard Worker go-live
-⏸ DEFERRED by Peter 2026-09-11 (sales calls first). Peter began US sales calls 2026-09-11.
+Claim page. Later the same day (all PUSHED by night): P34 follow-ups (composer, Not relevant,
+ConsentGate, transcripts, notes, Do not call, one Leads toolbar, name rule), P36 walk-ins
+without commission, `leads.readiness` (n8n pastes deferred), dialer 12100 fix, survey doc.
+🔜 NEXT: P37 custom-build verticals (scope the offer + first scrape), then P32 phase 2 (needs
+the P30 service account); wildcard Worker go-live ⏸ DEFERRED by Peter 2026-09-11. Peter began
+US sales calls 2026-09-11 (Neil's Barbershop call = the source of P36, P37 and the transcripts).
 
 ### 🚀 ACTIVE ARC (2026-08-18): LAUNCH — phased, barbershop first → **[`LAUNCH_PLAN.md`](LAUNCH_PLAN.md)**
 Peter's 10 launch tasks (VSL video · 3-contact prospecting sequence · Stacy+routes refresh ·
@@ -2133,6 +2137,22 @@ server after the recording lands (`lib/callTranscripts.js`, OpenAI; migration
 and Edit. Also fixed the same evening: the `<Dial action>` "application error" voice. Next
 ideas from this: a "Calls" insights page that aggregates the summaries' questions and
 objections across reps (feeds the call script and the FAQ), and "Add to notes" from a summary.
+
+## P37 — Custom-build verticals (Peter's pick, 2026-09-11 night; 🔜 NEXT to scope)
+
+Agency-priced custom builds (build fee 3,000 to 8,000 by scope + optional care plan 150 to
+500 a month, market ranges in `docs/NICHE_SATURATION_2026-09.md` §6) for four segments Peter
+chose from the survey: **(1) accountants, bookkeepers, CPAs; (2) consulting firms, engineering
+consultancies, architects; (3) small manufacturers and fabrication shops; (4) private schools,
+event venues, auto body shops.** These are credibility sites (portfolio or capability pages,
+service pages, quote or intake forms) sold with the Front Desk as the hook ("calls answered and
+quoted 24/7"), not the 5% booking product. Sourcing: the same Google Maps scrape with the
+category switched and a "no website + 20 or more reviews" filter for (1), (3), (4); (2) is
+mostly a LinkedIn list because consultancies rarely hold a Maps listing. Not started; first
+step is a one-page offer + a lead-gen run per segment (needs the n8n vertical allow-list to
+accept non-booking categories and a `service = 'custom'` path in Parse) and a Custom Pricing
+quote template per segment. Remodelers and custom builders (the survey's top pick) are noted
+as a later addition if Peter wants a fifth.
 
 ## P36 — Walk-ins block the calendar but carry no commission (Peter's rule, 2026-09-11)
 
