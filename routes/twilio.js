@@ -275,7 +275,12 @@ router.post('/claim-sms', async (req, res) => {
     });
 
     const nowIso = new Date().toISOString();
-    await supabase.from('leads').update({ sms_consent_at: nowIso, last_activity_at: nowIso }).eq('id', lead.id);
+    // Consent provenance (lead_sms_consent_v2): keep an earlier consent record if one exists.
+    const { data: prior } = await supabase.from('leads').select('sms_consent_at').eq('id', lead.id).maybeSingle();
+    await supabase.from('leads').update({
+      last_activity_at: nowIso,
+      ...(prior?.sms_consent_at ? {} : { sms_consent_at: nowIso, sms_consent_source: 'send_claim', sms_consent_by: user.id, sms_consent_note: 'Owner agreed on the call; Send Claim clicked by the rep' }),
+    }).eq('id', lead.id);
     await supabase.from('sms_messages').insert([{
       twilio_sid: message.sid, direction: 'outbound', from_number: twilioFrom, to_number: toE164,
       body, status: message.status || 'queued', num_segments: parseInt(message.numSegments || '1', 10),

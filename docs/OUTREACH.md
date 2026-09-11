@@ -153,6 +153,27 @@ Prerequisites before the first Canadian or UK sequence:
 - Twilio numbers per market: see ROADMAP P31 ("Twilio numbers for the UK and
   Canada").
 
+### 6b. SMS consent: what the rules actually say (research 2026-09-11, Peter's question)
+
+Question: does a personalised one-to-one text from a rep need consent, or only bulk marketing?
+Answer for our lines: **consent first, personalisation changes nothing.** What matters is who
+sends (an A2P 10DLC number through Twilio) and whether the recipient asked for it.
+
+| Source | What it says | Effect on us |
+|---|---|---|
+| [Twilio Messaging Policy](https://www.twilio.com/en-us/legal/messaging-policy) | Prior express consent for every message, no B2B carve-out; consent per subject matter; keep proof of every consent. If someone texts you first, you may reply in that exchange (that does not cover ongoing outreach). | Our numbers are Twilio's, so this binds us before any law does. Verbal consent is fine if documented: Twilio's toll-free verification even asks for the verbal consent script (error 30511). |
+| [CTIA Messaging Principles](https://www.twilio.com/en-us/blog/ctia-messaging-principles-and-best-practices) (carrier rulebook) | Conversational (they text first) needs nothing more; informational (they gave the number and asked) needs express consent; promotional needs express **written** consent. Accepted opt-in mechanisms include a keyword text, a web form, a button, and opt-in over the phone. Carriers filter or shut down senders without proof. | A recorded call where the owner says "yes, text me the link" is an opt-in over the phone. Keep the recording, the time, the rep. |
+| TCPA (US) via [ActiveProspect](https://activeprospect.com/blog/tcpa-text-messages/), [Infobip](https://www.infobip.com/blog/tcpa-compliance-sms) | Applies to mobile numbers even when the owner is a business; marketing texts want prior express written consent; USD 500 to 1,500 per text. After Facebook v. Duguid a rep typing one text by hand is arguably not an autodialer, but that defence is litigated case by case and does nothing about Twilio's policy. | Do not rely on the "B2B" or "manual" arguments; rely on recorded consent. |
+| [ICO PECR guidance](https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/electronic-and-telephone-marketing/electronic-mail-marketing/) (UK) | Texts to companies (Ltd, LLP) need no consent; sole traders and partnerships are individuals and need consent (or the soft opt-in, which needs a prior purchase). | Same split as our email gate (`entity_type`). Twilio's consent rule still applies on top. |
+| CASL (Canada) via [CRTC FAQ](https://crtc.gc.ca/eng/com500/faq500.htm) | A text is a commercial electronic message. Implied consent exists when the business conspicuously published the number, did not say "no unsolicited messages", and the text concerns their business. | Real implied-consent path for scraped listings, but again Twilio's policy sits on top; the Claim SMS names Stemfra + STOP for Canada. |
+
+How the CRMs Peter named handle it:
+- **Kommo (amoCRM) + Twilio** ([integration page](https://www.kommo.com/integrations/twilio-sms/)): text any lead from the card, templates, mass actions, Salesbot triggers. No consent check anywhere; compliance is the customer's problem, and Twilio filters or suspends the customer, not Kommo.
+- **monday.com + Twilio** ([Twilio's tutorial](https://www.twilio.com/en-us/blog/developers/tutorials/integrations/twilio-monday-com-integration-sms-messaging)): an automation recipe, same story, no consent model.
+- **HubSpot SMS** ([knowledge base](https://knowledge.hubspot.com/sms/create-and-send-sms-messages)): the strict one. A contact needs an explicit opt-in on the SMS subscription type before any send: a keyword text, a form checkbox, or a rep manually marking consent "if they have given express and verifiable consent". That manual mark is exactly our "Owner agreed on the call".
+
+Our model, therefore: the composer stays locked until (a) Send Claim during a call, (b) "Owner agreed on the call" recorded against a call in the timeline, or (c) the owner texted us first. Consent carries provenance (`leads.sms_consent_source / _by / _note`, migration `lead_sms_consent_v2.sql`) so we can answer a carrier escalation within Twilio's 24 hours. Cold texts and text sequences stay off the table.
+
 ## 7. Open items
 
 - **Case 9** (P10) reworks the transactional side: one branded base template,

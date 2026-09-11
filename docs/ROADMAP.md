@@ -2101,7 +2101,13 @@ number's previous holder (`sms_ignored_numbers` + `sms_messages.dismissed_at`, m
 `sms_ignored_numbers_v1.sql` applied; the webhook files future texts dismissed with no bell; Inbox
 → Texts hides them behind "Show not relevant (n)" with Restore; threads tied to a lead or contact
 cannot be dismissed). First real case: TM Legal (Blackpool debt collector) texting "saeid" on our
-UK line, 2026-09-11.
+UK line, 2026-09-11. **Unlock after a call (Peter's question "how do we unlock the text field?"):**
+`ConsentGate` in the Messages panel offers "Owner agreed on the call" once a call is in the timeline;
+a confirm card names the owner + the call time, then stamps `sms_consent_at` with provenance
+(`lead_sms_consent_v2`: source verbal_call | send_claim | inbound_text | form, by, note with the call
+SID) and logs it. Research behind the gate (Twilio policy, CTIA, TCPA, PECR, CASL, how Kommo /
+monday / HubSpot handle it) is in `docs/OUTREACH.md` §6b. Verified in the CRM (confirm card, Cancel);
+not stamped on a real lead.
 
 ## P35 — Claim page without personalisation (Peter's ask 2026-09-11, agreed)
 
