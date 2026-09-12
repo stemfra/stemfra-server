@@ -1816,6 +1816,18 @@ So the data is fetched and thrown away.
    Reviews: show the rating + count as a badge only; never copy review text (Google ToS).
 
 Not started. Trigger: after the theme polish arc (this week) and the YouTube upload.
+**Decisions 2026-09-13 (Peter, during P39):** (1) the prefill snapshot is `raw_signal` in the
+n8n Normalize node, now specified in `n8n-workflows/leadgen-normalize-v13.paste.md`: address
+parts, phone, website, place id + cid, location, category, rating + count + distribution,
+opening hours, price band, description, claimed flag, socials, booking links (facts only; no
+review text, no photo URLs). ⏳ Peter pastes v13 (he deferred the readiness part; the snapshot
+part is the same paste). (2) At claim → provision: phone, address and hours pre-fill the site
+(hours from Google when present, else the template's week); the wizard shows them as
+confirm-or-edit. (3) **Reviews by default = Google's, shown LIVE** via the Places API with
+attribution against the stored place id (a "Reviews from Google" block on the site), never
+copied into `site_testimonials`; the owner's own testimonials sit beside them. This is the
+compliant way to "use their reviews by default" and it needs a Places API key on the server
+(the same key P38 stage 2 needs). Today `raw_signal` still holds only title + city.
 
 ## P28 — Sales hours + "callable now" lead filter (decided 2026-09-10, Peter)
 
