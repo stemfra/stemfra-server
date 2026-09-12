@@ -2138,6 +2138,41 @@ and Edit. Also fixed the same evening: the `<Dial action>` "application error" v
 ideas from this: a "Calls" insights page that aggregates the summaries' questions and
 objections across reps (feeds the call script and the FAQ), and "Add to notes" from a summary.
 
+## P38 — Stemfra marketplace + claimable listings (proposed 2026-09-12, Peter; staging agreed)
+
+Peter's idea: a Fresha-style public marketplace of local businesses with two things Fresha
+does not have, a **Claim** button on businesses that have not signed up (a free website from
+us) and a **booking-only** tier for shops that want a booking page, not a site. Built as an
+extension of the claim funnel, never as a second product. **The data-source decision comes
+first and decides the legal position:**
+
+- **What Fresha actually does (checked 2026-09-12 on fresha.com and its business pages):** a
+  venue appears only after the business signs up, completes its profile and enables online
+  booking ("automatically eligible to appear once your Fresha profile is complete");
+  "Unlisted" is a partner that removed itself; commission applies to NEW clients booked
+  through the marketplace, returning clients rebook free. Fresha never shows a business that
+  did not register. So "the Fresha approach" covers stage 1 below and NOT the unclaimed layer;
+  the unclaimed layer is the Yelp / Google model and needs its own data licence.
+- **Data rules for us:** the Apify scrape stays an internal outreach list and is never
+  published (Google Maps terms, review text and photos are third-party content). Unclaimed
+  pages, if built, use the Google Places API (display with attribution, cache limits) or a
+  licensed feed, show facts only (name, address, hours, map), never bookings, photos or
+  reviews, carry an opt-out, and get a UK GDPR privacy notice (sole traders are people).
+
+**Staging (agreed):**
+1. **Directory of claimed sites** (small): public city and vertical pages on stemfra.com
+   listing only published Stemfra sites, with "Get listed free". Own data, zero exposure,
+   makes "no marketplace fee, 5% only through your site" concrete on calls.
+2. **Unclaimed listings, facts only**: Places-API sourced, one page per business with the
+   Claim button (the existing claim token) and an opt-out. This is where Neil finds himself
+   and the call becomes "you are already on Stemfra, claim it". Modern-tier owners like it;
+   Old-school owners may not, so the page stays plain and factual.
+3. **Booking-only tier**: a claimed listing that keeps the marketplace page as its only web
+   presence with the booking engine on, same 5%. A one-page theme, not new tech.
+4. Consumer marketing of the marketplace last, city by city, once one city is dense.
+Not started. Prerequisite for stage 2: a Places API key on the server and a written
+data-licence note in `docs/NICHE_SATURATION_2026-09.md`'s successor doc.
+
 ## P37 — Custom-build verticals (Peter's pick, 2026-09-11 night; 🔜 NEXT to scope)
 
 Agency-priced custom builds (build fee 3,000 to 8,000 by scope + optional care plan 150 to
@@ -2214,6 +2249,16 @@ details appear on the signup form only after the owner clicks Claim). PUSHED 202
 was needed; S3 ("We built this website to help {{business_name}}") goes only to consented numbers.
 
 ## Ideas from the YouTube Studio upload flow (Peter, 2026-09-12, while uploading playlist 2)
+**✅ BUILT 2026-09-12 (Peter: "let us do it and see"; platform + server, local):** (1) "+ New
+site" gained **Start from: the sample site / one of my sites** with tick boxes (brand and theme
+· services and prices · team · opening hours · pages and reviews); the server provisions from
+the seed as before, then `copySiteParts` (lib/provisionSite) replaces the ticked parts with
+copies from the owner's site (ownership verified, brand text renamed, unticked parts keep the
+demo). (2) The top-bar pill now names the state, **Unlisted** or **Published**, with "n of m to
+go" or "ready to publish" beside it and a plain-language tooltip; the Publish page badge and
+subtitle say Unlisted / Public with the one-sentence meaning (previewing sites are noindex via
+PreviewRibbon, so "unlisted" is true). Typecheck clean; browser walk pending Peter's CMS sign-in.
+Not done on purpose: skippable required fields.
 - **"Reuse details" for a second site.** YouTube's reuse = pick a previous video, then tick
   which fields to copy (title, description, playlist, tags, language, category). Our "+ New
   site" always seeds from the vertical's demo and the only copy-from-existing path is the

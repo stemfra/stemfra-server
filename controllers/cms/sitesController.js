@@ -8,7 +8,7 @@
 // NOTE: config/supabase.js exports the client directly (single-var require).
 const supabase = require('../../config/supabase');
 const { resolveContactId, verifySiteOwnership } = require('../../middleware/cmsAuth');
-const { provisionSite, cloneSite, resolveVerticalSlug, SEED_SOURCE_BY_VERTICAL } = require('../../lib/provisionSite');
+const { provisionSite, cloneSite, copySiteParts, SITE_PARTS, resolveVerticalSlug, SEED_SOURCE_BY_VERTICAL } = require('../../lib/provisionSite');
 const { attachSiteDomain } = require('../../lib/attachSiteDomain');
 const { softDeleteSite, restoreSite } = require('../../lib/siteDeletion');
 const { logSiteActivity } = require('../../lib/activity');
@@ -75,6 +75,15 @@ async function createSite(req, res) {
     if (!SEED_SOURCE_BY_VERTICAL[vSlug]) {
       return res.status(400).json({ error: `Choose a vertical: ${Object.keys(SEED_SOURCE_BY_VERTICAL).join(', ')}` });
     }
+    // "Start from one of my sites" (2026-09-12): the ticked parts are copied over
+    // the seed after provisioning. The source must be the owner's own site.
+    const copyFromSiteId = req.body?.copyFromSiteId ? String(req.body.copyFromSiteId).trim() : null;
+    const parts = Array.isArray(req.body?.parts) ? req.body.parts.filter((p) => SITE_PARTS.includes(p)) : [];
+    let copySource = null;
+    if (copyFromSiteId && parts.length) {
+      copySource = await verifySiteOwnership(req.cmsUser.id, copyFromSiteId);
+      if (!copySource) return res.status(403).json({ error: 'Not your site' });
+    }
 
     // A new company for the new site (an owner can run multiple businesses;
     // sites.company_id is independent of the owner's primary contacts.company_id).
@@ -101,9 +110,20 @@ async function createSite(req, res) {
       throw err;
     }
 
+    let copied = [];
+    if (copySource) {
+      try {
+        const r = await copySiteParts(copyFromSiteId, site.siteId, parts, { renameTo: businessName });
+        copied = r.copied;
+      } catch (e) {
+        // The site exists on the seed; report the copy failure instead of failing the create.
+        console.error('[cms sites] copySiteParts failed:', e.message);
+      }
+    }
+
     await stampNewSite({
       siteId: site.siteId, contactId, authUserId: req.cmsUser.id, email: req.cmsUser.email,
-      feesAccepted: req.body?.feesAccepted === true, source: 'new_site',
+      feesAccepted: req.body?.feesAccepted === true, source: copySource ? 'new_site_copy' : 'new_site',
     });
 
     // Best-effort host attach so the preview is reachable. If Cloudflare is
@@ -124,6 +144,7 @@ async function createSite(req, res) {
       previewUrl: `https://${site.subdomain}.stemfra.com`,
       status: site.status,
       domain,
+      copied,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
