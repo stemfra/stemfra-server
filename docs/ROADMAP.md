@@ -2150,6 +2150,10 @@ Stacy, with the site ready to publish when the dashboard opens. Agreed pieces, i
 in the catalogue under "Other services on your site", "Add your own" at the bottom. Verified on
 Remix Barbers (tick creates the row with price, add-your-own records the suggestion, test rows
 removed). Same day: the wizard is a fixed panel, only the card body scrolls (YouTube modal).
+Peter's refinement (same day): ONE list, no "other services" group and no community chips
+for owners; the suggestions are for STAFF to review and promote into the curated file so the
+onboarding list stays short. 🔜 A small CRM view over `service_suggestions` (name, vertical,
+count, first seen) with a "promote" note is the follow-up; until then read the table by SQL.
 (b) team optional + empty-team hiding across the six templates (Team section, nav item, "with"
 picker; the owner stays a hidden bookable resource). (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
