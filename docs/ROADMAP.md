@@ -2213,6 +2213,24 @@ details appear on the signup form only after the owner clicks Claim). PUSHED 202
 (fields kept for the prefill). No email template said "your website is ready", so no wording pass
 was needed; S3 ("We built this website to help {{business_name}}") goes only to consented numbers.
 
+## Ideas from the YouTube Studio upload flow (Peter, 2026-09-12, while uploading playlist 2)
+- **"Reuse details" for a second site.** YouTube's reuse = pick a previous video, then tick
+  which fields to copy (title, description, playlist, tags, language, category). Our "+ New
+  site" always seeds from the vertical's demo and the only copy-from-existing path is the
+  staff clone in the CRM (all or nothing). For a multi-location owner (video 26) a "Start
+  from one of my sites" option with tick boxes (brand: name, logo, colours, theme · team ·
+  services and prices · opening hours · policies and legal · notification preferences ·
+  Google profile and review link · About and FAQ) is the same pattern; the parts not ticked
+  come from the demo seed. Small: `POST /api/cms/sites` gains `copy_from` + `parts[]` over
+  `cloneSite`'s renamer. Not started; do when the first multi-location owner asks.
+- **One launch stepper.** YouTube: Details → Video elements → Checks → Visibility, in one
+  modal, checks running in the background with a footer "Checks complete", Next never
+  blocked, Save as draft at every step. Ours is three surfaces: the 4-step Setup wizard →
+  Stacy's 12-step checklist → the Publish page. Worth borrowing: the always-visible footer
+  status (our completeness score as "Ready to publish: 9 of 12"), and "Unlisted" as a named
+  state (our previewing subdomain). Not worth borrowing: skippable required fields (Peter's
+  2026-09-01 rule stands). Not started.
+
 ## Deferred one-offs (kept pending per Peter 2026-08-09)
 - ~~First YouTube tutorial script~~ ✅ SUPERSEDED 2026-09-07 by the 29-video series
   plan + two full scripts in `stemfra_platform/docs/CMS_TUTORIAL_VIDEOS.md`.
