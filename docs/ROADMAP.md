@@ -2166,8 +2166,20 @@ Peter's refinement (same day): ONE list, no "other services" group and no commun
 for owners; the suggestions are for STAFF to review and promote into the curated file so the
 onboarding list stays short. 🔜 A small CRM view over `service_suggestions` (name, vertical,
 count, first seen) with a "promote" note is the follow-up; until then read the table by SQL.
-(b) team optional + empty-team hiding across the six templates (Team section, nav item, "with"
-picker; the owner stays a hidden bookable resource). (c) the "finish" job: AI drafts hero, About,
+(b) **team optional + empty-team hiding** ✅ BUILT 2026-09-13 (LOCAL, push hold), verified on
+Remix Barbers: wizard step 4 offers "Just me" / "Me and my team"; "Just me" calls
+`POST /api/cms/team/solo` (`routes/cms/team.js`), which replaces the sample people with ONE
+bookable owner record (name from the owner's contact, `is_owner`, `metadata.solo = true`),
+links it to every service and writes weekly availability from the business hours (verified: 7
+links, 6 days, Sunday closed, slots computed by the engine). `@stemfra/site-data` `useTeam`
+now returns the DISPLAY team (empty for a solo shop, `visibleTeam` / `isSoloShop` in
+`team.ts`); BookPages pass `{ includeSolo: true }` and `soloShop` so `BookingForm` and
+`MultiServiceBookingForm` skip the "choose your barber / stylist" step (indicator shows 4 or 3
+steps, Back returns to services). All six HomePages skip `team_grid` and all six Layouts drop
+the Team / Barbers / Stylists / Teachers / Coaches nav (crossfit footer too) when the display
+team is empty. The moment a second person is added in the CMS, everyone (owner included)
+renders as a normal team; `siteCompleteness` unchanged. Not done: the booking-page intro copy
+still says "pick a barber" on a solo site (slice (c) rewrites page copy). (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
 (Peter): a scraped lead's Google hours prefill the hours step, otherwise the template's week**.
