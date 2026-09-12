@@ -2138,6 +2138,28 @@ and Edit. Also fixed the same evening: the `<Dial action>` "application error" v
 ideas from this: a "Calls" insights page that aggregates the summaries' questions and
 objections across reps (feeds the call script and the FAQ), and "Add to notes" from a summary.
 
+## P39 — Onboarding v2: the five-minute setup (Peter's ideas 2026-09-13, agreed; in progress)
+
+From the Neil call and the YouTube Studio comparison: a new owner should finish without
+Stacy, with the site ready to publish when the dashboard opens. Agreed pieces, in build order:
+(a) **services as a tick list** ✅ BUILT 2026-09-13: per-vertical curated catalogue
+(`lib/serviceCatalog.js`, 15 to 21 items per vertical, fitness ones as classes), served by
+`GET /api/cms/service-catalog?siteId=` with "others in your trade also offer" from
+`service_suggestions` (migration applied; every custom name an owner adds is recorded via
+`POST /suggest`); wizard step 2 = tick + price + minutes in place, sample services that are not
+in the catalogue under "Other services on your site", "Add your own" at the bottom. Verified on
+Remix Barbers (tick creates the row with price, add-your-own records the suggestion, test rows
+removed). Same day: the wizard is a fixed panel, only the card body scrolls (YouTube modal).
+(b) team optional + empty-team hiding across the six templates (Team section, nav item, "with"
+picker; the owner stays a hidden bookable resource). (c) the "finish" job: AI drafts hero, About,
+FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
+the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
+(Peter): a scraped lead's Google hours prefill the hours step, otherwise the template's week**.
+(d) the honest finishing screen (a ticking progress list, 30 to 60 s) that lands on a dashboard
+reading "Unlisted · ready to publish". (e) the stepper redesign (no photo above the form), billing
+moved to publish time, custom domain out of onboarding, Stacy's checklist becomes optional.
+Required fields stay required (Peter, 2026-09-01).
+
 ## P38 — Stemfra marketplace + claimable listings (proposed 2026-09-12, Peter; staging agreed)
 
 Peter's idea: a Fresha-style public marketplace of local businesses with two things Fresha
