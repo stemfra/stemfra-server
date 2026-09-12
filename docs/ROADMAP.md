@@ -2146,27 +2146,42 @@ us) and a **booking-only** tier for shops that want a booking page, not a site. 
 extension of the claim funnel, never as a second product. **The data-source decision comes
 first and decides the legal position:**
 
-- **What Fresha actually does (checked 2026-09-12 on fresha.com and its business pages):** a
-  venue appears only after the business signs up, completes its profile and enables online
-  booking ("automatically eligible to appear once your Fresha profile is complete");
-  "Unlisted" is a partner that removed itself; commission applies to NEW clients booked
-  through the marketplace, returning clients rebook free. Fresha never shows a business that
-  did not register. So "the Fresha approach" covers stage 1 below and NOT the unclaimed layer;
-  the unclaimed layer is the Yelp / Google model and needs its own data licence.
-- **Data rules for us:** the Apify scrape stays an internal outreach list and is never
-  published (Google Maps terms, review text and photos are third-party content). Unclaimed
-  pages, if built, use the Google Places API (display with attribution, cache limits) or a
-  licensed feed, show facts only (name, address, hours, map), never bookings, photos or
-  reviews, carry an opt-out, and get a UK GDPR privacy notice (sole traders are people).
+- **What Fresha actually does (corrected 2026-09-12 after Peter found Neil's Barbershop on
+  fresha.com):** Fresha DOES publish pages for businesses that never signed up. Anatomy of an
+  unclaimed page: name, address, "Show number" (phone behind a click), Get directions, a
+  Mapbox map, opening times, a service list by category with NO prices, a clearly generic
+  stock photo (not the shop's), buttons "Call to book" and "Website", a "Suggest an update"
+  box ("This page uses publicly available information to help people discover this venue.
+  The business is not currently affiliated with or partnered with Fresha, get in touch with us
+  to update the information") and a "Book online with venues nearby" strip of real partners.
+  No reviews, no owner photos, no booking, no "verified" badge. Partner pages (Pall Mall
+  Barbers) are the full Airbnb-style listing with photos, prices, team, reviews and Book now.
+  Marketplace commission applies to NEW clients only. So the Fresha approach IS the
+  facts-only unclaimed page plus a disclosure, and stage 2 below follows it exactly.
+- **Data rules for us (the part Fresha does not tell you):** the legal position rests on
+  WHERE the facts come from, not on what is shown. The Apify Google Maps scrape stays an
+  internal outreach list and is never published (Google's terms forbid redistribution).
+  Public pages take their facts from a licensed or open source: **Foursquare Open Source
+  Places** (100M+ POIs, Apache 2.0, names, addresses, categories) and **OpenStreetMap**
+  (ODbL, attribution) for the base list, the Google Places API (attribution, 30-day cache
+  rule) only to refresh hours if needed. Show facts only: name, address, hours, category,
+  service names without prices, map (Mapbox or OSM tiles), phone behind "Show number".
+  Never reviews, never the business's photos, never a booking form, never "verified". A
+  stock image clearly styled as generic. The disclosure box word for word in spirit, with
+  "Suggest an update" and a one-click removal. UK: a privacy notice and a legitimate-interest
+  note because sole traders are people; the same directory model Yelp runs in the UK.
 
 **Staging (agreed):**
 1. **Directory of claimed sites** (small): public city and vertical pages on stemfra.com
    listing only published Stemfra sites, with "Get listed free". Own data, zero exposure,
    makes "no marketplace fee, 5% only through your site" concrete on calls.
-2. **Unclaimed listings, facts only**: Places-API sourced, one page per business with the
-   Claim button (the existing claim token) and an opt-out. This is where Neil finds himself
-   and the call becomes "you are already on Stemfra, claim it". Modern-tier owners like it;
-   Old-school owners may not, so the page stays plain and factual.
+2. **Unclaimed listings, facts only, the Fresha page with one change**: the visitor keeps
+   "Call to book" and "Get directions" (the page must be useful to a customer, that is what
+   makes it a directory and not a solicitation), and an owner strip replaces Fresha's
+   "Website" button: "Are you the owner? Claim your free website" → the existing claim token
+   flow. The disclosure box, "Suggest an update" and removal sit under the services. Facts
+   from the open sources above, never from the scrape. This is where Neil finds himself and
+   the call becomes "you are already on Stemfra, claim it".
 3. **Booking-only tier**: a claimed listing that keeps the marketplace page as its only web
    presence with the booking engine on, same 5%. A one-page theme, not new tech.
 4. Consumer marketing of the marketplace last, city by city, once one city is dense.
