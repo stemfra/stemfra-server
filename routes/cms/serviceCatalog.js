@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
   const site = await verifySiteOwnership(req.cmsUser.id, siteId);
   if (!site) return res.status(403).json({ error: 'Not your site' });
   const slug = await verticalOfSite(siteId);
-  const { vertical, items } = catalogFor(slug);
+  const { vertical, items } = await catalogFor(slug);
   let community = [];
   if (vertical) {
     const { data } = await supabase.from('service_suggestions').select('name, duration_minutes').eq('vertical_slug', vertical).limit(2000);
@@ -47,7 +47,7 @@ router.post('/suggest', async (req, res) => {
   const site = await verifySiteOwnership(req.cmsUser.id, siteId);
   if (!site) return res.status(403).json({ error: 'Not your site' });
   const slug = await verticalOfSite(siteId);
-  const { vertical } = catalogFor(slug);
+  const { vertical } = await catalogFor(slug);
   const clean = String(name).trim().slice(0, 80);
   if (!clean) return res.status(400).json({ error: 'name is required' });
   await supabase.from('service_suggestions').insert({

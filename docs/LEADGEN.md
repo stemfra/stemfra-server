@@ -219,6 +219,28 @@ state and/or city, optional leads_found/notes/requested_at); `PATCH
 | `.github/workflows/deploy.yml` | Injects the three env vars |
 | `.env.example` | Documents the same vars for local dev |
 
+## Run feedback at every exit (v14, 2026-09-13)
+
+Peter's rule: a run must report back whenever it stops, not only when a lead lands
+(execution 615 scraped 3 Manhattan places, dropped all 3 at the website filter and the
+CRM heard nothing). v14 ends every path in a **Run Summary** Code node: the no-website
+gate, the dedupe check and the score gate became If nodes whose "nothing left" branches
+lead there, and Insert Lead leads there too. The node builds one sentence
+("Manhattan: 3 places scraped, 3 had a website, 0 new leads.") plus counts
+(`scraped, no_website, had_website, new_candidates, duplicates, scored, kept, below_score,
+inserted, stopped_at`), POSTs it to `POST /api/leadgen/run-complete` (secret header) and
+returns it as the webhook response. The server closes `leadgen_runs` (status completed |
+empty, `leads_found`, `notes`, `metadata`) and bells the requester (kind `leadgen_run`,
+route `/leads`), except when the same summary already came back through `/trigger`
+inside its 25 s wait (fast early exits: the Fetch Leads toast then carries the sentence).
+Also in v14: link-in-bio and booking-only URLs in `website` (linktr.ee, instagram.com,
+facebook.com, booksy.com, vagaro.com, square.site …) count as **no website**, so those
+shops are kept as prospects; and Insert Lead stamps `leads.leadgen_run_id` (it was null on
+every lead until now, so the Coverage page's per-run counts were always 0). Paste:
+`n8n-workflows/leadgen-run-feedback-v14.paste.md`. Server verified 2026-09-13 with a
+callback for the Manhattan run (row closed as empty, bell delivered); the n8n side is
+Peter's paste (⏳).
+
 ## Digital readiness (2026-09-11; LIVE in n8n 2026-09-13, Peter pasted v13, verified on a Staten Island run)
 
 Paste rule learned that day: n8n Set / HTTP body fields in **Expression** mode take the value

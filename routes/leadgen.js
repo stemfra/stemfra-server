@@ -64,6 +64,57 @@ async function validateUserSession(req) {
 // what Google Maps actually wants in the query ("Brooklyn, New York, United
 // States" disambiguates cleanly). The ISO codes are kept on the payload so
 // the n8n workflow can branch / filter on them deterministically if needed.
+// Runs whose summary already reached the rep through the trigger response
+// (fast early exits); the /run-complete callback records them but does not
+// ring the bell a second time. In-process, short-lived, pruned on use.
+const answeredInline = new Set();
+
+// ─── Run feedback: n8n → server (2026-09-13) ─────────────────────────────────
+// Every lead-gen run now ends in the workflow's "Run Summary" node, whatever
+// stage it stopped at (nothing scraped, everything had a website, all
+// duplicates, all below the score gate, or leads inserted). The node POSTs the
+// summary here with the shared x-leadgen-secret. We close the leadgen_runs
+// row (status completed | empty | failed, counts in metadata, message in notes)
+// and ring the requester's bell (kind leadgen_run → /leads) unless the same
+// summary already went back in the trigger response. Peter's rule (2026-09-13):
+// a run that stops early must say so, not just a run that lands leads.
+//
+// POST /api/leadgen/run-complete  { run_id, status?, message, summary:{…} }
+router.post('/run-complete', async (req, res) => {
+  const secret = process.env.N8N_WEBHOOK_SECRET;
+  if (!secret || req.headers['x-leadgen-secret'] !== secret) {
+    return res.status(401).json({ success: false, message: 'Bad secret' });
+  }
+  const { run_id: runId = null, message = '', summary = {} } = req.body || {};
+  const s = summary && typeof summary === 'object' ? summary : {};
+  const inserted = Number(s.inserted) || 0;
+  const status = s.stopped_at === 'failed' ? 'failed' : inserted > 0 ? 'completed' : 'empty';
+  const notes = String(message || '').slice(0, 500);
+
+  if (runId) {
+    const { data: run, error } = await supabase.from('leadgen_runs')
+      .update({ status, leads_found: inserted, completed_at: new Date().toISOString(), notes, metadata: s })
+      .eq('id', runId).select('id, requested_by, city, vertical').maybeSingle();
+    if (error) console.error('[leadgen] run-complete update failed:', error.message);
+
+    const alreadyToasted = answeredInline.delete(runId);
+    if (run?.requested_by && !alreadyToasted) {
+      const where = [run.city, run.vertical ? run.vertical.replace('_', ' ') : null].filter(Boolean).join(' · ');
+      const title = inserted > 0
+        ? `Lead-gen: ${inserted} new lead${inserted === 1 ? '' : 's'}${where ? ` (${where})` : ''}`
+        : `Lead-gen finished with no new leads${where ? ` (${where})` : ''}`;
+      const { error: nErr } = await supabase.rpc('crm_notify', {
+        p_user: run.requested_by, p_kind: 'leadgen_run', p_title: title, p_body: notes,
+        p_route: '/leads', p_entity_type: 'leadgen_run', p_entity_id: String(runId),
+      });
+      if (nErr) console.error('[leadgen] run-complete notify failed:', nErr.message);
+    }
+  } else {
+    console.log('[leadgen] run-complete without run_id (cron run?):', notes);
+  }
+  return res.json({ success: true, status });
+});
+
 router.post('/trigger', async (req, res) => {
   const user = await validateUserSession(req);
   if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -212,9 +263,22 @@ router.post('/trigger', async (req, res) => {
     // landed, entity_type CHECK rejects it, so 0 rows in 2 months. The
     // leadgen_runs row above is the run record now.)
 
+    // Run feedback (2026-09-13): the workflow (v14) ends in a Run Summary that it
+    // POSTs to /run-complete and also returns as the webhook response. A short
+    // run (every candidate dropped at the website filter, dedupe or the score
+    // gate) answers inside our 25 s wait, so the rep gets the outcome in the
+    // toast right away; the callback then skips the bell for that run. A long
+    // run times out here and the callback rings the bell instead.
+    const body = await r.json().catch(() => null);
+    if (body && body.summary && typeof body.message === 'string') {
+      if (runId) answeredInline.add(runId);
+      return res.status(200).json({ success: true, message: body.message, summary: body.summary, run_id: runId });
+    }
+
     return res.status(202).json({
       success: true,
-      message: `Lead-gen ${system} run started for ${vertical}${city ? ` in ${city}` : ''}. New leads will appear in the review queue shortly.`,
+      message: `Lead-gen ${system} run started for ${vertical}${city ? ` in ${city}` : ''}. You will get a notification when it finishes.`,
+      run_id: runId,
     });
   } catch (err) {
     if (err.name === 'AbortError') {

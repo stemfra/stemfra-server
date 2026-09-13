@@ -822,6 +822,13 @@ Remaining (lower, item 14): demo_sites table + SUBJECT_TO_SERVICE/KNOWN_TEMPLATE
 14. Demo links → `demo_sites` table; `SUBJECT_TO_SERVICE` / `KNOWN_TEMPLATE_SLUGS` → DB. _(lower)_
 
 ## P4 — Growth levers (lead-gen)  ✅ DONE (2026-06-29)
+18. **Run feedback at every exit** (Peter's rule 2026-09-13: a run that stops early must say
+    so). Server ✅ BUILT + VERIFIED 2026-09-13: `POST /api/leadgen/run-complete` closes
+    `leadgen_runs` (completed | empty, counts, sentence) and bells the requester (kind
+    `leadgen_run`, CRM tray icon); `/trigger` relays the sentence when n8n answers within 25 s.
+    n8n v14 paste written (`leadgen-run-feedback-v14.paste.md`: Run Summary node, If gates at
+    website filter / dedupe / score, link-in-bio + booking-page URLs = no website,
+    `leadgen_run_id` stamped so Coverage counts stop reading 0) ⏳ Peter pastes.
 17. ✅ **Outbound auto-call guardrails** — `lib/callGuardrails.js` (DNC + pan-US safe
     window + daily cap), reply sweeper + manual Call-with-AI gated.
 16. ✅ **Follow-up sequencer + reply-classification** — `lib/outreachSequencer.js`:
@@ -2156,7 +2163,10 @@ objections across reps (feeds the call script and the FAQ), and "Add to notes" f
 
 From the Neil call and the YouTube Studio comparison: a new owner should finish without
 Stacy, with the site ready to publish when the dashboard opens. Agreed pieces, in build order:
-(a) **services as a tick list** ✅ BUILT 2026-09-13: per-vertical curated catalogue
+(a) **services as a tick list** ✅ BUILT 2026-09-13 (revised same evening, Peter: the tick list
+is the SEED SITE's own services, not a second hand-written catalogue, which produced "Kids'
+haircut" beside the seed's "Children's haircut"; `lib/serviceCatalog.js` now reads the seed,
+verified on Remix Barbers, 7 rows all ticked with demo prices): per-vertical curated catalogue
 (`lib/serviceCatalog.js`, 15 to 21 items per vertical, fitness ones as classes), served by
 `GET /api/cms/service-catalog?siteId=` with "others in your trade also offer" from
 `service_suggestions` (migration applied; every custom name an owner adds is recorded via
