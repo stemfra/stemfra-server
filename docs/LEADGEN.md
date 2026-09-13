@@ -219,7 +219,11 @@ state and/or city, optional leads_found/notes/requested_at); `PATCH
 | `.github/workflows/deploy.yml` | Injects the three env vars |
 | `.env.example` | Documents the same vars for local dev |
 
-## Digital readiness (2026-09-11)
+## Digital readiness (2026-09-11; LIVE in n8n 2026-09-13, Peter pasted v13, verified on a Staten Island run)
+
+Paste rule learned that day: n8n Set / HTTP body fields in **Expression** mode take the value
+WITHOUT a leading `=` (n8n adds it); a pasted `=` becomes literal text (`raw_signal` stored as
+`={"title"…`, `readiness` null). The paste files no longer carry the `=`.
 
 `leads.readiness` = `modern` | `middle` | `old_school`, computed ONCE at ingest in the n8n
 "Normalize Candidate" Set node (v13 pastes in `n8n-workflows/leadgen-*-v13.paste.*`) from the

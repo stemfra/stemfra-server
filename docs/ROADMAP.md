@@ -1820,8 +1820,10 @@ Not started. Trigger: after the theme polish arc (this week) and the YouTube upl
 n8n Normalize node, now specified in `n8n-workflows/leadgen-normalize-v13.paste.md`: address
 parts, phone, website, place id + cid, location, category, rating + count + distribution,
 opening hours, price band, description, claimed flag, socials, booking links (facts only; no
-review text, no photo URLs). ⏳ Peter pastes v13 (he deferred the readiness part; the snapshot
-part is the same paste). (2) At claim → provision: phone, address and hours pre-fill the site
+review text, no photo URLs). ✅ v13 LIVE in n8n (Peter pasted 2026-09-13; a Staten Island
+3-result fetch stored two leads with a valid 35-key snapshot, place id, 7 hours entries and
+`readiness` = modern). Socials in the snapshot now also carry youtube / twitter / linkedin /
+pinterest. (2) At claim → provision: phone, address and hours pre-fill the site
 (hours from Google when present, else the template's week); the wizard shows them as
 confirm-or-edit. (3) **Reviews by default = Google's, shown LIVE** via the Places API with
 attribution against the stored place id (a "Reviews from Google" block on the site), never
@@ -2295,8 +2297,9 @@ only reads socials off a website and our pool has none), first review 2012 to 20
 (a six-year cut would empty the pool). Final rule: old_school = unclaimed listing; middle =
 claimed only; modern = claimed + owner description/post, 20+ photos, booking link or social.
 Owner replies and recency are NOT factors (Peter). `leads.readiness` column (applied), n8n
-v13 pastes (`leadgen-normalize-v13.paste.md`, build-prompt, parse, insert; ⏸ Peter DEFERRED
-the pastes 2026-09-11: keep testing calls first, the column and CRM facet stay ready), CRM
+v13 pastes (`leadgen-normalize-v13.paste.md`, build-prompt, parse, insert; ✅ PASTED + LIVE,
+Peter confirmed 2026-09-13, verified by the Staten Island run: two "modern" leads with clean
+signals; the first v13 lead, House of Fadez, was repaired by hand after a stray `=`), CRM
 Readiness facet + pills (card, drawer with the signals as tooltip). Ortiz
 Barbershop matched an empty listing (0 reviews, 0 photos): re-check that lead.
 
