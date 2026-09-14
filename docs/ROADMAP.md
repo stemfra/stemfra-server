@@ -2283,7 +2283,12 @@ auto-done via `setup_wizard_dismissed`); Team step rows = photo + name + role + 
 email; Pronouns field removed from the team editors (never rendered). **Setup progress badge**
 (Peter's idea, same day): the checklist moved out of Stacy into a top-bar ring + count with a
 dropdown (To do / Done tabs, stages, the same row actions); Dashboard "Finish setup (6/13)"
-quick action + Setup card open it; Stacy = chat + history only. BUILT + VERIFIED, LOCAL. Location: Address, Town/City (the state
+quick action + Setup card open it; Stacy = chat + history only. BUILT + VERIFIED, LOCAL.
+**Top-bar Publish = the action** (Peter, same day): "Publish" runs the shared PublishFlow
+(checklist → live card; not ready → the Publish page shows what is left), "Published" +
+menu Publish / Unpublish (confirm) + Open live site last; "Publish settings" item gone; the
+Publish page button and the wizard use the same flow. VERIFIED (published + unpublished
+Remix Barbers from the bar), LOCAL. Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
