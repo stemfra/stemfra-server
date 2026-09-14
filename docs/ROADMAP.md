@@ -2234,6 +2234,15 @@ team, Your look. The separate hours stage is gone. "Your look" lost the website 
 (Peter: not needed here); it now has drag-and-drop upload plus the logo and favicon BUILDER
 inline, and the cover photo picker offers Stock photos when enabled. Logo and cover are
 optional (Replace / Remove, no Skip needed: the theme defaults stay).
+**Later that night (Peter's shots of Facebook's first page):** ✅ BUILT + VERIFIED: (1) no
+re-typing: the finder runs by itself when step 1 opens, with the business name plus the state
+and country the owner gave at signup (`contacts.state/country` now in the owner context); a
+site with a stored Google match opens straight on "Enter details"; (2) the address is every
+standard line (Street, City, State / Province, Postcode; an autocomplete pick fills all four;
+the Location section keeps the single `address` string for the templates and gains
+`address_parts`); (3) actions are real buttons in the primary register (Edit hours, Search
+Google, Use this, Use these hours), not underlined text. Honest note: the video frames were
+never extracted (yt-dlp 403); the UI details came from Peter's screenshots.
 (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
