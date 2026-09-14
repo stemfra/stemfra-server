@@ -2307,6 +2307,17 @@ reading "Unlisted · ready to publish". (e) the stepper redesign (no photo above
 moved to publish time, custom domain out of onboarding, Stacy's checklist becomes optional.
 Required fields stay required (Peter, 2026-09-01).
 
+**(j, evening 2026-09-14) Branding step final shape + logo recommendations ✅ BUILT + VERIFIED
+(LOCAL, push hold):** dense "Add a logo" tile first; "See recommendations" dropdown = three
+logos composed in the background from step 1 (`stemfra_cms/src/lib/logoSuggestions.ts`), ink
+radio rows, a pick saves logo + favicon; booking-button section REMOVED (template default);
+"AI Front desk" Yes / No. **Adaptive logos:** composed wordmarks `currentColor`, inlined by
+`BrandLockup` in every header/footer, 18 px tall (Peter's pick). Also that evening: number-only
+price/minutes, team edit popup, Fix-reopens-the-step, billing seeded from step 1 (no billing
+step in a free signup), signup draft survives refresh, focus ring for buttons. Full list in the
+root handoff's 2026-09-14 evening bullet. Round-3 walk reached PUBLISH → live card → dashboard
+on `harbor-lane-barbers-2` (throwaway, to purge).
+
 **(k) Owner lifecycle emails (Peter, 2026-09-14, agreed).** Audit that day: signup sent NOTHING,
 publish only rings the in-app bell, and no account-security event emails an owner (Facebook's
 "was this you" mails were the reference). Order agreed:
