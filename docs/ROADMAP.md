@@ -2216,6 +2216,16 @@ with prices, opening times, team ("Just you" for a solo shop) and the readiness 
 it reads what is being typed through `lib/wizardDraft.ts` (verified: typing a name changes the
 card at once). Meant to be reused by the P38 unclaimed listing and the GBP card. Same day:
 Publish page cards now sit with the settings pages' 16 px gap (Peter's design-system note).
+(j) **Stage 5 "Your look"** ✅ BUILT + VERIFIED 2026-09-14 (Facebook's "Customise your Page":
+profile picture, cover photo, action button): logo upload + "Find your logo" (the Branding
+pieces reused), cover photo = the home hero image (saved into the hero section), booking
+button label with per-vertical presets (writes `metadata.labels.book_cta`, the same key as
+Buttons & labels). `logo` is a recommended readiness key, so the stage shows as done when a
+logo exists but never forces the wizard open. Complete = "Finish & preview" → the Publish page
+(Remix + checklist). Hours step gained "Apply Monday to Tuesday through Friday". The listing
+card shows the logo badge and the chosen button label. Goal stated by Peter: the whole site
+set up from these screens, like Facebook. Still for slice (c): AI copy, favicon from the
+builder when none, Google hours rule on the hours step.
 (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
