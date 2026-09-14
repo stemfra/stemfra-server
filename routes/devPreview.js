@@ -49,6 +49,7 @@ function indexPage() {
     ['platform-invoice', 'Billing: Stemfra invoice (System A)'],
     ['platform-dunning', 'Billing: payment reminder / overdue (System A)'],
     ['platform-receipt', 'Billing: payment receipt (System A)'],
+    ['owner-welcome', 'Owner: registration success / website ready (Stemfra)'],
     ['owner-lead', 'Owner: new website lead'],
     ['owner-chat-lead', 'Owner: chat-assistant lead'],
     ['staff-handoff', 'Staff: Stacy handoff'],
@@ -188,6 +189,10 @@ router.get('/visit-confirmation', (_req, res) => send(res, tx.visitConfirmation(
   failureNote: null,
 })));
 
+router.get('/owner-welcome', (_req, res) => send(res, tx.ownerWelcome({
+  firstName: 'Sam', businessName: 'Harbor Lane Barbers', email: 'sam@harborlanebarbers.com',
+  siteHost: 'harbor-lane-barbers.stemfra.com', setupUrl: 'https://cms.stemfra.com/setup', dashboardUrl: 'https://cms.stemfra.com',
+}).html));
 router.get('/owner-lead', (_req, res) => send(res, tx.ownerLeadNotification({
   name: 'Dana Whitfield', email: 'dana@example.com', phone: '(917) 555-0184',
   subject: 'Wedding party booking',

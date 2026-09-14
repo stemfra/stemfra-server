@@ -5,6 +5,7 @@
 // fact that a previewing site can't be published without paying.
 const { onboardCustomer } = require('../lib/onboardSite');
 const { attachSiteDomain } = require('../lib/attachSiteDomain');
+const { sendOwnerWelcome } = require('../lib/ownerWelcome');
 
 const CMS_URL = process.env.CMS_URL || 'http://localhost:5180';
 const ZONE = 'stemfra.com';
@@ -57,6 +58,10 @@ async function signup(req, res) {
     let hostWiring = null;
     try { hostWiring = await attachSiteDomain(result.site.siteId); }
     catch (e) { hostWiring = { error: e.message }; console.error('[onboarding.signup] attach host failed (site still provisioned):', e.message); }
+
+    // Registration success email (fire-and-forget; never blocks the response).
+    sendOwnerWelcome({ authUserId: result.authUserId, email, firstName: firstName || null, businessName: company || name || null, subdomain: result.site.subdomain })
+      .catch((e) => console.error('[onboarding.signup] welcome email failed:', e.message));
 
     res.json({
       ok: true,
@@ -112,6 +117,8 @@ async function signupAuthenticated(req, res) {
     });
     let hostWiring = null;
     try { hostWiring = await attachSiteDomain(result.site.siteId); } catch (e) { hostWiring = { error: e.message }; }
+    sendOwnerWelcome({ authUserId: result.authUserId, email: result.email || user.email, firstName: firstName || null, businessName: company || name || null, subdomain: result.site.subdomain })
+      .catch((e) => console.error('[onboarding.signupAuthenticated] welcome email failed:', e.message));
     res.json({ ok: true, domain: hostWiring, siteId: result.site.siteId, subdomain: result.site.subdomain, previewUrl: `https://${result.site.subdomain}.${ZONE}`, loginUrl: CMS_URL });
   } catch (err) {
     const statusByCode = { bad_input: 400, weak_password: 400, email_taken: 409, terms_required: 400 };

@@ -621,6 +621,56 @@ function platformReceipt({ businessName, amountLabel, paidLabel, dashboardUrl, i
   });
 }
 
+// Registration success (Peter, 2026-09-14): the ONE email a new owner gets
+// right after signup. Stemfra register, like the invoice; the primary button is
+// a magic link straight into the setup wizard, so the mail doubles as the way
+// back in. No confirmation step exists (email confirmation is off), so this is
+// also the "your account exists" record.
+function ownerWelcome({ firstName, businessName, siteHost, setupUrl, dashboardUrl, email }) {
+  const name = firstName || 'there';
+  const biz = businessName || 'Your business';
+  return {
+    subject: `Your website is ready${firstName ? `, ${firstName}` : ''}`,
+    html: renderEmail({
+      preheader: `${biz} now has a home at ${siteHost}. Four short steps and you can publish.`,
+      eyebrow: 'Welcome to Stemfra',
+      heading: `Hi ${name}, your website is ready.`,
+      paragraphs: [
+        `${biz} now has a home on the web. It stays unlisted until you publish it, so take your time and make it yours.`,
+      ],
+      rows: [
+        { label: 'Your website', value: siteHost },
+        email ? { label: 'Sign-in email', value: email } : null,
+      ],
+      bodyHtml: quoteBlock(
+        '1. Your business: address, phone and opening hours\n2. Your services and prices\n3. Your team\n4. Your logo and cover photo\n\nThen press Publish and you are live.',
+        'Four short steps',
+      ),
+      cta: { label: 'Finish your setup', url: setupUrl || `${CMS_URL}/setup` },
+      cta2: { label: 'Open your dashboard', url: dashboardUrl || CMS_URL },
+      note: 'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+      reason: 'You are receiving this because you created a Stemfra account with this address.',
+    }),
+    text: [
+      `Hi ${name}, your website is ready.`,
+      '',
+      `${biz} now has a home at ${siteHost}. It stays unlisted until you publish it, so take your time and make it yours.`,
+      '',
+      'Four short steps:',
+      '1. Your business: address, phone and opening hours',
+      '2. Your services and prices',
+      '3. Your team',
+      '4. Your logo and cover photo',
+      'Then press Publish and you are live.',
+      '',
+      `Finish your setup: ${setupUrl || `${CMS_URL}/setup`}`,
+      `Open your dashboard: ${dashboardUrl || CMS_URL}`,
+      '',
+      'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+    ].join('\n'),
+  };
+}
+
 // Recon R4 (2026-08-11): a settled payment was recalled by the tenant's bank
 // (ACH reversal) or the transfer never went through (rejection). The invoice is
 // open again; this is the re-deposit ask. Firm but polite.
@@ -827,6 +877,7 @@ function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel 
 
 module.exports = {
   prospectClaimEmail,
+  ownerWelcome,
   bookingConfirmation,
   bookingReminder,
   bookingCanceled,
