@@ -2307,6 +2307,22 @@ reading "Unlisted · ready to publish". (e) the stepper redesign (no photo above
 moved to publish time, custom domain out of onboarding, Stacy's checklist becomes optional.
 Required fields stay required (Peter, 2026-09-01).
 
+**(k) Owner lifecycle emails (Peter, 2026-09-14, agreed).** Audit that day: signup sent NOTHING,
+publish only rings the in-app bell, and no account-security event emails an owner (Facebook's
+"was this you" mails were the reference). Order agreed:
+1. **Registration successful** ✅ BUILT 2026-09-14 (LOCAL, push hold): `templates/transactionalEmails.js`
+   `ownerWelcome` + `lib/ownerWelcome.js`, sent fire-and-forget from BOTH signup paths after
+   provisioning; subject "Registration successful", "Hi <first last>,", Peter's paragraph, site +
+   sign-in rows, "Configure your website" = CMS magic link to /setup, ghost "Open your dashboard".
+   Preview `/dev/preview/owner-welcome`. Test copy delivered to Peter's inbox 2026-09-14.
+2. 🔜 **"Your website is live"** from `lib/sitePublish.js` (address, View, share links) and its
+   unpublish twin. Every owner hits it; the biggest gap.
+3. 🔜 **Account security slice**: password changed, sign-in email changed, 2FA on/off, new sign-in
+   from a new device (needs a small per-user device table), one template with a "This wasn't me"
+   button to /profile/security. Reads the locked security preference in `cms_notification_prefs`.
+4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
+   removed. Email verification at signup stays OFF on purpose (free flow, short).
+
 ## P38 — Stemfra marketplace + claimable listings (proposed 2026-09-12, Peter; staging agreed)
 
 Peter's idea: a Fresha-style public marketplace of local businesses with two things Fresha
