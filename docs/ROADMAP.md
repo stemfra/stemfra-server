@@ -1559,7 +1559,15 @@ The production Supabase org runs the FREE plan (no backups, 500MB cap). Peter's
 call: upgrade to Pro once real clients arrive (~first 10); Claude's standing rec
 is to treat the FIRST paying client as the trigger. Until then:
 1. ✅ **Nightly backup sweeper — DONE 2026-09-01** (`lib/backupSweeper.js` +
-   `routes/admin/backups.js` + the `./backups` compose bind mount): nightly at
+   `routes/admin/backups.js` + the `stemfra_backups` compose volume). ⚠ **It never
+   produced a dump in production until 2026-09-14**: every night since Sep 1 the failure
+   email read "EACCES: permission denied, mkdir '/app/backups/<date>'". Cause: the host
+   bind mount `./backups` was created by Docker as root while the container runs as
+   `USER node`. Fix (LOCAL, push hold): Dockerfile creates `/app/backups` owned by node
+   and compose mounts a NAMED volume there, which inherits that ownership. After the
+   deploy the next 07:00 UTC sweep (or the boot catch-up, since the newest dump is
+   older than 26 h) should send no error mail; confirm with `GET /api/admin/backups`.
+   The empty root-owned `./backups` folder on the VPS can be deleted. Nightly at
    BACKUP_HOUR_UTC (default 7 ≈ 2-3am ET) it streams 30 business-critical
    tables to gzip JSON (per-night dir + manifest), rolling 7-day retention,
    boot catch-up when the newest dump is >26h old, failure email to
@@ -2249,7 +2257,15 @@ three headed groups. Contact: Phone via the SHARED `PhoneField` (flags, every co
 libphonenumber; Peter 2026-09-14: "use what we already have", it was already in SmsAlertsCard
 and the template forms) and Email address. Step copy per Peter: "Tell us about your business."
 / "...your services. You can edit or add more." / "...your team." / "Let us customise your
-brand. Add a logo, pick a cover photo, and choose what the booking button says." Location: Address, Town/City (the state
+brand. Add a logo, pick a cover photo, and choose what the booking button says."
+**Team step (Peter, same night)**: no "Just me / Me and my team" choice any more; a plain
+"Team" list (names + Add) in the Hours-section register. Rule: **a team of one IS the solo
+case** (`isSoloShop` / `visibleTeam` in site-data now treat a single active member as
+solo, whoever that one is; the older `metadata.solo` flag still counts). "Save & continue"
+calls `POST /api/cms/team/defaults`, which links every active member to all services and
+gives them the business hours as availability where they have none, so a name typed in the
+wizard is bookable at once. Side effect to know: any existing site with exactly one active
+team member now hides its team section and skips the booking picker. Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and

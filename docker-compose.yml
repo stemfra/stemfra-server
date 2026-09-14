@@ -9,9 +9,12 @@ services:
     env_file:
       - .env
     volumes:
-      # P21 nightly backups — a host bind mount so the dumps survive container
-      # recreation and image redeploys (lib/backupSweeper.js writes here).
-      - ./backups:/app/backups
+      # P21 nightly backups: a NAMED volume, not a host bind mount. The bind
+      # mount was created by Docker as root while the process runs as USER node,
+      # so every sweep failed with EACCES on mkdir (Sep 1 to Sep 13, 2026). A
+      # named volume takes the image's ownership of /app/backups (node, see the
+      # Dockerfile) and survives container recreation and redeploys all the same.
+      - stemfra_backups:/app/backups
     labels:
       - traefik.enable=true
       - traefik.docker.network=space
@@ -31,6 +34,9 @@ services:
       - default
       - n8n_default
       - space
+
+volumes:
+  stemfra_backups:
 
 networks:
   default:

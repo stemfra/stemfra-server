@@ -33,6 +33,12 @@ RUN (npx playwright install --with-deps chromium || echo "WARN: chromium install
   && rm -rf /var/lib/apt/lists/* \
   && (chmod -R a+rX /ms-playwright 2>/dev/null || true)
 
+# Backups (P21): the directory must exist in the image OWNED BY node before the
+# volume is mounted, so the named volume inherits that ownership. With the old
+# host bind mount Docker created ./backups as root and every nightly sweep died
+# on "EACCES: permission denied, mkdir '/app/backups/<date>'" (2026-09-14).
+RUN mkdir -p /app/backups && chown node:node /app/backups
+
 USER node
 COPY --chown=node:node . .
 
