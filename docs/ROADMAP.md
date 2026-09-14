@@ -2280,7 +2280,10 @@ twice as tall. LOCAL, push hold. **Then (same day, Peter "do as you recommend")*
 is the basic update path too: `?setupWizard=1` opens it on live sites, Dashboard quick
 action "Update your website" (replaced the tour), Stacy row "Run the setup wizard" (last,
 auto-done via `setup_wizard_dismissed`); Team step rows = photo + name + role + optional
-email; Pronouns field removed from the team editors (never rendered). Location: Address, Town/City (the state
+email; Pronouns field removed from the team editors (never rendered). **Setup progress badge**
+(Peter's idea, same day): the checklist moved out of Stacy into a top-bar ring + count with a
+dropdown (To do / Done tabs, stages, the same row actions); Dashboard "Finish setup (6/13)"
+quick action + Setup card open it; Stacy = chat + history only. BUILT + VERIFIED, LOCAL. Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
