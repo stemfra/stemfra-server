@@ -2243,6 +2243,18 @@ the Location section keeps the single `address` string for the templates and gai
 `address_parts`); (3) actions are real buttons in the primary register (Edit hours, Search
 Google, Use this, Use these hours), not underlined text. Honest note: the video frames were
 never extracted (yt-dlp 403); the UI details came from Peter's screenshots.
+**Then Peter's correction (match Facebook's panel field for field, minus Website)** ✅ BUILT +
+VERIFIED: step 1 has no business-name field (signup gave it; the listing card shows it) and
+three headed groups. Contact: Phone via the SHARED `PhoneField` (flags, every country,
+libphonenumber; Peter 2026-09-14: "use what we already have", it was already in SmsAlertsCard
+and the template forms) and Email address. Step copy per Peter: "Tell us about your business."
+/ "...your services. You can edit or add more." / "...your team." / "Let us customise your
+brand. Add a logo, pick a cover photo, and choose what the booking button says." Location: Address, Town/City (the state
+rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
+with the suggestions inline (it also runs once on open from the signup's name + state; a
+stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
+"Open at selected hours" (the second opens the Selected hours popup); no hours summary in
+the form, the listing card carries it. Listing panel widened to 380 px.
 (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
