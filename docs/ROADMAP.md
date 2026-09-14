@@ -2288,7 +2288,11 @@ quick action + Setup card open it; Stacy = chat + history only. BUILT + VERIFIED
 (checklist → live card; not ready → the Publish page shows what is left), "Published" +
 menu Publish / Unpublish (confirm) + Open live site last; "Publish settings" item gone; the
 Publish page button and the wizard use the same flow. VERIFIED (published + unpublished
-Remix Barbers from the bar), LOCAL. Location: Address, Town/City (the state
+Remix Barbers from the bar), LOCAL. **Walk-through on a fresh tenant (harbor-lane-barbers,
+2026-09-14)**: fixed wizard closing after stage 1, demo contact prefill, service order, listing
+copy. Open: /signup has no industry picker (direct visitors default to barbers); builder
+wordmark + brand text both in the header (dark headers need a light ink or brand display =
+logo); hero copy still the demo's (slice c); "remove all sample people" affordance. Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
