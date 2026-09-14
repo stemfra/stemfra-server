@@ -2208,6 +2208,14 @@ Colour palette and Section styles write. (h) **Claim → CMS signup**: VERIFIED 
 the marketing Claim button already lands on `cms.stemfra.com/signup?starter=…&claim=…`
 (`lib/claimOffer.js`, clicked live); no /start hop exists in the current code. If Peter saw
 /start, it was an older deploy of the marketing site or another entry link; report the URL.
+(i) **Listing panel beside the form** ✅ BUILT + VERIFIED 2026-09-14 (Peter, from Facebook's
+"Desktop preview" while creating the Stemfra page, laid out like Fresha's listing):
+`ListingCard.tsx` on the right of every wizard step (lg and up) shows name, category, rating
+from the Google snapshot, phone, address with Get directions, Book now / Call pills, services
+with prices, opening times, team ("Just you" for a solo shop) and the readiness ring (7/10);
+it reads what is being typed through `lib/wizardDraft.ts` (verified: typing a name changes the
+card at once). Meant to be reused by the P38 unclaimed listing and the GBP card. Same day:
+Publish page cards now sit with the settings pages' 16 px gap (Peter's design-system note).
 (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
