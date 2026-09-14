@@ -2325,6 +2325,11 @@ publish only rings the in-app bell, and no account-security event emails an owne
 
 ## P38 — Stemfra marketplace + claimable listings (proposed 2026-09-12, Peter; staging agreed)
 
+> **Design base (Peter, 2026-09-14):** the marketplace listing card starts from the wizard's
+> `ListingCard` (`stemfra_cms/src/components/onboarding/ListingCard.tsx`: cover, logo disc,
+> name + category, phone + address, Book / Call / directions pill, services with prices,
+> opening times, team, readiness ring). Reuse it, do not draw a second card.
+
 Peter's idea: a Fresha-style public marketplace of local businesses with two things Fresha
 does not have, a **Claim** button on businesses that have not signed up (a free website from
 us) and a **booking-only** tier for shops that want a booking page, not a site. Built as an
