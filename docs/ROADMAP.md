@@ -822,8 +822,8 @@ Remaining (lower, item 14): demo_sites table + SUBJECT_TO_SERVICE/KNOWN_TEMPLATE
 14. Demo links → `demo_sites` table; `SUBJECT_TO_SERVICE` / `KNOWN_TEMPLATE_SLUGS` → DB. _(lower)_
 
 ## P4 — Growth levers (lead-gen)  ✅ DONE (2026-06-29)
-18. **Run feedback at every exit** (Peter's rule 2026-09-13: a run that stops early must say
-    so). Server ✅ BUILT + VERIFIED 2026-09-13: `POST /api/leadgen/run-complete` closes
+18. **Run feedback at every exit** ⏸ ON THE ROADMAP, finalise later (Peter, 2026-09-14)
+    (Peter's rule 2026-09-13: a run that stops early must say so). Server ✅ BUILT + VERIFIED 2026-09-13: `POST /api/leadgen/run-complete` closes
     `leadgen_runs` (completed | empty, counts, sentence) and bells the requester (kind
     `leadgen_run`, CRM tray icon); `/trigger` relays the sentence when n8n answers within 25 s.
     n8n v14 paste written (`leadgen-run-feedback-v14.paste.md`: Run Summary node, If gates at
@@ -2191,7 +2191,24 @@ steps, Back returns to services). All six HomePages skip `team_grid` and all six
 the Team / Barbers / Stylists / Teachers / Coaches nav (crossfit footer too) when the display
 team is empty. The moment a second person is added in the CMS, everyone (owner included)
 renders as a normal team; `siteCompleteness` unchanged. Not done: the booking-page intro copy
-still says "pick a barber" on a solo site (slice (c) rewrites page copy). (c) the "finish" job: AI drafts hero, About,
+still says "pick a barber" on a solo site (slice (c) rewrites page copy).
+**Added 2026-09-14 (Peter's three asks):** (f) **"Find my business on Google"** ✅ BUILT + VERIFIED
+on Remix Barbers: a tab on wizard step 1; the owner types the name and city, the server runs
+one Apify Google Maps search (`lib/googlePlacesFinder.js`, `POST /api/cms/google-profile/find`,
+about 50 s, a fraction of a cent) and lists candidates with address, phone and rating; "Use
+this" fills name, location name, address and phone into the form and `POST /use` stores the
+business hours (Google's "10 AM to 8 PM" rows converted, verified on Neil's Barbershop: Mon
+to Thu 9 to 20, Fri 9 to 22:30, Sat 8 to 22:30, Sun 11 to 15), any social links Google lists,
+and the facts snapshot under `site_theme_settings.metadata.gbp` (has_profile, profile_url,
+place_id, snapshot) for slice (c) and the GBP page. Built for ads traffic (Peter: "big win").
+(g) **Quick remix on the Publish page** ✅ BUILT + VERIFIED: `QuickRemix.tsx` above the Publish
+checklist (the page the wizard lands on): seven curated palettes for the theme's register plus
+"Theme", and "Show me three looks" (the auto remix bundles); one tap applies, writing exactly what
+Colour palette and Section styles write. (h) **Claim → CMS signup**: VERIFIED 2026-09-14 that
+the marketing Claim button already lands on `cms.stemfra.com/signup?starter=…&claim=…`
+(`lib/claimOffer.js`, clicked live); no /start hop exists in the current code. If Peter saw
+/start, it was an older deploy of the marketing site or another entry link; report the URL.
+(c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
 (Peter): a scraped lead's Google hours prefill the hours step, otherwise the template's week**.

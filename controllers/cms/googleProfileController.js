@@ -93,3 +93,81 @@ async function save(req, res) {
 }
 
 module.exports = { getInfo, save };
+
+// ─── Find my business on Google (P39 onboarding v2, 2026-09-14) ──────────────
+// POST /api/cms/google-profile/find { siteId, name, where } → { candidates }
+// One Apify Google Maps search (lib/googlePlacesFinder) for the typed name near
+// the typed place; a few candidates shaped for the wizard's "Is this you?" list.
+const finder = require('../../lib/googlePlacesFinder');
+
+async function find(req, res) {
+  try {
+    const { siteId, name, where } = req.body || {};
+    if (!siteId) return res.status(400).json({ success: false, message: 'Missing siteId.' });
+    const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+    if (!site) return res.status(403).json({ success: false, message: 'Not your site.' });
+    if (!finder.configured()) return res.status(503).json({ success: false, message: 'Google lookup is not configured on this server.' });
+    if (!String(name || '').trim()) return res.status(400).json({ success: false, message: 'Type your business name.' });
+    const { data: full } = await supabase.from('sites').select('country').eq('id', siteId).maybeSingle();
+    const candidates = await finder.findBusiness({ name, where, country: full?.country || 'US' });
+    res.json({ success: true, candidates });
+  } catch (e) {
+    console.error('[googleProfile.find]', e.message);
+    res.status(502).json({ success: false, message: `Google lookup failed: ${e.message}` });
+  }
+}
+
+// POST /api/cms/google-profile/use { siteId, candidate } → { applied }
+// The owner picked a candidate. The wizard fills its own form (name, location,
+// address, phone) and saves those on "Save & continue"; this endpoint stores the
+// rest right away: business hours from Google (when readable), social handles
+// Google lists (only where the site has none), and the facts snapshot under
+// site_theme_settings.metadata.gbp (has_profile, profile_url, place_id, snapshot),
+// which slice (c) and the GBP guidance page read later.
+async function use(req, res) {
+  try {
+    const { siteId, candidate: c } = req.body || {};
+    if (!siteId || !c || typeof c !== 'object') return res.status(400).json({ success: false, message: 'Missing siteId or candidate.' });
+    const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+    if (!site) return res.status(403).json({ success: false, message: 'Not your site.' });
+    const applied = [];
+
+    if (c.businessHours && typeof c.businessHours === 'object') {
+      const { error } = await supabase.from('sites').update({ business_hours: c.businessHours }).eq('id', siteId);
+      if (error) throw new Error(error.message);
+      applied.push('hours');
+    }
+
+    const { data: row } = await supabase.from('site_theme_settings').select('site_id, metadata, instagram_handle, facebook_handle, tiktok_handle, youtube_handle, twitter_handle').eq('site_id', siteId).maybeSingle();
+    const meta = (row?.metadata && typeof row.metadata === 'object') ? { ...row.metadata } : {};
+    const prev = (meta.gbp && typeof meta.gbp === 'object') ? meta.gbp : {};
+    const { businessHours, openingHours, ...facts } = c;
+    meta.gbp = {
+      ...prev,
+      has_profile: 'yes',
+      profile_url: c.url || prev.profile_url || null,
+      place_id: c.placeId || prev.place_id || null,
+      snapshot: { ...facts, openingHours: openingHours || [] },
+      found_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    const patch = { metadata: meta };
+    const socials = c.socials && typeof c.socials === 'object' ? c.socials : {};
+    for (const [key, col] of [['instagram', 'instagram_handle'], ['facebook', 'facebook_handle'], ['tiktok', 'tiktok_handle'], ['youtube', 'youtube_handle'], ['twitter', 'twitter_handle']]) {
+      const v = socials[key];
+      if (v && !(row && row[col])) { patch[col] = String(v); applied.push(key); }
+    }
+    const { error } = row
+      ? await supabase.from('site_theme_settings').update(patch).eq('site_id', siteId)
+      : await supabase.from('site_theme_settings').insert({ site_id: siteId, ...patch });
+    if (error) throw new Error(error.message);
+    applied.push('profile');
+    res.json({ success: true, applied, gbp: { has_profile: 'yes', profile_url: meta.gbp.profile_url, place_id: meta.gbp.place_id } });
+  } catch (e) {
+    console.error('[googleProfile.use]', e.message);
+    res.status(500).json({ success: false, message: 'Could not save the Google details. Try again.' });
+  }
+}
+
+module.exports.find = find;
+module.exports.use = use;
