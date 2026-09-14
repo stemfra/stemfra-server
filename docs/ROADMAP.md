@@ -2226,6 +2226,14 @@ logo exists but never forces the wizard open. Complete = "Finish & preview" → 
 card shows the logo badge and the chosen button label. Goal stated by Peter: the whole site
 set up from these screens, like Facebook. Still for slice (c): AI copy, favicon from the
 builder when none, Google hours rule on the hours step.
+**Same evening, Peter's restructure (Facebook's first page carries contact, address AND hours):
+the wizard is FOUR stages** ✅ BUILT + VERIFIED: Your business (name, location, address, phone,
+email, opening hours as two cards "Open at set hours" with the week summary and an Edit popup
+[HoursEditor + time zone + "Apply Monday to Tue–Fri"] or "Always open"), Your services, Your
+team, Your look. The separate hours stage is gone. "Your look" lost the website logo finder
+(Peter: not needed here); it now has drag-and-drop upload plus the logo and favicon BUILDER
+inline, and the cover photo picker offers Stock photos when enabled. Logo and cover are
+optional (Replace / Remove, no Skip needed: the theme defaults stay).
 (c) the "finish" job: AI drafts hero, About,
 FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
 the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
