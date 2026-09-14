@@ -2276,7 +2276,11 @@ checklist (configuring → building → deploying → live) around the real publ
 🎁 "your site is now live" card with the address to copy, View and share links; missing
 required items show with Fix links. VERIFIED on Remix Barbers end to end (published, then
 returned to preview). "External URL" badge removed from image/video fields; listing cover
-twice as tall. LOCAL, push hold. Location: Address, Town/City (the state
+twice as tall. LOCAL, push hold. **Then (same day, Peter "do as you recommend")**: the wizard
+is the basic update path too: `?setupWizard=1` opens it on live sites, Dashboard quick
+action "Update your website" (replaced the tour), Stacy row "Run the setup wizard" (last,
+auto-done via `setup_wizard_dismissed`); Team step rows = photo + name + role + optional
+email; Pronouns field removed from the team editors (never rendered). Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
