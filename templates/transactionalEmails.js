@@ -626,48 +626,39 @@ function platformReceipt({ businessName, amountLabel, paidLabel, dashboardUrl, i
 // a magic link straight into the setup wizard, so the mail doubles as the way
 // back in. No confirmation step exists (email confirmation is off), so this is
 // also the "your account exists" record.
-function ownerWelcome({ firstName, businessName, siteHost, setupUrl, dashboardUrl, email }) {
-  const name = firstName || 'there';
-  const biz = businessName || 'Your business';
+function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, dashboardUrl, email }) {
+  const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'there';
+  const setup = setupUrl || `${CMS_URL}/setup`;
+  const dash = dashboardUrl || CMS_URL;
   return {
-    subject: `Your website is ready${firstName ? `, ${firstName}` : ''}`,
+    subject: 'Registration successful',
     html: renderEmail({
-      preheader: `${biz} now has a home at ${siteHost}. Four short steps and you can publish.`,
-      eyebrow: 'Welcome to Stemfra',
-      heading: `Hi ${name}, your website is ready.`,
+      preheader: `Your registration for Stemfra has been confirmed. Configure ${businessName || 'your website'} in the next few clicks.`,
+      eyebrow: 'Registration successful',
+      heading: `Hi ${fullName},`,
       paragraphs: [
-        `${biz} now has a home on the web. It stays unlisted until you publish it, so take your time and make it yours.`,
+        'Your registration for Stemfra has been confirmed. We are thrilled that you have decided to join our platform. Please configure your website in the next few clicks.',
       ],
       rows: [
-        { label: 'Your website', value: siteHost },
+        siteHost ? { label: 'Your website', value: siteHost } : null,
         email ? { label: 'Sign-in email', value: email } : null,
       ],
-      bodyHtml: quoteBlock(
-        '1. Your business: address, phone and opening hours\n2. Your services and prices\n3. Your team\n4. Your logo and cover photo\n\nThen press Publish and you are live.',
-        'Four short steps',
-      ),
-      cta: { label: 'Finish your setup', url: setupUrl || `${CMS_URL}/setup` },
-      cta2: { label: 'Open your dashboard', url: dashboardUrl || CMS_URL },
+      cta: { label: 'Configure your website', url: setup },
+      cta2: { label: 'Open your dashboard', url: dash },
       note: 'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
       reason: 'You are receiving this because you created a Stemfra account with this address.',
     }),
     text: [
-      `Hi ${name}, your website is ready.`,
+      `Hi ${fullName},`,
       '',
-      `${biz} now has a home at ${siteHost}. It stays unlisted until you publish it, so take your time and make it yours.`,
+      'Your registration for Stemfra has been confirmed. We are thrilled that you have decided to join our platform. Please configure your website in the next few clicks.',
       '',
-      'Four short steps:',
-      '1. Your business: address, phone and opening hours',
-      '2. Your services and prices',
-      '3. Your team',
-      '4. Your logo and cover photo',
-      'Then press Publish and you are live.',
-      '',
-      `Finish your setup: ${setupUrl || `${CMS_URL}/setup`}`,
-      `Open your dashboard: ${dashboardUrl || CMS_URL}`,
+      siteHost ? `Your website: ${siteHost}` : null,
+      `Configure your website: ${setup}`,
+      `Open your dashboard: ${dash}`,
       '',
       'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
-    ].join('\n'),
+    ].filter(l => l !== null).join('\n'),
   };
 }
 

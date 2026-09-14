@@ -60,7 +60,7 @@ async function signup(req, res) {
     catch (e) { hostWiring = { error: e.message }; console.error('[onboarding.signup] attach host failed (site still provisioned):', e.message); }
 
     // Registration success email (fire-and-forget; never blocks the response).
-    sendOwnerWelcome({ authUserId: result.authUserId, email, firstName: firstName || null, businessName: company || name || null, subdomain: result.site.subdomain })
+    sendOwnerWelcome({ authUserId: result.authUserId, email, firstName: firstName || null, lastName: lastName || null, businessName: company || name || null, subdomain: result.site.subdomain })
       .catch((e) => console.error('[onboarding.signup] welcome email failed:', e.message));
 
     res.json({
@@ -117,7 +117,7 @@ async function signupAuthenticated(req, res) {
     });
     let hostWiring = null;
     try { hostWiring = await attachSiteDomain(result.site.siteId); } catch (e) { hostWiring = { error: e.message }; }
-    sendOwnerWelcome({ authUserId: result.authUserId, email: result.email || user.email, firstName: firstName || null, businessName: company || name || null, subdomain: result.site.subdomain })
+    sendOwnerWelcome({ authUserId: result.authUserId, email: result.email || user.email, firstName: firstName || null, lastName: lastName || null, businessName: company || name || null, subdomain: result.site.subdomain })
       .catch((e) => console.error('[onboarding.signupAuthenticated] welcome email failed:', e.message));
     res.json({ ok: true, domain: hostWiring, siteId: result.site.siteId, subdomain: result.site.subdomain, previewUrl: `https://${result.site.subdomain}.${ZONE}`, loginUrl: CMS_URL });
   } catch (err) {
