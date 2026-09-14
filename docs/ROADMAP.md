@@ -2265,7 +2265,18 @@ solo, whoever that one is; the older `metadata.solo` flag still counts). "Save &
 calls `POST /api/cms/team/defaults`, which links every active member to all services and
 gives them the business hours as availability where they have none, so a name typed in the
 wizard is bookable at once. Side effect to know: any existing site with exactly one active
-team member now hides its team section and skips the booking picker. Location: Address, Town/City (the state
+team member now hides its team section and skips the booking picker.
+**Business finder + launch screen (Peter, 2026-09-14, later)**: the Address field's dropdown
+lists the businesses Google Places knows under the signup name as the owner types (instant,
+store icon, green "Match" tag on the exact name; a pick fills phone/address/hours + snapshot
+via `/use` with no Apify wait); the grey box is "Business finder" with "Find my business" =
+the Apify search as fallback. "Make it yours" is "Branding". **Finish & preview** opens the
+launch screen: the whole site in a frame, Dashboard left / Publish right; Publish plays the
+checklist (configuring → building → deploying → live) around the real publish call, then the
+🎁 "your site is now live" card with the address to copy, View and share links; missing
+required items show with Fix links. VERIFIED on Remix Barbers end to end (published, then
+returned to preview). "External URL" badge removed from image/video fields; listing cover
+twice as tall. LOCAL, push hold. Location: Address, Town/City (the state
 rides inside it, "New York, NY"), Postcode; the Google lookup is a button inside the section
 with the suggestions inline (it also runs once on open from the signup's name + state; a
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
