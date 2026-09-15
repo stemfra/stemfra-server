@@ -37,7 +37,12 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
 - P18 NOT built (Stacy has only `clone`). P20 security page NOT built. P21: backups ✅,
   Supabase org still on the **free** plan (Management API, 2026-09-07). P26 NOT started.
 - P24 IS pushed (origin/main 2026-08-31); handoff "local only" notes are stale.
-- **Wildcard Worker NOT live** (2026-09-07, Cloudflare API; re-verified 2026-09-11: no `*` DNS,
+- **Wildcard Worker LIVE 2026-09-16** (Peter: "go live"): `*.stemfra.com` A record + 10 bypass
+  routes (setup script `--apply`), `stemfra-tenant-router` deployed with HOST_CACHE KV, verified
+  from outside (clean-cuts/argyle → stemfra-barbers, ellaris-spa → stemfra-spa, lull → stemfra-massage,
+  unknown host → 404, robots Allow, api/cms/crm/www bypass), `TENANT_WILDCARD_ROUTING=true` in
+  deploy.yml. Custom Hostnames (BYO domains off Pages slots) still pending. Earlier note kept below:
+- Wildcard Worker was NOT live (2026-09-07, Cloudflare API; re-verified 2026-09-11: no `*` DNS,
   flag unset, remix-barbers attached as a Pages domain, 9/100 slots on stemfra-barbers; go-live
   ⏸ DEFERRED by Peter 2026-09-11): zero Worker routes on the
   stemfra.com zone, no `*` DNS record, `*.stemfra.com` hosts are per-site CNAMEs to the
@@ -1287,7 +1292,7 @@ CMS boot spinner, card active states, FAQ+legal onboarding steps).
    real domain through the CMS Porkbun flow and walk the new 3-step connect
    card end to end against Cloudflare (first real registration; Porkbun
    account email/phone verification + funded balance are prerequisites).
-6. **Domain scale infra — (a) wildcard Worker ✅ BUILT 2026-08-18, awaiting deploy
+6. **Domain scale infra — (a) wildcard Worker ✅ LIVE 2026-09-16 (built 2026-08-18; was awaiting deploy
    (Peter deferred the go-live on 2026-09-11 to start sales calls; still NOT live, no wildcard
    DNS, `TENANT_WILDCARD_ROUTING` unset; remix-barbers was attached the old way, stemfra-barbers
    holds 9 of 100 custom-domain slots); (b) Custom Hostnames still pending.** The `*.stemfra.com` tenant-router Worker

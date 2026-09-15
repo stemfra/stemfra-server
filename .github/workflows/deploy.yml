@@ -144,6 +144,7 @@ jobs:
             EXPENSE_MB2_PASS=${{ secrets.EXPENSE_MB2_PASS }}
             CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
             CLOUDFLARE_ZONE_ID=${{ secrets.CLOUDFLARE_ZONE_ID }}
+            TENANT_WILDCARD_ROUTING=true
             CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
             AIRWALLEX_CLIENT_ID=${{ secrets.AIRWALLEX_CLIENT_ID }}
             AIRWALLEX_API_KEY=${{ secrets.AIRWALLEX_API_KEY }}
