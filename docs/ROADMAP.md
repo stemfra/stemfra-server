@@ -828,7 +828,10 @@ Remaining (lower, item 14): demo_sites table + SUBJECT_TO_SERVICE/KNOWN_TEMPLATE
     `leadgen_run`, CRM tray icon); `/trigger` relays the sentence when n8n answers within 25 s.
     n8n v14 paste written (`leadgen-run-feedback-v14.paste.md`: Run Summary node, If gates at
     website filter / dedupe / score, link-in-bio + booking-page URLs = no website,
-    `leadgen_run_id` stamped so Coverage counts stop reading 0) ⏳ Peter pastes.
+    `leadgen_run_id` stamped so Coverage counts stop reading 0). ✅ LIVE, Peter confirmed
+    2026-09-15: imported from Peter's export as `n8n-workflows/leadgen-v14-2026-09-15.import.json`
+    (a script applied the ten steps), v13 unpublished; proven on a Yonkers run (3 scraped, 3
+    inserted with the run id, run row completed, bell rang). Native port = P41.
 17. ✅ **Outbound auto-call guardrails** — `lib/callGuardrails.js` (DNC + pan-US safe
     window + daily cap), reply sweeper + manual Call-with-AI gated.
 16. ✅ **Follow-up sequencer + reply-classification** — `lib/outreachSequencer.js`:
@@ -2349,6 +2352,21 @@ publish only rings the in-app bell, and no account-security event emails an owne
    button to /profile/security. Reads the locked security preference in `cms_notification_prefs`.
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
+
+## P41 — Native lead-gen (port the n8n System B workflow into the server; agreed 2026-09-15)
+
+Peter's call after the v14 import: the workflow is glue (webhook → Apify → website gate →
+normalize → Supabase dedupe → prompt → GPT → parse → insert → respond) and every piece
+already exists in the server (`lib/googlePlacesFinder.js` runs Apify, the OpenAI client from
+the lead drafts, `POST /api/leadgen/run-complete`, and the v13 normalize / build-prompt /
+parse code, which are JavaScript files in `n8n-workflows/`). Helen's CRM already runs
+lead-gen natively. Build `lib/leadgenRun.js` behind `POST /api/leadgen/trigger` (same
+request, same `leadgen_runs` row, same bell), reusing those modules verbatim; keep v14 on
+n8n as the fallback until three real runs match it (counts, readiness tiers, drafts). Lives
+in the stemfra server next to the CRM routes, NOT in the Stemfra AI runtime. Wins: no paste
+ritual, code in git with tests, progress from inside the run, the Supabase key out of
+workflow exports (the n8n export writes it in plain text). Stacy / Front desk / Concierge
+stay on n8n for now. 🔜 NEXT after today's calls.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 
