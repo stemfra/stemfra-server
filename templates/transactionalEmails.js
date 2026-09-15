@@ -677,7 +677,7 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, cl
       eyebrow: 'Your website is live',
       heading: `Hi ${fullName},`,
       paragraphs: [
-        `${name} is now online. Anyone can visit, read about your services and book with you from today. Here is the address to give out.`,
+        `${name} is now online. Anyone can visit, read about your services and book with you from today.`,
       ],
       cta: { label: 'Website', url: liveUrl },
       cta2: { label: 'Dashboard', url: clients },
