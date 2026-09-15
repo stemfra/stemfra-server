@@ -666,9 +666,10 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
 // the moment a site flips to live, to the owner: the address, View, share
 // links (the same four the CMS live card offers), Dashboard. Every
 // owner hits this one; it is also the record of the address to give out.
-function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) {
+function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, clientsUrl }) {
   const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'there';
   const dash = dashboardUrl || CMS_URL;
+  const clients = clientsUrl || `${CMS_URL}/customers?import=1`;
   const host = String(liveUrl || '').replace(/^https?:\/\//, '');
   const name = businessName || 'Your business';
   const shareText = `${name} is now online. Book with us at ${liveUrl}`;
@@ -677,11 +678,15 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) 
     ['WhatsApp', `https://wa.me/?text=${encodeURIComponent(shareText)}`],
     ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(liveUrl)}`],
     ['X', `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`],
-    ['Email', `mailto:?subject=${encodeURIComponent(`${name} website is live`)}&body=${encodeURIComponent(shareText)}`],
   ];
+  // "Tell your clients" (Peter, 2026-09-15): the share moment leads to the
+  // Clients page, where a client list upload ends in the one-time website
+  // announcement to every client (Client Growth Engine build 1). Social
+  // links stay as the second line.
   const shareHtml = `
-    <p style="margin:26px 0 0;font-family:${SF};font-weight:400;font-size:11px;letter-spacing:0.28em;color:#211c18;text-transform:uppercase;">Share it</p>
-    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:15px;line-height:1.75;color:#3c3733;">${
+    <p style="margin:26px 0 0;font-family:${SF};font-weight:400;font-size:11px;letter-spacing:0.28em;color:#211c18;text-transform:uppercase;">Tell your clients</p>
+    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:15px;line-height:1.75;color:#3c3733;">Upload your client list and we will email every client that ${escapeHtml(name)} now takes bookings online. Reviews, reminders and win-back messages start from the same list. <a href="${escapeHtml(clients)}" style="color:#1a73e8;text-decoration:none;">Add your clients</a></p>
+    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:13px;line-height:1.7;color:#6b655f;">Or share the address: ${
       shares.map(([l, u]) => `<a href="${escapeHtml(u)}" style="color:#1a73e8;text-decoration:none;">${escapeHtml(l)}</a>`).join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
     }</p>`;
   return {
@@ -707,6 +712,8 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) 
       '',
       `Your website: ${liveUrl}`,
       `Dashboard: ${dash}`,
+      '',
+      `Tell your clients: upload your client list and we will email every client that ${name} now takes bookings online. ${clients}`,
       '',
       'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
     ].join('\n'),

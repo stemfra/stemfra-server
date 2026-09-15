@@ -198,6 +198,7 @@ router.get('/owner-welcome', (_req, res) => send(res, tx.ownerWelcome({
 router.get('/site-live', (_req, res) => send(res, tx.siteLive({
   firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers',
   liveUrl: 'https://harbor-lane-barbers.stemfra.com', dashboardUrl: 'https://cms.stemfra.com',
+  clientsUrl: 'https://cms.stemfra.com/customers?import=1',
 }).html));
 router.get('/site-unpublished', (req, res) => send(res, tx.siteUnpublished({
   firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers',
