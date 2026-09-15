@@ -87,6 +87,50 @@ const smsFrom   = staffLine;
 const smsFromForNumber = staffLineForNumber;
 const voiceFrom = markLine;
 const voiceFromForNumber = markLineForNumber;
+// ─── Where our numbers appear to be (Peter, 2026-09-15) ──────────────────────
+// A first call shows the prospect the CITY of the caller's number, so a rep
+// who says "I'm in Brooklyn" while the phone reads "Dover, DE" loses the call.
+// The CRM shows the rep what the prospect sees. Exact localities come from
+// TWILIO_LINE_LOCATIONS (JSON: { "+1302…": "Dover, Delaware" }, read from the
+// Twilio Console); without an entry the area code gives the state / province,
+// and a UK mobile just reads "United Kingdom".
+const NANP_AREA = {
+  302: 'Delaware', 667: 'Maryland', 410: 'Maryland', 443: 'Maryland', 212: 'New York', 646: 'New York', 917: 'New York',
+  718: 'New York', 347: 'New York', 929: 'New York', 201: 'New Jersey', 973: 'New Jersey', 215: 'Pennsylvania', 267: 'Pennsylvania',
+  305: 'Florida', 786: 'Florida', 407: 'Florida', 813: 'Florida', 404: 'Georgia', 470: 'Georgia', 312: 'Illinois', 773: 'Illinois',
+  213: 'California', 310: 'California', 415: 'California', 424: 'California', 619: 'California', 818: 'California',
+  206: 'Washington', 512: 'Texas', 713: 'Texas', 214: 'Texas', 469: 'Texas', 602: 'Arizona', 702: 'Nevada', 303: 'Colorado',
+  416: 'Ontario', 647: 'Ontario', 437: 'Ontario', 905: 'Ontario', 365: 'Ontario', 613: 'Ontario', 514: 'Quebec', 438: 'Quebec', 604: 'British Columbia',
+  778: 'British Columbia', 403: 'Alberta', 587: 'Alberta', 780: 'Alberta', 204: 'Manitoba', 902: 'Nova Scotia',
+};
+// Our six lines as the Twilio Console lists them (Peter's screenshot, 2026-09-15).
+const KNOWN_LINE_LOCATIONS = {
+  '+13025277810': 'Felton, Delaware',       // US staff line (the reps' caller ID)
+  '+16672205540': 'Greensboro, Maryland',   // US Mark line
+  '+13653615576': 'Markham, Ontario',       // CA staff line
+  '+13656965918': 'Markham, Ontario',       // CA Mark line
+  '+447723497148': 'United Kingdom (mobile)', // GB staff line
+  '+447449911044': 'United Kingdom (mobile)', // GB Mark line
+};
+let lineLocationOverrides = { ...KNOWN_LINE_LOCATIONS };
+try { Object.assign(lineLocationOverrides, JSON.parse(process.env.TWILIO_LINE_LOCATIONS || '{}')); } catch { /* keep the known map */ }
+function lineLocation(number) {
+  const n = String(number || '');
+  if (!n) return null;
+  if (lineLocationOverrides[n]) return lineLocationOverrides[n];
+  try {
+    const { parsePhoneNumber } = require('libphonenumber-js');
+    const p = parsePhoneNumber(n);
+    if (!p) return null;
+    if (p.country === 'US' || p.country === 'CA') {
+      const area = Number(String(p.nationalNumber).slice(0, 3));
+      const region = NANP_AREA[area];
+      return region ? `${region}, ${p.country === 'CA' ? 'Canada' : 'United States'}` : (p.country === 'CA' ? 'Canada' : 'United States');
+    }
+    if (p.country === 'GB' || String(p.countryCallingCode) === '44') return /^7/.test(String(p.nationalNumber)) ? 'United Kingdom (mobile)' : 'United Kingdom';
+    return p.country || null;
+  } catch { return null; }
+}
 const twimlAppSid   = process.env.TWILIO_TWIML_APP_SID  || null;
 const publicBaseUrl = process.env.PUBLIC_BASE_URL || 'https://api.stemfra.com';
 
@@ -98,6 +142,7 @@ function isVoiceConfigured() {
 }
 
 module.exports = {
+  lineLocation,
   twilioClient,
   twilio,        // re-exported so routes can use twilio.jwt, twilio.twiml, etc.
   accountSid,

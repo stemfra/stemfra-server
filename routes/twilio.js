@@ -104,6 +104,25 @@ async function findEntityByPhone(phone) {
 const { logActivity } = require('../lib/activity');
 const { recordSmsOptOutByPhone } = require('../lib/ownerSmsAlerts');
 
+// ─── GET /api/twilio/lines?for=<E.164> — which of OUR numbers a call or text
+// to that prospect goes out from, and where that number appears to be
+// (config/twilio.js lineLocation). The CRM shows it beside the dialer so the
+// rep can answer "where are you calling from?" with what the prospect's
+// phone already displays (Peter, 2026-09-15). Staff only; no Twilio call.
+router.get('/lines', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  const cfg = require('../config/twilio');
+  const to = String(req.query.for || '');
+  const staff = to ? cfg.staffLineForNumber(to) : cfg.twilioFrom;
+  const mark = to ? cfg.markLineForNumber(to) : cfg.voiceFrom();
+  res.json({
+    for: to || null,
+    staff: staff ? { number: staff, location: cfg.lineLocation(staff) } : null,
+    mark: mark ? { number: mark, location: cfg.lineLocation(mark) } : null,
+  });
+});
+
 // ─── POST /api/twilio/token — Voice SDK access token ─────────────────────────
 //
 // Phase 1 ships this so the browser Phase 2 calling client can grab a token
