@@ -216,6 +216,7 @@ app.use('/api/admin/email-assist', require('./routes/emailAssist'));
 app.use('/api/admin/expense-receipts', require('./routes/admin/expenseReceipts'));
 app.use('/api/admin/copilot', require('./routes/admin/copilot'));
 app.use('/api/admin/leadgen-monitor', require('./routes/admin/leadgenMonitor'));
+app.use('/api/admin/leads', require('./routes/admin/leads')); // Google record refresh (2026-09-15)
 app.use('/api/admin/marketing-assets', require('./routes/admin/marketingAssets'));
 app.use('/api/admin/theme-registry', require('./routes/admin/themeRegistry'));
 app.use('/api/admin/support', require('./routes/admin/support'));
