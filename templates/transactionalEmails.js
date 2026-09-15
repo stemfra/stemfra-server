@@ -644,7 +644,7 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
         email ? { label: 'Sign-in email', value: email } : null,
       ],
       cta: { label: 'Configure your website', url: setup },
-      cta2: { label: 'Open your dashboard', url: dash },
+      cta2: { label: 'Dashboard', url: dash },
       note: 'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
       reason: 'You are receiving this because you created a Stemfra account with this address.',
     }),
@@ -655,7 +655,7 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
       '',
       siteHost ? `Your website: ${siteHost}` : null,
       `Configure your website: ${setup}`,
-      `Open your dashboard: ${dash}`,
+      `Dashboard: ${dash}`,
       '',
       'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
     ].filter(l => l !== null).join('\n'),
@@ -664,7 +664,7 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
 
 // "Your website is live" (P39k item 2, 2026-09-15). Sent from lib/sitePublish
 // the moment a site flips to live, to the owner: the address, View, share
-// links (the same four the CMS live card offers), Open your dashboard. Every
+// links (the same four the CMS live card offers), Dashboard. Every
 // owner hits this one; it is also the record of the address to give out.
 function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) {
   const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'there';
@@ -695,8 +695,8 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) 
       ],
       rows: [{ label: 'Your website', value: host }],
       bodyHtml: shareHtml,
-      cta: { label: 'View your website', url: liveUrl },
-      cta2: { label: 'Open your dashboard', url: dash },
+      cta: { label: 'Website', url: liveUrl },
+      cta2: { label: 'Dashboard', url: dash },
       note: 'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
       reason: `You are receiving this because ${name} was published on Stemfra with this address.`,
     }),
@@ -706,7 +706,7 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) 
       `${name} is now online. Anyone can visit, read about your services and book with you from today.`,
       '',
       `Your website: ${liveUrl}`,
-      `Open your dashboard: ${dash}`,
+      `Dashboard: ${dash}`,
       '',
       'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
     ].join('\n'),
@@ -732,7 +732,7 @@ function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboard
         'When you are ready, press Publish in your dashboard and it goes live again in seconds.',
       ],
       rows: [{ label: 'Website', value: host }, { label: 'Status', value: 'Preview (not public)' }],
-      cta: { label: 'Open your dashboard', url: dash },
+      cta: { label: 'Dashboard', url: dash },
       note: byStaff ? 'If you did not expect this, reply to this email and we will look into it right away.' : 'If this was not you, reply to this email and we will look into it right away.',
       reason: `You are receiving this because ${name} is registered on Stemfra with this address.`,
     }),
@@ -741,7 +741,7 @@ function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboard
       '',
       `${who} a moment ago. ${host} now shows only to you in preview. Nothing was deleted.`,
       '',
-      `Open your dashboard to publish again: ${dash}`,
+      `Dashboard (publish again from there): ${dash}`,
       '',
       'If this was not you, reply to this email and we will look into it right away.',
     ].join('\n'),
