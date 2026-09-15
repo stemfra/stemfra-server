@@ -2298,12 +2298,23 @@ with the suggestions inline (it also runs once on open from the signup's name + 
 stored match shows "Matched to your Google listing"). Hours: two radios, "Always open" and
 "Open at selected hours" (the second opens the Selected hours popup); no hours summary in
 the form, the listing card carries it. Listing panel widened to 380 px.
-(c) the "finish" job: AI drafts hero, About,
-FAQ and service descriptions from the ticked services and the listing facts, logo + favicon from
-the builder when none uploaded, marked "written for you, edit any time"; **opening hours rule
-(Peter): a scraped lead's Google hours prefill the hours step, otherwise the template's week**.
-(d) the honest finishing screen (a ticking progress list, 30 to 60 s) that lands on a dashboard
-reading "Unlisted · ready to publish". (e) the stepper redesign (no photo above the form), billing
+(c) the "finish" job ✅ BUILT 2026-09-15 (LOCAL, push hold; server `lib/siteCopy.js`,
+`POST /api/cms/site-copy/draft`, CMS `lib/useSiteCopy.ts`): one GPT call rewrites the
+sections still carrying the demo's words (home hero / intro / story / menu blurbs / team
+intro, About, Services and Book intros, the FAQ, the team page intro), writes service
+descriptions still equal to the seed's, and the page titles + descriptions for home,
+services, about; the demo CLAIM sections (awards, stats band, partner logos, cloned
+reviews) are hidden until the owner adds real ones; the composed monogram becomes the
+favicon when the tab icon is still the demo's. Only text the owner never touched is
+rewritten (text-only sample detection, brand-masked, positional match against the seed);
+a second run is a no-op. Verified on the throwaway barbers tenant: 12 sections, 7 services,
+3 pages, 5 sections hidden, about 45 s. Hours rule (Google hours prefill) shipped with the
+finder on 2026-09-14. Not done: an owner-facing "written for you" badge in the page editors.
+(d) the honest finishing screen ✅ BUILT 2026-09-15 (typechecks; not walked in the browser
+yet): `LaunchScreen` runs the finish job on mount for a site that is not live, plays a
+ticking list (headline, services, FAQ, pages) in the frame area, mounts the frame after,
+and shows a dismissible "Written for you" note. Lands on the launch screen, not the
+dashboard (Peter's 2026-09-14 flow). (e) the stepper redesign (no photo above the form), billing
 moved to publish time, custom domain out of onboarding, Stacy's checklist becomes optional.
 Required fields stay required (Peter, 2026-09-01).
 
@@ -2326,13 +2337,45 @@ publish only rings the in-app bell, and no account-security event emails an owne
    provisioning; subject "Registration successful", "Hi <first last>,", Peter's paragraph, site +
    sign-in rows, "Configure your website" = CMS magic link to /setup, ghost "Open your dashboard".
    Preview `/dev/preview/owner-welcome`. Test copy delivered to Peter's inbox 2026-09-14.
-2. 🔜 **"Your website is live"** from `lib/sitePublish.js` (address, View, share links) and its
-   unpublish twin. Every owner hits it; the biggest gap.
+2. ✅ **"Your website is live"** BUILT 2026-09-15 (LOCAL, push hold): `lib/siteLifecycleEmails.js`
+   fired from `publishSite` / `unpublishSite` (owner path passes `actorName: 'owner'`, staff
+   and scripts are named as Stemfra support in the unpublish twin); subject "<Business> is
+   live", rows + "Tell your clients" (magic link to /customers?import=1, where the import ends
+   in the website announcement), social links second, buttons Website / Dashboard (Peter).
+   Demo sites and test mailboxes skipped. Previews `/dev/preview/site-live` and
+   `/site-unpublished?staff=1`; test copies delivered to Peter's inbox.
 3. 🔜 **Account security slice**: password changed, sign-in email changed, 2FA on/off, new sign-in
    from a new device (needs a small per-user device table), one template with a "This wasn't me"
    button to /profile/security. Reads the locked security preference in `cms_notification_prefs`.
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
+
+## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
+
+The CRM sends and receives texts through the production server's Twilio rails, and the
+email side already drafts replies from our data (P24 `suggestReply` / `refineReply` on
+leads, the CRM's "Suggested reply" card). Do the same for SMS: when a lead or client texts
+back, draft the reply from the database (lead, business, offer, call notes) plus the SMS
+history of that number, and offer it in the Texts panel one tap away. Then an **Auto mode**
+per line or per conversation: **Auto** sends the drafted reply itself, **Off-hours** sends
+only outside the sales hours (P28 `crm_settings.work_time`) or when no manager is online
+(presence), **Off** drafts only. Every automatic send is logged as sent by "Auto (Stemfra)"
+with the draft kept, STOP handling stays first, and a reply that needs a human (pricing
+negotiation, complaint, unknown question) is left as a draft and bells the assigned rep.
+Same context builder as the email drafts so the two never disagree. Not started; scope
+after the onboarding arc closes.
+
+## Pricing justification (Peter, 2026-09-15, to discuss)
+
+Commission stays at **5%** (the 2026-09-15 competitor read: mainstream tools land at 2.7 to
+3.5% all-in for an established shop, 5% is the ceiling only Mindbody / Mangomint /
+Boulevard / WellnessLiving reach, and nobody charges 10% on repeat clients; a 10% flat rate
+was rejected). Next discussion: how the price is justified by what is delivered, which is
+not a generic website: an agency charges thousands to build the same site, and the offer
+adds booking, reminders, reviews, win-back, memberships, the marketplace listing and the AI
+Front desk. Write that argument for the pricing page and the sales script, and consider a
+performance fee (higher only on Stemfra-sourced bookings) as the growth lever instead of a
+higher flat rate.
 
 ## P38 — Stemfra marketplace + claimable listings (proposed 2026-09-12, Peter; staging agreed)
 

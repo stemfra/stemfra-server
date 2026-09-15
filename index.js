@@ -190,6 +190,7 @@ app.use('/api/cms/bookings', require('./routes/cms/bookings'));
 app.use('/api/cms/leads', require('./routes/cms/leads'));
 app.use('/api/cms/email-templates', require('./routes/cms/emailTemplates'));
 app.use('/api/cms/google-profile', require('./routes/cms/googleProfile'));
+app.use('/api/cms/site-copy', require('./routes/cms/siteCopy')); // P39c: the wizard's finish job (AI copy from the facts)
 app.use('/api/cms/reports', require('./routes/cms/reports'));
 app.use('/api/cms/sites', cmsSitesRouter);
 app.use('/api/cms/billing', require('./routes/cms/billing'));
