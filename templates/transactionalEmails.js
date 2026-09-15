@@ -639,13 +639,9 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
       paragraphs: [
         'Your registration for Stemfra has been confirmed. We are thrilled that you have decided to join our platform. Please configure your website in the next few clicks.',
       ],
-      rows: [
-        siteHost ? { label: 'Your website', value: siteHost } : null,
-        email ? { label: 'Sign-in email', value: email } : null,
-      ],
-      cta: { label: 'Configure your website', url: setup },
-      cta2: { label: 'Dashboard', url: dash },
-      note: 'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+      // One CTA into the setup wizard (Peter, 2026-09-15): a fresh owner has one
+      // job, finishing the onboarding; no address rows, no pricing note here.
+      cta: { label: 'Website', url: setup },
       reason: 'You are receiving this because you created a Stemfra account with this address.',
     }),
     text: [
@@ -653,12 +649,8 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
       '',
       'Your registration for Stemfra has been confirmed. We are thrilled that you have decided to join our platform. Please configure your website in the next few clicks.',
       '',
-      siteHost ? `Your website: ${siteHost}` : null,
-      `Configure your website: ${setup}`,
-      `Dashboard: ${dash}`,
-      '',
-      'Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
-    ].filter(l => l !== null).join('\n'),
+      `Website: ${setup}`,
+    ].join('\n'),
   };
 }
 
