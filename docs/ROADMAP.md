@@ -2365,6 +2365,22 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
+## P42 — Wizard intro slides per vertical (Peter, 2026-09-16; parked, no change today)
+
+The `/setup` intro ("Let's set up <name>", Start) rotates the same four slides for every
+business. The vertical is known by then, so the slides should show that vertical only.
+Recommendation (Claude): reuse the vertical's DEFAULT DEMO SITE gallery photos, the ones
+already localised on Cloudinary and curated per theme (barbers → argyle-and-sons, salons →
+maison-lune, crossfit → forge-and-bell, yoga → wildflower-yoga-pilates, massage → lull,
+spa → ellaris-spa; the `templates.is_default` demo of the site's vertical), falling back to
+the marketing `solutions.<vertical>.hero.photo` slot, then the current stock photos. Wins:
+zero new assets to shoot or licence, the photos are the same register the owner's site will
+carry, one query (`site_media` of the demo, or the gallery section's images) and the slide
+set follows the demo when it is refreshed. Alternative rejected: a new hand-picked set per
+vertical (six more asset slots to maintain in Marketing → Site imagery). Where:
+`stemfra_cms/src/components/onboarding/SetupWizard.tsx` `SLIDES` (the services slide
+already reads the solutions photo; the other three are fixed Unsplash URLs).
+
 ## P41 — Native lead-gen (port the n8n System B workflow into the server; agreed 2026-09-15)
 
 Peter's call after the v14 import: the workflow is glue (webhook → Apify → website gate →
