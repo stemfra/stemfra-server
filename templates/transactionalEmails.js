@@ -665,22 +665,11 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, cl
   const host = String(liveUrl || '').replace(/^https?:\/\//, '');
   const name = businessName || 'Your business';
   const shareText = `${name} is now online. Book with us at ${liveUrl}`;
-  const SF = "'Helvetica Neue',Helvetica,Arial,sans-serif";
-  const shares = [
-    ['WhatsApp', `https://wa.me/?text=${encodeURIComponent(shareText)}`],
-    ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(liveUrl)}`],
-    ['X', `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`],
-  ];
-  // "Tell your clients" (Peter, 2026-09-15): the share moment leads to the
-  // Clients page, where a client list upload ends in the one-time website
-  // announcement to every client (Client Growth Engine build 1). Social
-  // links stay as the second line.
-  const shareHtml = `
-    <p style="margin:26px 0 0;font-family:${SF};font-weight:400;font-size:11px;letter-spacing:0.28em;color:#211c18;text-transform:uppercase;">Tell your clients</p>
-    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:15px;line-height:1.75;color:#3c3733;">Upload your client list and we will email every client that ${escapeHtml(name)} now takes bookings online. Reviews, reminders and win-back messages start from the same list. <a href="${escapeHtml(clients)}" style="color:#1a73e8;text-decoration:none;">Add your clients</a></p>
-    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:13px;line-height:1.7;color:#6b655f;">Or share the address: ${
-      shares.map(([l, u]) => `<a href="${escapeHtml(u)}" style="color:#1a73e8;text-decoration:none;">${escapeHtml(l)}</a>`).join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
-    }</p>`;
+  void dash; void shareText;
+  // Two buttons only (Peter, 2026-09-15): Website opens the live site, Dashboard
+  // opens the CMS Clients page (a client list upload ends in the one-time "we
+  // now take bookings online" email to every client). No address row, no share
+  // links, no pricing line.
   return {
     subject: `${name} is live`,
     html: renderEmail({
@@ -690,11 +679,9 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, cl
       paragraphs: [
         `${name} is now online. Anyone can visit, read about your services and book with you from today. Here is the address to give out.`,
       ],
-      rows: [{ label: 'Your website', value: host }],
-      bodyHtml: shareHtml,
       cta: { label: 'Website', url: liveUrl },
-      cta2: { label: 'Dashboard', url: dash },
-      note: 'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+      cta2: { label: 'Dashboard', url: clients },
+      note: 'Change anything from your dashboard and it goes live at once.',
       reason: `You are receiving this because ${name} was published on Stemfra with this address.`,
     }),
     text: [
@@ -702,12 +689,10 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, cl
       '',
       `${name} is now online. Anyone can visit, read about your services and book with you from today.`,
       '',
-      `Your website: ${liveUrl}`,
-      `Dashboard: ${dash}`,
+      `Website: ${liveUrl}`,
+      `Dashboard: ${clients}`,
       '',
-      `Tell your clients: upload your client list and we will email every client that ${name} now takes bookings online. ${clients}`,
-      '',
-      'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+      'Change anything from your dashboard and it goes live at once.',
     ].join('\n'),
   };
 }
