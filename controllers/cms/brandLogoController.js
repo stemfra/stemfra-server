@@ -229,7 +229,7 @@ async function fontFile(req, res) {
   }
 }
 
-// POST /api/cms/brand-logo/build { siteId, svg, kind: 'logo'|'favicon', label, params }
+// POST /api/cms/brand-logo/build { siteId, svg, kind: 'logo'|'favicon'|'mark', label, params }
 // Stores the composed SVG in the site's Cloudinary folder (+ a site_media row
 // with the builder params, so the mark can be rebuilt later). A favicon is
 // rasterised by Cloudinary to a 256px PNG so every browser can use it.
@@ -246,20 +246,27 @@ async function buildLogo(req, res) {
     if (!site) return res.status(403).json({ error: 'Not your site' });
 
     const favicon = kind === 'favicon';
+    // 'mark' (2026-09-16): a square badge saved the way the demo sites' logos
+    // are, a 480 px WebP with no text in it, so every header sizes and stacks
+    // it in its own slot (28 to 40 px) and types the business name itself.
+    const mark = kind === 'mark';
     const id = crypto.randomUUID().replace(/-/g, '');
     const dataUri = `data:image/svg+xml;base64,${Buffer.from(trimmed, 'utf8').toString('base64')}`;
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: site.subdomain, public_id: id, resource_type: 'image', overwrite: false,
       ...(favicon ? { format: 'png', transformation: [{ width: 256, height: 256, crop: 'fit' }] } : {}),
+      ...(mark ? { format: 'webp', transformation: [{ width: 480, height: 480, crop: 'fit' }] } : {}),
     });
     const contactId = await resolveContactId(req.cmsUser.id);
-    const ext = favicon ? 'png' : 'svg';
+    const ext = favicon ? 'png' : mark ? 'webp' : 'svg';
+    const mime = favicon ? 'image/png' : mark ? 'image/webp' : 'image/svg+xml';
+    const kindLabel = favicon ? 'favicon' : mark ? 'logo-mark' : 'logo';
     const { data: row, error: dbErr } = await supabase.from('site_media').insert({
-      site_id: siteId, filename: `${favicon ? 'favicon' : 'logo'}-built-${id.slice(0, 8)}.${ext}`,
-      mime_type: favicon ? 'image/png' : 'image/svg+xml', size_bytes: result.bytes, width: result.width || null, height: result.height || null,
+      site_id: siteId, filename: `${kindLabel}-built-${id.slice(0, 8)}.${ext}`,
+      mime_type: mime, size_bytes: result.bytes, width: result.width || null, height: result.height || null,
       storage_provider: 'cloudinary', storage_key: result.public_id, original_url: result.secure_url,
       alt_text: label || (favicon ? 'Favicon' : 'Logo'), uploaded_by: contactId,
-      metadata: { source: 'brand-logo:builder', kind: favicon ? 'favicon' : 'logo', builder: params && typeof params === 'object' ? params : null },
+      metadata: { source: 'brand-logo:builder', kind: kindLabel, builder: params && typeof params === 'object' ? params : null },
     }).select('id').single();
     if (dbErr) throw new Error(`site_media: ${dbErr.message}`);
     res.json({ mediaId: row.id, secure_url: result.secure_url, width: result.width || null, height: result.height || null, format: ext });
