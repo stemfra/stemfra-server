@@ -751,7 +751,7 @@ function accountSecurity({ kind, firstName, email, whenLabel, device, ip, locati
       paragraphs: [body, 'If this was not you, open Security, change your password and turn on two-factor authentication, then reply to this email so we can look into it.'],
       rows,
       cta: { label: "This wasn't me", url },
-      note: 'Security notices are always sent for your Stemfra account and cannot be switched off.',
+      note: "To improve your account security, we've enabled login alerts. We'll continue to notify you whenever your email and password are used to log in from a new browser or device.",
       reason: 'You are receiving this because it concerns the security of your Stemfra account.',
     }),
     text: [
