@@ -1570,6 +1570,9 @@ is to treat the FIRST paying client as the trigger. Until then:
    and compose mounts a NAMED volume there, which inherits that ownership. After the
    deploy the next 07:00 UTC sweep (or the boot catch-up, since the newest dump is
    older than 26 h) should send no error mail; confirm with `GET /api/admin/backups`.
+   ✅ VERIFIED 2026-09-15 via `GET /api/admin/backups` on production: boot catch-up dump
+   2026-09-14 08:05 UTC (3,672 rows, 0 errors) and the scheduled 2026-09-15 07:00 UTC dump
+   (30 tables, 3,779 rows, 429 KB, 0 errors). The 07:00 mail on the 14th predated the deploy.
    The empty root-owned `./backups` folder on the VPS can be deleted. Nightly at
    BACKUP_HOUR_UTC (default 7 ≈ 2-3am ET) it streams 30 business-critical
    tables to gzip JSON (per-night dir + manifest), rolling 7-day retention,
