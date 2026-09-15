@@ -720,6 +720,73 @@ function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl, cl
   };
 }
 
+// Account security notices (P39k item 3, 2026-09-15; Facebook's "was this
+// you" mails were the reference). ONE template, five events; the primary
+// button is always "This wasn't me" into the CMS Security page. Security
+// notices ignore the notification preferences (the locked category).
+const SECURITY_COPY = {
+  password_changed: {
+    subject: 'Your Stemfra password was changed',
+    eyebrow: 'Password changed',
+    body: 'The password for your Stemfra account was changed just now. If that was you, there is nothing to do.',
+  },
+  email_changed: {
+    subject: 'Your Stemfra sign-in email was changed',
+    eyebrow: 'Sign-in email changed',
+    body: 'The sign-in email for your Stemfra account was changed. This notice goes to the old address and the new one.',
+  },
+  mfa_enabled: {
+    subject: 'Two-factor authentication is on',
+    eyebrow: 'Two-factor authentication',
+    body: 'Two-factor authentication was turned on for your Stemfra account. From now on, signing in asks for a code from your authenticator app as well as your password.',
+  },
+  mfa_disabled: {
+    subject: 'Two-factor authentication was turned off',
+    eyebrow: 'Two-factor authentication',
+    body: 'Two-factor authentication was turned off for your Stemfra account. Your password alone now protects it.',
+  },
+  new_device: {
+    subject: 'New sign-in to your Stemfra account',
+    eyebrow: 'New sign-in',
+    body: 'Your Stemfra account was just signed in from a device we had not seen before.',
+  },
+};
+
+function accountSecurity({ kind, firstName, email, whenLabel, device, ip, newEmail, securityUrl }) {
+  const c = SECURITY_COPY[kind] || SECURITY_COPY.new_device;
+  const url = securityUrl || `${CMS_URL}/profile/security`;
+  const body = kind === 'email_changed' && newEmail ? c.body.replace('was changed.', `was changed to ${newEmail}.`) : c.body;
+  const rows = [
+    whenLabel ? { label: 'When', value: whenLabel } : null,
+    device ? { label: 'Device', value: device } : null,
+    ip ? { label: 'Network', value: `IP ${ip}` } : null,
+    email ? { label: 'Account', value: email } : null,
+  ];
+  return {
+    subject: c.subject,
+    html: renderEmail({
+      preheader: body,
+      eyebrow: c.eyebrow,
+      heading: `Hi ${firstName || 'there'},`,
+      paragraphs: [body, 'If this was not you, open Security, change your password and turn on two-factor authentication, then reply to this email so we can look into it.'],
+      rows,
+      cta: { label: "This wasn't me", url },
+      note: 'Security notices are always sent for your Stemfra account and cannot be switched off.',
+      reason: 'You are receiving this because it concerns the security of your Stemfra account.',
+    }),
+    text: [
+      `Hi ${firstName || 'there'},`,
+      '',
+      body,
+      '',
+      ...rows.filter(Boolean).map(r => `${r.label}: ${r.value}`),
+      '',
+      `If this was not you, open Security and change your password: ${url}`,
+      'Then reply to this email so we can look into it.',
+    ].join('\n'),
+  };
+}
+
 // The unpublish twin: the site went back to preview (by the owner, or by
 // staff, in which case `byStaff` names that so the owner is not surprised).
 function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboardUrl, byStaff = false }) {
@@ -964,6 +1031,8 @@ module.exports = {
   ownerWelcome,
   siteLive,
   siteUnpublished,
+  accountSecurity,
+  SECURITY_COPY,
   bookingConfirmation,
   bookingReminder,
   bookingCanceled,

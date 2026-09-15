@@ -2350,9 +2350,18 @@ publish only rings the in-app bell, and no account-security event emails an owne
    in the website announcement), social links second, buttons Website / Dashboard (Peter).
    Demo sites and test mailboxes skipped. Previews `/dev/preview/site-live` and
    `/site-unpublished?staff=1`; test copies delivered to Peter's inbox.
-3. 🔜 **Account security slice**: password changed, sign-in email changed, 2FA on/off, new sign-in
-   from a new device (needs a small per-user device table), one template with a "This wasn't me"
-   button to /profile/security. Reads the locked security preference in `cms_notification_prefs`.
+3. ✅ **Account security slice** BUILT + VERIFIED 2026-09-15 (LOCAL, push hold): one template
+   `accountSecurity` (five events: password_changed, email_changed, mfa_enabled, mfa_disabled,
+   new_device; rows When / Device / Network / Account; "This wasn't me" → /profile/security;
+   preview `/dev/preview/account-security?kind=`). `lib/securityEvents.js`: email (test mailboxes
+   skipped) + a `security` bell row on every site the owner runs (the locked category).
+   Endpoints `POST /api/cms/security/event` (the CMS reports password + 2FA changes, which happen
+   directly against Supabase Auth) and `POST /api/cms/security/session` (device id from
+   localStorage on every sign-in; `cms_known_devices`, migration applied; the FIRST device an
+   account records is silent, later unknown devices notify). CMS: `lib/securityEvents.ts`, hooks
+   in `auth.tsx` + `ProfilePage.tsx`. Verified: device 1 silent, device 1 again known, device 2
+   notified (Safari on iPhone), bells landed; a test copy delivered to Peter's inbox. Not wired:
+   sign-in email change (the CMS has no email-change flow yet; the template already covers it).
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 

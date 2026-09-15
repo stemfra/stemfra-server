@@ -52,6 +52,7 @@ function indexPage() {
     ['owner-welcome', 'Owner: registration success / website ready (Stemfra)'],
     ['site-live', 'Owner: your website is live (Stemfra)'],
     ['site-unpublished', 'Owner: website unpublished (Stemfra)'],
+    ['account-security', 'Owner: account security notice (Stemfra; ?kind=password_changed|email_changed|mfa_enabled|mfa_disabled|new_device)'],
     ['owner-lead', 'Owner: new website lead'],
     ['owner-chat-lead', 'Owner: chat-assistant lead'],
     ['staff-handoff', 'Staff: Stacy handoff'],
@@ -204,6 +205,11 @@ router.get('/site-unpublished', (req, res) => send(res, tx.siteUnpublished({
   firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers',
   liveUrl: 'https://harbor-lane-barbers.stemfra.com', dashboardUrl: 'https://cms.stemfra.com',
   byStaff: req.query.staff === '1',
+}).html));
+router.get('/account-security', (req, res) => send(res, tx.accountSecurity({
+  kind: String(req.query.kind || 'new_device'), firstName: 'Sam', email: 'sam@harborlanebarbers.com',
+  whenLabel: 'Sep 15, 2026, 2:41 PM UTC', device: 'Chrome on Mac', ip: '203.0.113.42', newEmail: 'sam.rivera@gmail.com',
+  securityUrl: 'https://cms.stemfra.com/profile/security',
 }).html));
 router.get('/owner-lead', (_req, res) => send(res, tx.ownerLeadNotification({
   name: 'Dana Whitfield', email: 'dana@example.com', phone: '(917) 555-0184',
