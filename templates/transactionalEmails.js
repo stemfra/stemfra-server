@@ -729,13 +729,16 @@ const SECURITY_COPY = {
   },
 };
 
-function accountSecurity({ kind, firstName, email, whenLabel, device, ip, newEmail, securityUrl }) {
+function accountSecurity({ kind, firstName, email, whenLabel, device, ip, location, newEmail, securityUrl }) {
   const c = SECURITY_COPY[kind] || SECURITY_COPY.new_device;
   const url = securityUrl || `${CMS_URL}/profile/security`;
   const body = kind === 'email_changed' && newEmail ? c.body.replace('was changed.', `was changed to ${newEmail}.`) : c.body;
   const rows = [
     whenLabel ? { label: 'When', value: whenLabel } : null,
     device ? { label: 'Device', value: device } : null,
+    // City, state and country from the IP (Peter, 2026-09-15, the Facebook
+    // sign-in alert): the part an owner recognises; the bare IP stays below it.
+    location ? { label: 'Where', value: `Near ${location}` } : null,
     ip ? { label: 'Network', value: `IP ${ip}` } : null,
     email ? { label: 'Account', value: email } : null,
   ];
@@ -779,10 +782,10 @@ function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboard
       eyebrow: 'Website unpublished',
       heading: `Hi ${fullName},`,
       paragraphs: [
-        `${who} a moment ago. ${host} now shows only to you in preview, and visitors will no longer find it. Nothing was deleted: your services, team, bookings and content are all still in place.`,
+        `${who} a moment ago. It now shows only to you in preview, and visitors will no longer find it online until you publish it again. Nothing was deleted: your services, team, bookings and content are all still in place.`,
         'When you are ready, press Publish in your dashboard and it goes live again in seconds.',
       ],
-      rows: [{ label: 'Website', value: host }, { label: 'Status', value: 'Preview (not public)' }],
+      rows: [{ label: 'Website', value: host }, { label: 'Status', value: 'Unpublished' }],
       cta: { label: 'Dashboard', url: dash },
       note: byStaff ? 'If you did not expect this, reply to this email and we will look into it right away.' : 'If this was not you, reply to this email and we will look into it right away.',
       reason: `You are receiving this because ${name} is registered on Stemfra with this address.`,
@@ -790,7 +793,7 @@ function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboard
     text: [
       `Hi ${fullName},`,
       '',
-      `${who} a moment ago. ${host} now shows only to you in preview. Nothing was deleted.`,
+      `${who} a moment ago. It now shows only to you in preview until you publish it again. Nothing was deleted.`,
       '',
       `Dashboard (publish again from there): ${dash}`,
       '',

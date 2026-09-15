@@ -208,7 +208,7 @@ router.get('/site-unpublished', (req, res) => send(res, tx.siteUnpublished({
 }).html));
 router.get('/account-security', (req, res) => send(res, tx.accountSecurity({
   kind: String(req.query.kind || 'new_device'), firstName: 'Sam', email: 'sam@harborlanebarbers.com',
-  whenLabel: 'Sep 15, 2026, 2:41 PM UTC', device: 'Chrome on Mac', ip: '203.0.113.42', newEmail: 'sam.rivera@gmail.com',
+  whenLabel: 'Sep 15, 2026, 2:41 PM UTC', device: 'Chrome on Mac', ip: '203.0.113.42', location: 'Brooklyn, New York, United States', newEmail: 'sam.rivera@gmail.com',
   securityUrl: 'https://cms.stemfra.com/profile/security',
 }).html));
 router.get('/owner-lead', (_req, res) => send(res, tx.ownerLeadNotification({
