@@ -141,7 +141,7 @@ async function publish(req, res) {
 }
 
 async function unpublish(req, res) {
-  try { res.json(await unpublishSite(req.params.siteId)); }
+  try { res.json(await unpublishSite(req.params.siteId, { actorName: 'staff' })); }
   catch (err) { res.status(500).json({ error: err.message }); }
 }
 

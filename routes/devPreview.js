@@ -50,6 +50,8 @@ function indexPage() {
     ['platform-dunning', 'Billing: payment reminder / overdue (System A)'],
     ['platform-receipt', 'Billing: payment receipt (System A)'],
     ['owner-welcome', 'Owner: registration success / website ready (Stemfra)'],
+    ['site-live', 'Owner: your website is live (Stemfra)'],
+    ['site-unpublished', 'Owner: website unpublished (Stemfra)'],
     ['owner-lead', 'Owner: new website lead'],
     ['owner-chat-lead', 'Owner: chat-assistant lead'],
     ['staff-handoff', 'Staff: Stacy handoff'],
@@ -192,6 +194,15 @@ router.get('/visit-confirmation', (_req, res) => send(res, tx.visitConfirmation(
 router.get('/owner-welcome', (_req, res) => send(res, tx.ownerWelcome({
   firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers', email: 'sam@harborlanebarbers.com',
   siteHost: 'harbor-lane-barbers.stemfra.com', setupUrl: 'https://cms.stemfra.com/setup', dashboardUrl: 'https://cms.stemfra.com',
+}).html));
+router.get('/site-live', (_req, res) => send(res, tx.siteLive({
+  firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers',
+  liveUrl: 'https://harbor-lane-barbers.stemfra.com', dashboardUrl: 'https://cms.stemfra.com',
+}).html));
+router.get('/site-unpublished', (req, res) => send(res, tx.siteUnpublished({
+  firstName: 'Sam', lastName: 'Rivera', businessName: 'Harbor Lane Barbers',
+  liveUrl: 'https://harbor-lane-barbers.stemfra.com', dashboardUrl: 'https://cms.stemfra.com',
+  byStaff: req.query.staff === '1',
 }).html));
 router.get('/owner-lead', (_req, res) => send(res, tx.ownerLeadNotification({
   name: 'Dana Whitfield', email: 'dana@example.com', phone: '(917) 555-0184',

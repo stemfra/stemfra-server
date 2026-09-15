@@ -60,7 +60,7 @@ async function unpublish(req, res) {
     if (!siteId) return res.status(400).json({ error: 'siteId required' });
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ error: 'Not your site.' });
-    res.json(await unpublishSite(siteId));
+    res.json(await unpublishSite(siteId, { actorName: 'owner' }));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

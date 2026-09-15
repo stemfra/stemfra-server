@@ -662,6 +662,92 @@ function ownerWelcome({ firstName, lastName, businessName, siteHost, setupUrl, d
   };
 }
 
+// "Your website is live" (P39k item 2, 2026-09-15). Sent from lib/sitePublish
+// the moment a site flips to live, to the owner: the address, View, share
+// links (the same four the CMS live card offers), Open your dashboard. Every
+// owner hits this one; it is also the record of the address to give out.
+function siteLive({ firstName, lastName, businessName, liveUrl, dashboardUrl }) {
+  const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'there';
+  const dash = dashboardUrl || CMS_URL;
+  const host = String(liveUrl || '').replace(/^https?:\/\//, '');
+  const name = businessName || 'Your business';
+  const shareText = `${name} is now online. Book with us at ${liveUrl}`;
+  const SF = "'Helvetica Neue',Helvetica,Arial,sans-serif";
+  const shares = [
+    ['WhatsApp', `https://wa.me/?text=${encodeURIComponent(shareText)}`],
+    ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(liveUrl)}`],
+    ['X', `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`],
+    ['Email', `mailto:?subject=${encodeURIComponent(`${name} website is live`)}&body=${encodeURIComponent(shareText)}`],
+  ];
+  const shareHtml = `
+    <p style="margin:26px 0 0;font-family:${SF};font-weight:400;font-size:11px;letter-spacing:0.28em;color:#211c18;text-transform:uppercase;">Share it</p>
+    <p style="margin:8px 0 0;font-family:${SF};font-weight:300;font-size:15px;line-height:1.75;color:#3c3733;">${
+      shares.map(([l, u]) => `<a href="${escapeHtml(u)}" style="color:#1a73e8;text-decoration:none;">${escapeHtml(l)}</a>`).join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
+    }</p>`;
+  return {
+    subject: `${name} is live`,
+    html: renderEmail({
+      preheader: `${name} is now online at ${host}. Share the address with your clients.`,
+      eyebrow: 'Your website is live',
+      heading: `Hi ${fullName},`,
+      paragraphs: [
+        `${name} is now online. Anyone can visit, read about your services and book with you from today. Here is the address to give out.`,
+      ],
+      rows: [{ label: 'Your website', value: host }],
+      bodyHtml: shareHtml,
+      cta: { label: 'View your website', url: liveUrl },
+      cta2: { label: 'Open your dashboard', url: dash },
+      note: 'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+      reason: `You are receiving this because ${name} was published on Stemfra with this address.`,
+    }),
+    text: [
+      `Hi ${fullName},`,
+      '',
+      `${name} is now online. Anyone can visit, read about your services and book with you from today.`,
+      '',
+      `Your website: ${liveUrl}`,
+      `Open your dashboard: ${dash}`,
+      '',
+      'Change anything from your dashboard and it goes live at once. Free website, no monthly fee. We earn a flat 5% on bookings, at-visit sales and memberships, billed monthly.',
+    ].join('\n'),
+  };
+}
+
+// The unpublish twin: the site went back to preview (by the owner, or by
+// staff, in which case `byStaff` names that so the owner is not surprised).
+function siteUnpublished({ firstName, lastName, businessName, liveUrl, dashboardUrl, byStaff = false }) {
+  const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'there';
+  const dash = dashboardUrl || CMS_URL;
+  const host = String(liveUrl || '').replace(/^https?:\/\//, '');
+  const name = businessName || 'Your website';
+  const who = byStaff ? 'Stemfra support took your website offline' : 'Your website was taken offline';
+  return {
+    subject: `${name} is no longer live`,
+    html: renderEmail({
+      preheader: `${host} is offline and back in preview. Publish again from your dashboard whenever you are ready.`,
+      eyebrow: 'Website unpublished',
+      heading: `Hi ${fullName},`,
+      paragraphs: [
+        `${who} a moment ago. ${host} now shows only to you in preview, and visitors will no longer find it. Nothing was deleted: your services, team, bookings and content are all still in place.`,
+        'When you are ready, press Publish in your dashboard and it goes live again in seconds.',
+      ],
+      rows: [{ label: 'Website', value: host }, { label: 'Status', value: 'Preview (not public)' }],
+      cta: { label: 'Open your dashboard', url: dash },
+      note: byStaff ? 'If you did not expect this, reply to this email and we will look into it right away.' : 'If this was not you, reply to this email and we will look into it right away.',
+      reason: `You are receiving this because ${name} is registered on Stemfra with this address.`,
+    }),
+    text: [
+      `Hi ${fullName},`,
+      '',
+      `${who} a moment ago. ${host} now shows only to you in preview. Nothing was deleted.`,
+      '',
+      `Open your dashboard to publish again: ${dash}`,
+      '',
+      'If this was not you, reply to this email and we will look into it right away.',
+    ].join('\n'),
+  };
+}
+
 // Recon R4 (2026-08-11): a settled payment was recalled by the tenant's bank
 // (ACH reversal) or the transfer never went through (rejection). The invoice is
 // open again; this is the re-deposit ask. Firm but polite.
@@ -869,6 +955,8 @@ function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel 
 module.exports = {
   prospectClaimEmail,
   ownerWelcome,
+  siteLive,
+  siteUnpublished,
   bookingConfirmation,
   bookingReminder,
   bookingCanceled,
