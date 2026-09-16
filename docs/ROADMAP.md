@@ -42,11 +42,18 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   from outside (clean-cuts/argyle → stemfra-barbers, ellaris-spa → stemfra-spa, lull → stemfra-massage,
   unknown host → 404, robots Allow, api/cms/crm/www bypass), `TENANT_WILDCARD_ROUTING=true` in
   deploy.yml. **Custom Hostnames (item 4b) ✅ LIVE 2026-09-16** (Cloudflare for SaaS ✅ Peter
-  confirmed 2026-09-16): `lib/tenantHosts.js` (custom hostname for BYO, Worker route on our own
-  zone for registered domains, legacy Pages when off) behind `TENANT_CUSTOM_HOSTNAMES=true`,
-  Worker redeployed with brand-host resolution + the `*/*` route, fallback origin
-  `sites.stemfra.com` active, throwaway hostname proven (cert in 50 s), the two `.click` domains
-  migrated and their Pages entries detached: every Pages project holds ZERO custom domains now.
+  confirmed 2026-09-16): `lib/tenantHosts.js` (EVERY brand domain = a custom hostname on the
+  stemfra.com zone, apex + www; a domain whose zone we run gets its DNS-only CNAME written for it;
+  legacy Pages when off) behind `TENANT_CUSTOM_HOSTNAMES=true`, Worker redeployed with brand-host
+  resolution + the `*/*` route, fallback origin `sites.stemfra.com` active, the two `.click`
+  domains migrated and their Pages entries detached: every Pages project holds ZERO custom domains
+  now. **BYO connect from the CMS ✅ VERIFIED the same night** (byo.calcs.click on clean-cuts:
+  Connect → guided CNAME card → served on its own certificate in 40 s → activation sweeper + bell
+  at 10 min; the card now refreshes itself on that bell, platform 10c2746). Design correction the
+  same night: the first cut's per-zone Worker routes were RETIRED after `wrangler deploy` deleted
+  them (2-minute outage on cleancutsbarber.click); never route the Worker on a tenant zone. KV
+  write alert (bot subdomain scans) fixed in the Worker (no KV writes for unknown hosts, 1 h
+  memory cache; Workers Paid $5/mo is the fallback). Pushed: server 1f7a580, platform 10c2746.
   Runbook DOMAINS.md §7. Earlier note kept below:
 - Wildcard Worker was NOT live (2026-09-07, Cloudflare API; re-verified 2026-09-11: no `*` DNS,
   flag unset, remix-barbers attached as a Pages domain, 9/100 slots on stemfra-barbers; go-live
