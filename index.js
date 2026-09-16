@@ -255,6 +255,8 @@ server.listen(PORT, () => {
   // subscription per calendar month (Payoneer etc.; Stripe self-bills).
   startBillingCycleSweeper();
   require('./lib/domainActivation').startDomainActivationSweeper(); // custom domains go 'active' only once they really serve (2026-08-19)
+  // An unfinished lead-gen batch survives a deploy (crm_settings.leadgen_batch, 2026-09-16).
+  setTimeout(() => require('./lib/leadgenBatch').resumeOnBoot().catch(() => {}), 15_000);
   // Site deletion: hard-purge sites that have been soft-deleted past the 90-day
   // grace window (Cloudinary media + all DB rows). See lib/siteDeletion.js.
   startSiteDeletionSweeper();
