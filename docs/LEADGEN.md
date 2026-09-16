@@ -241,6 +241,27 @@ every lead until now, so the Coverage page's per-run counts were always 0). Past
 callback for the Manhattan run (row closed as empty, bell delivered); the n8n side is
 Peter's paste (⏳).
 
+## Batch runs (2026-09-16, Peter: "generate 1,000 leads across US, UK and CA")
+
+One trigger = one city × one vertical, at most 100 places, so a big pull is dozens of
+runs. `lib/leadgenBatch.js` runs them back to back ON THE SERVER: `POST /api/leadgen/batch
+{ runs: [<the same fields a single trigger takes>], pace_seconds? }` (staff JWT) starts a
+queue; each run goes through `lib/leadgenRun.js startRun` (the trigger's body, lifted out so
+no HTTP hop or short-lived browser token is involved), then the queue waits for n8n's
+`/run-complete` to close the `leadgen_runs` row (poll every 15 s, up to
+`LEADGEN_BATCH_RUN_TIMEOUT_MS`, default 12 min) before the next one; a short run that
+answered its summary inline is counted at once. One batch per process (in-memory state;
+the `leadgen_runs` rows are the durable record). `GET /batch/status` = progress
+(current run, done/total, inserted so far, per-run status); `POST /batch/cancel` stops
+after the current run. When the queue ends the requester gets ONE bell: "Lead-gen batch
+done: N new leads from M runs · US: a · CA: b · GB: c". Plans live in
+`scripts/leadgen-batch-plans/*.json` (the first: New York, Toronto, London × six
+verticals, 100 places each, min_score 5). Run it against production
+(`https://api.stemfra.com/api/leadgen/batch`) so a closed laptop cannot interrupt it; the
+scoring agent is the slow part (a 100-place run takes minutes), so 18 runs is on the order
+of an hour. Old-school listings never enter the CRM (section below), so the counts in the
+bell are digital-ready leads only.
+
 ## Digital readiness (2026-09-11; LIVE in n8n 2026-09-13, Peter pasted v13, verified on a Staten Island run)
 
 Paste rule learned that day: n8n Set / HTTP body fields in **Expression** mode take the value

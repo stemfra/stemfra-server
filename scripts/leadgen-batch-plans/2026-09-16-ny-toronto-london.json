@@ -1,0 +1,24 @@
+{
+  "note": "First big pull (Peter, 2026-09-16): New York, Toronto and London across all six verticals, 100 places each. POST as the body of /api/leadgen/batch.",
+  "pace_seconds": 20,
+  "runs": [
+    { "system": "cold", "vertical": "barbershop",   "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "beauty_salon", "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "crossfit",     "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "yoga_pilates", "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "massage",      "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "spa",          "city": "New York", "country": "US", "country_name": "United States", "state_code": "NY", "state_name": "New York", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "barbershop",   "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "beauty_salon", "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "crossfit",     "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "yoga_pilates", "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "massage",      "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "spa",          "city": "Toronto", "country": "CA", "country_name": "Canada", "state_code": "ON", "state_name": "Ontario", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "barbershop",   "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "beauty_salon", "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "crossfit",     "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "yoga_pilates", "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "massage",      "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 },
+    { "system": "cold", "vertical": "spa",          "city": "London", "country": "GB", "country_name": "United Kingdom", "state_code": null, "state_name": "England", "max_results": 100, "min_score": 5 }
+  ]
+}

@@ -67,8 +67,8 @@ async function validateUserSession(req) {
 // Runs whose summary already reached the rep through the trigger response
 // (fast early exits); the /run-complete callback records them but does not
 // ring the bell a second time. In-process, short-lived, pruned on use.
-const answeredInline = new Set();
-
+const { startRun, answeredInline } = require('../lib/leadgenRun');
+const { startBatch, cancelBatch, batchStatus } = require('../lib/leadgenBatch');
 // ─── Run feedback: n8n → server (2026-09-13) ─────────────────────────────────
 // Every lead-gen run now ends in the workflow's "Run Summary" node, whatever
 // stage it stopped at (nothing scraped, everything had a website, all
@@ -118,181 +118,36 @@ router.post('/run-complete', async (req, res) => {
 router.post('/trigger', async (req, res) => {
   const user = await validateUserSession(req);
   if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  // The run itself lives in lib/leadgenRun.js (2026-09-16) so the batch runner
+  // can start runs without an HTTP hop; this route is the thin staff-facing wrapper.
+  const out = await startRun(user, req.body || {});
+  return res.status(out.status).json(out.json);
+});
 
-  const {
-    system       = 'cold',
-    vertical     = 'barbershop',
-    city         = '',
-    country      = null,
-    country_name = null,
-    state_code   = null,
-    state_name   = null,
-    search_query,
-    max_results  = 30,
-    min_score    = 5,
-  } = req.body || {};
-
-  // ── Validate inputs (fail fast, before spending an Apify/Claude run) ──
-  if (system !== 'cold' && system !== 'warm') {
-    return res.status(400).json({ success: false, message: 'system must be "cold" or "warm".' });
-  }
-  if (!KNOWN_VERTICALS.has(vertical)) {
-    return res.status(400).json({
-      success: false,
-      message: `Unknown vertical "${vertical}". Allowed: ${[...KNOWN_VERTICALS].join(', ')}.`,
-    });
-  }
-  if (system === 'cold' && !city && !search_query) {
-    return res.status(400).json({ success: false, message: 'A city or search_query is required for a cold run.' });
-  }
-  const maxResults = Math.min(Math.max(parseInt(max_results, 10) || 30, 1), 100); // clamp 1–100
-  const minScore   = Math.min(Math.max(parseInt(min_score, 10) || 5, 1), 10);     // clamp 1–10
-
-  // ── Pick the right n8n webhook ──
-  const webhookUrl = system === 'cold'
-    ? process.env.N8N_LEADGEN_COLD_URL
-    : process.env.N8N_LEADGEN_WARM_URL;
-
-  if (!webhookUrl) {
-    return res.status(503).json({
-      success: false,
-      message: `Lead-gen (${system}) is not configured on the server yet.`,
-    });
-  }
-
-  // Build the search_query Google Maps will see. If the caller passed an
-  // explicit search_query, respect it. Otherwise compose one with as much
-  // disambiguating context as we have. Examples:
-  //   "barbershop in Brooklyn, New York, United States"   ← best
-  //   "barbershop in Brooklyn, NY, United States"         ← fallback (no state name)
-  //   "barbershop in Lagos, Nigeria"                      ← country with no states
-  //   "barbershop in Brooklyn"                            ← legacy / no geo enrichment
-  //
-  // Preference order: full state name > state ISO code > nothing. The
-  // country gets the same treatment.
-  const verticalText = vertical.replace('_', ' ');
-  const stateSegment   = state_name   || state_code   || null;
-  const countrySegment = country_name || country      || null;
-  const segments       = [city, stateSegment, countrySegment].filter(Boolean);
-  const defaultQuery   = `${verticalText} in ${segments.join(', ')}`;
-
-  // The active A1 outreach template (CRM → Email Templates) rides along so the
-  // scoring agent drafts INSIDE the agreed structure — flow, self-serve CTA and
-  // the literal {{demo_link}} / {{start_free_link}} merge fields intact (those
-  // two are resolved at send time by send-outreach). Editing A1 in the CRM
-  // retunes the agent on the next run; the Template Manager stays the single
-  // source of truth. Best-effort: without it the agent falls back to freehand.
-  let template_a1 = null;
+// ─── POST /api/leadgen/batch ─────────────────────────────────────────────────
+// Many runs back to back on the server (lib/leadgenBatch.js): { runs: [{vertical,
+// city, country, country_name, state_code, state_name, max_results, min_score}],
+// pace_seconds? }. One batch at a time; GET /batch/status for progress; POST
+// /batch/cancel stops after the current run. Bell to the requester at the end.
+router.post('/batch', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
   try {
-    const { data: tpl } = await supabase
-      .from('email_templates')
-      .select('subject, body')
-      .eq('code', 'A1')
-      .eq('is_active', true)
-      .maybeSingle();
-    if (tpl) template_a1 = tpl;
-  } catch { /* freehand fallback */ }
-
-  const payload = {
-    system,
-    vertical,
-    city,
-    country,
-    country_name,
-    state_code,
-    state_name,
-    search_query: search_query || defaultQuery,
-    max_results: maxResults,
-    min_score:   minScore,
-    template_a1,
-    triggered_by: user.id,
-    triggered_at: new Date().toISOString(),
-  };
-
-  // Coverage ledger (launch task #6): ONE leadgen_runs row per run, created
-  // BEFORE the webhook so even a failed/empty run counts as "we tried this
-  // city". `run_id` rides on the payload so n8n can stamp `leads.leadgen_run_id`
-  // on every lead it inserts (n8n-workflows/leadgen-system-prompt.txt + the
-  // Supabase insert node; Peter pastes). Derived counts on /coverage use it.
-  let runId = null;
-  try {
-    const { data: run, error } = await supabase.from('leadgen_runs').insert({
-      system, vertical, country: country || null, country_name: country_name || null,
-      state_code: state_code || null, state_name: state_name || null, city: city || null,
-      search_query: payload.search_query, max_results: maxResults, min_score: minScore,
-      requested_by: user.id, status: 'requested',
-    }).select('id').single();
-    if (error) console.error('[leadgen] coverage run insert failed:', error.message);
-    else { runId = run.id; payload.run_id = runId; }
-  } catch (e) { console.error('[leadgen] coverage run insert threw:', e.message); }
-
-  try {
-    // Fire the n8n webhook. n8n runs the workflow and writes leads to Supabase
-    // itself; we don't wait for the full scrape to finish (it can take a while),
-    // so we use a short timeout and treat a kicked-off run as success. The
-    // workflow's own Respond node returns quickly because the heavy work happens
-    // in nodes that stream; if your n8n runs synchronously and is slow, raise
-    // this timeout or switch the workflow to responseMode: 'onReceived'.
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25_000);
-
-    const headers = { 'Content-Type': 'application/json' };
-    if (process.env.N8N_WEBHOOK_SECRET) {
-      headers['x-leadgen-secret'] = process.env.N8N_WEBHOOK_SECRET;
-    }
-
-    const r = await fetch(webhookUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-
-    if (!r.ok) {
-      const text = await r.text().catch(() => '');
-      console.error('[leadgen] n8n webhook returned', r.status, text);
-      if (runId) await supabase.from('leadgen_runs').update({ status: 'failed', notes: `n8n ${r.status}` }).eq('id', runId).then(() => {}, () => {});
-      return res.status(502).json({
-        success: false,
-        message: `Lead-gen workflow could not be started (n8n responded ${r.status}).`,
-      });
-    }
-
-    // (The old activity_feed 'leadgen_run' insert was removed 2026-08-18: it never
-    // landed, entity_type CHECK rejects it, so 0 rows in 2 months. The
-    // leadgen_runs row above is the run record now.)
-
-    // Run feedback (2026-09-13): the workflow (v14) ends in a Run Summary that it
-    // POSTs to /run-complete and also returns as the webhook response. A short
-    // run (every candidate dropped at the website filter, dedupe or the score
-    // gate) answers inside our 25 s wait, so the rep gets the outcome in the
-    // toast right away; the callback then skips the bell for that run. A long
-    // run times out here and the callback rings the bell instead.
-    const body = await r.json().catch(() => null);
-    if (body && body.summary && typeof body.message === 'string') {
-      if (runId) answeredInline.add(runId);
-      return res.status(200).json({ success: true, message: body.message, summary: body.summary, run_id: runId });
-    }
-
-    return res.status(202).json({
-      success: true,
-      message: `Lead-gen ${system} run started for ${vertical}${city ? ` in ${city}` : ''}. You will get a notification when it finishes.`,
-      run_id: runId,
-    });
-  } catch (err) {
-    if (err.name === 'AbortError') {
-      // The run was kicked off but n8n is taking a while to respond — that's
-      // usually fine, the workflow keeps running and writes leads when done.
-      console.warn('[leadgen] n8n webhook timed out waiting for response (run likely still in progress)');
-      return res.status(202).json({
-        success: true,
-        message: 'Lead-gen run started (still processing). Check the review queue in a few minutes.',
-      });
-    }
-    console.error('[leadgen] trigger error:', err);
-    return res.status(500).json({ success: false, message: err.message });
+    const status = startBatch({ requestedBy: user.id, runs: req.body?.runs, paceSeconds: req.body?.pace_seconds ?? 20 });
+    return res.status(202).json({ success: true, ...status });
+  } catch (e) {
+    return res.status(e.code === 'batch_running' ? 409 : 400).json({ success: false, message: e.message });
   }
+});
+router.get('/batch/status', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  return res.json({ success: true, ...batchStatus() });
+});
+router.post('/batch/cancel', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  return res.json({ success: true, ...cancelBatch() });
 });
 
 // ─── POST /api/leadgen/refine-draft ──────────────────────────────────────────
