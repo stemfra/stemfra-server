@@ -2436,6 +2436,8 @@ after the onboarding arc closes.
 
 ## Pricing justification (Peter, 2026-09-15, to discuss)
 
+_The full competitor table behind this block: `docs/PRICING_COMPETITORS.md` (saved 2026-09-16)._
+
 Commission stays at **5%** (the 2026-09-15 competitor read: mainstream tools land at 2.7 to
 3.5% all-in for an established shop, 5% is the ceiling only Mindbody / Mangomint /
 Boulevard / WellnessLiving reach, and nobody charges 10% on repeat clients; a 10% flat rate
