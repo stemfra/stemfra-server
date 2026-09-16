@@ -35,7 +35,9 @@ cold pitch. Applies to Stemfra's warm outbound (reply-triggered AI calls,
      24/7, even when you're with a client or asleep."
      *Outcome:* "You stop losing the customer who called at 9pm and gave up
      because no one picked up."
-3. **The number, no hedging:** "It's $X a month, no setup fee to start free."
+3. **The number, no hedging:** "It's free. No setup fee, no monthly fee. We take a flat
+   5% on the bookings that come through your site, so we only earn when you do."
+   (The commission model since 2026-07-27; never quote a monthly price.)
 4. **The close line:** "Watch the whole thing — if it's not for you, just
    tell me and I'll cancel the call. If it looks good, I'll see you at
    [time]."
