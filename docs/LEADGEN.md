@@ -255,4 +255,17 @@ link, a social profile). The signals that fired are in `qualification.readiness_
 CRM drawer shows them as the pill's tooltip). Not factors, by Peter's rule: owner replies to
 reviews, review recency, business age (age is a call question; the first-review date needs the
 paid reviews fetch). The scoring agent sees `digital_readiness:` in its prompt. The CRM filters
-on the Readiness facet; old-school leads go to the done-for-you track, not the bin.
+on the Readiness facet.
+
+**Old-school listings are NOT a match (Peter, 2026-09-16, after the Neil's Barbershop call and
+the remote-team decision: Stemfra's products are for owners who already act online; nobody can
+visit a shop to set it up).** They never enter the CRM: the workflow's `Digital-ready?` If node
+drops them right after Normalize Candidate and the run summary reports "N old-school listings
+skipped" (`n8n-workflows/leadgen-readiness-gate-v15.paste.md`, Peter pastes; summary key
+`old_school`, `stopped_at: 'readiness'` when nothing passes). Backstop: DB trigger
+`leads_reject_old_school` (migration `leads_reject_old_school_v1.sql`, applied 2026-09-16)
+silently rejects a `google_maps` insert with `readiness = 'old_school'`. The 19 old-school leads
+already in the CRM were set to `stage = lost` with the reason on 2026-09-16 (kept, not deleted,
+so their calls and history stay attached). The earlier "done-for-you track" wording is retired;
+old-school shops will meet Stemfra through the marketplace's facts-only listings (P38), never
+through a rep's time.
