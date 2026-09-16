@@ -2438,6 +2438,21 @@ after the onboarding arc closes.
 
 _The full competitor table behind this block: `docs/PRICING_COMPETITORS.md` (saved 2026-09-16)._
 
+**Decisions 2026-09-16 (Peter, after the Neil's Barbershop transcript):**
+- **Flat 5% stays, NO cap for now.** A monthly cap was proposed (5%, never more than $X) and
+  deferred: first sign clients and learn what they are comfortable with; a cap also gives
+  away Stemfra revenue on exactly the shops that book the most. Revisit with real tenants.
+- **The offer's story is win-back first, then new clients.** The pitch leads with the clients
+  an owner already has: import the client list, win back the ones who stopped coming, ask
+  every visit for a review; the rising rating and review count lift the Google Maps listing,
+  and the new clients follow organically. Every win-back booking runs through the site's
+  booking link, so it is commissionable even in a walk-in shop. The public review count is
+  the proof loop (visible on Google, no tracked number needed). Pricing-page and script copy
+  follow this story (CLIENT_GROWTH_OFFER.md is the base).
+- **Target audience = owners who already act online** (readiness modern / middle); old-school
+  listings are excluded at lead-gen (see LEADGEN.md); the company works remotely, no visits.
+- Performance fee on Stemfra-sourced bookings stays an open idea for later, not for launch.
+
 Commission stays at **5%** (the 2026-09-15 competitor read: mainstream tools land at 2.7 to
 3.5% all-in for an established shop, 5% is the ceiling only Mindbody / Mangomint /
 Boulevard / WellnessLiving reach, and nobody charges 10% on repeat clients; a 10% flat rate
