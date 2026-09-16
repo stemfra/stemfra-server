@@ -2452,6 +2452,9 @@ _The full competitor table behind this block: `docs/PRICING_COMPETITORS.md` (sav
 - **Target audience = owners who already act online** (readiness modern / middle); old-school
   listings are excluded at lead-gen (see LEADGEN.md); the company works remotely, no visits.
 - Performance fee on Stemfra-sourced bookings stays an open idea for later, not for launch.
+- **Go-to-market plan written**: `docs/GTM_PLAN_2026-09.md` (channels, funnel arithmetic, the
+  $300 Facebook pilot with two prerequisites: funnel conversion tracking + a frictionless
+  "See my site" claim flow; revenue per client re-based on outside benchmarks).
 
 Commission stays at **5%** (the 2026-09-15 competitor read: mainstream tools land at 2.7 to
 3.5% all-in for an established shop, 5% is the ceiling only Mindbody / Mangomint /
