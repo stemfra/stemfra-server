@@ -10,6 +10,7 @@ const { siteKind, setSiteTestFlag } = require('../../lib/testData');
 const { onboardCustomer } = require('../../lib/onboardSite');
 const { attachSiteDomain, detachSiteDomain, projectFor } = require('../../lib/attachSiteDomain');
 const cf = require('../../lib/cloudflarePages');
+const tenantHosts = require('../../lib/tenantHosts'); // brand-domain policy (custom hostname / own zone / Pages)
 const { publishSite, unpublishSite, getBillingStatus } = require('../../lib/sitePublish');
 const { evaluateCompleteness } = require('../../lib/siteCompleteness');
 const { softDeleteSite, restoreSite } = require('../../lib/siteDeletion');
@@ -171,18 +172,18 @@ async function setCustomDomain(req, res) {
     const { data: site } = await supabase.from('sites').select('id, vertical:verticals(slug)').eq('id', siteId).single();
     if (!site) return res.status(404).json({ error: 'Site not found.' });
     const project = projectFor(site.vertical?.slug);
-    const target = `${project}.pages.dev`;
-
-    await cf.attachCustomDomain(project, clean);
-    // If it's a *.stemfra.com host we can wire DNS ourselves; otherwise the
-    // client adds a CNAME at their registrar (returned below).
     if (clean.endsWith('.stemfra.com')) {
-      const existing = await cf.findDnsRecord(clean);
-      if (!existing) await cf.addCnameRecord(clean.replace('.stemfra.com', ''), target);
+      return res.status(400).json({ error: 'Stemfra addresses are served by the wildcard router; enter the client\'s own domain.' });
     }
+
+    // Same policy module as the owner path (lib/tenantHosts): custom hostname,
+    // Worker route on a zone we own, or the legacy Pages attach. The client
+    // adds the returned CNAME at their registrar.
+    const attached = await tenantHosts.attachBrandDomain({ project, domain: clean });
     await supabase.from('sites').update({ custom_domain: clean }).eq('id', siteId);
-    const status = await cf.getCustomDomain(project, clean);
-    res.json({ ok: true, domain: clean, project, cnameTarget: target, status: status?.status || 'pending' });
+    try { await require('../../lib/domainActivation').markPropagating(siteId, clean); } catch { /* best-effort */ }
+    const status = await tenantHosts.brandDomainStatus({ project, domain: clean });
+    res.json({ ok: true, domain: clean, project, cnameTarget: attached.cnameTarget, status: status.status, mode: attached.mode });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -196,7 +197,7 @@ async function removeCustomDomain(req, res) {
     if (!site) return res.status(404).json({ error: 'Site not found.' });
     if (site.custom_domain) {
       const project = projectFor(site.vertical?.slug);
-      await cf.removeCustomDomain(project, site.custom_domain);
+      await tenantHosts.detachBrandDomain({ project, domain: site.custom_domain });
       await cf.deleteCnameRecord(site.custom_domain); // no-op if not in our zone
     }
     await supabase.from('sites').update({ custom_domain: null }).eq('id', siteId);

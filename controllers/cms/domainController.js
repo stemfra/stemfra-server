@@ -10,6 +10,9 @@ const supabase = require('../../config/supabase');
 const { verifySiteOwnership } = require('../../middleware/cmsAuth');
 const { projectFor } = require('../../lib/attachSiteDomain');
 const cf = require('../../lib/cloudflarePages');
+// Brand domains: custom hostname / own zone / legacy Pages, decided in ONE
+// place (lib/tenantHosts, 2026-09-16). Never call cf.attachCustomDomain here.
+const tenantHosts = require('../../lib/tenantHosts');
 const registrar = require('../../lib/registrar');
 const domainBalance = require('../../lib/domainBalance');
 const { purchaseAndWire } = require('../../lib/domainPurchase');
@@ -47,24 +50,19 @@ async function connect(req, res) {
 
     const { slug } = await loadVerticalAndDomain(siteId);
     const project = projectFor(slug); // throws if the vertical isn't mapped
-    const target = `${project}.pages.dev`;
-
-    await cf.attachCustomDomain(project, clean);
-    // Apex connect → also attach the www twin (found live 2026-08-10: only the
-    // entered hostname was attached, so www.<domain> had no Pages cert even
-    // when the owner added its CNAME). Best-effort — apex alone still works.
-    const isApex = clean.split('.').length === 2 && !clean.endsWith('.stemfra.com');
-    if (isApex) { try { await cf.attachCustomDomain(project, `www.${clean}`); } catch { /* apex still connects */ } }
-    // If it's a *.stemfra.com host we wire DNS ourselves; otherwise the owner
-    // adds the CNAME at their registrar (returned below).
     if (clean.endsWith('.stemfra.com')) {
-      const existing = await cf.findDnsRecord(clean);
-      if (!existing) await cf.addCnameRecord(clean.replace('.stemfra.com', ''), target);
+      return res.status(400).json({ error: 'That is a Stemfra address. Enter a domain you own, e.g. yourshop.com' });
     }
+
+    // Apex connect also covers the www twin (found live 2026-08-10: only the
+    // entered hostname was attached, so www.<domain> had no cert even when the
+    // owner added its CNAME). The owner adds ONE CNAME at their registrar
+    // (returned below as cnameTarget).
+    const attached = await tenantHosts.attachBrandDomain({ project, domain: clean });
     await supabase.from('sites').update({ custom_domain: clean }).eq('id', siteId);
     try { await require('../../lib/domainActivation').markPropagating(siteId, clean); } catch { /* best-effort */ }
-    const status = await cf.getCustomDomain(project, clean);
-    res.json({ ok: true, domain: clean, cnameTarget: target, status: status?.status || 'pending' });
+    const status = await tenantHosts.brandDomainStatus({ project, domain: clean });
+    res.json({ ok: true, domain: clean, cnameTarget: attached.cnameTarget, status: status.status, mode: attached.mode });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -83,22 +81,27 @@ async function status(req, res) {
     const { slug, customDomain } = await loadVerticalAndDomain(siteId);
     if (!customDomain) return res.json({ domain: null });
     const project = projectFor(slug);
-    const [cfStatus, { data: regCharge }] = await Promise.all([
-      cf.getCustomDomain(project, customDomain),
-      supabase.from('billing_charges').select('id')
-        .eq('site_id', siteId)
-        .contains('metadata', { type: 'domain_registration', domain: customDomain })
-        .limit(1),
-    ]);
+    const { data: regCharge } = await supabase.from('billing_charges').select('id')
+      .eq('site_id', siteId)
+      .contains('metadata', { type: 'domain_registration', domain: customDomain })
+      .limit(1);
+    const managed = !!(regCharge && regCharge.length);
+    // The CMS "Verify" button is this same call: ask Cloudflare to re-check a
+    // pending custom hostname each time, so the owner's new CNAME is picked up
+    // without waiting for the validation back-off.
+    const cfStatus = await tenantHosts.brandDomainStatus({ project, domain: customDomain, managed, recheck: true })
+      .catch((e) => ({ status: 'pending', detail: e.message, cnameTarget: tenantHosts.cnameTargetFor(project) }));
     const { domainStatus, MIN_WAIT_MS } = require('../../lib/domainActivation');
     const { data: siteRow } = await supabase.from('sites').select('custom_domain, subdomain, metadata').eq('id', siteId).single();
     const activation = domainStatus(siteRow); // 'propagating' | 'active'
     const connectedAt = siteRow?.metadata?.custom_domain_connected_at || null;
     res.json({
       domain: customDomain,
-      cnameTarget: `${project}.pages.dev`,
-      status: cfStatus?.status || 'pending',
-      managed: !!(regCharge && regCharge.length),
+      cnameTarget: cfStatus.cnameTarget,
+      status: cfStatus.status,
+      detail: cfStatus.detail,
+      mode: cfStatus.mode,
+      managed,
       // Activation (lib/domainActivation.js): the CMS shows "propagating, up to
       // 30 minutes" and keeps linking to the stemfra.com address until active.
       activation, connectedAt,
@@ -120,9 +123,9 @@ async function disconnect(req, res) {
     const { slug, customDomain } = await loadVerticalAndDomain(siteId);
     if (customDomain) {
       const project = projectFor(slug);
-      await cf.removeCustomDomain(project, customDomain);
-      // The www twin may have been attached alongside an apex — best-effort.
-      try { await cf.removeCustomDomain(project, `www.${customDomain}`); } catch { /* may not exist */ }
+      // Clears the custom hostname / zone route / legacy Pages attach, apex
+      // and www twin alike. Idempotent.
+      await tenantHosts.detachBrandDomain({ project, domain: customDomain });
       await cf.deleteCnameRecord(customDomain); // no-op if not in our zone
     }
     await supabase.from('sites').update({ custom_domain: null }).eq('id', siteId);

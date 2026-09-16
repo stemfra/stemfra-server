@@ -41,13 +41,68 @@ Never inline these steps; they drifted once.
 
 1. **Porkbun `domain/create`** at the freshly-checked cost (WHOIS privacy on).
    Draws from the prepaid balance.
-2. **Porkbun DNS**: apex ALIAS + `www` CNAME → `{project}.pages.dev` (serves
-   during NS propagation).
-3. **Cloudflare Pages attach** (`attachCustomDomain`) → SSL issuance.
-4. **Case 7 zone** (`lib/domainZone.js provisionDomainZone`): CF zone in our
-   account → Porkbun nameservers → the zone's pair → proxied apex+www CNAMEs →
+2. **Porkbun DNS**: apex ALIAS + `www` CNAME → the tenant CNAME target
+   (`lib/tenantHosts.cnameTargetFor`: `sites.stemfra.com` under Cloudflare for
+   SaaS, `{project}.pages.dev` in legacy mode).
+3. **Case 7 zone** (`lib/domainZone.js provisionDomainZone`): CF zone in our
+   account → Porkbun nameservers → the zone's pair → proxied apex+www records
+   (originless A under Cloudflare for SaaS, CNAME → Pages in legacy mode) →
    Email Routing enable.
+4. **Brand-domain attach** (`lib/tenantHosts.attachBrandDomain`, §7): a Worker
+   route on the new zone (custom-hostnames mode) or the Pages attach (legacy).
 5. `sites.custom_domain` written → the CMS + tenant site pick it up.
+
+## 7. Brand domains without Pages slots: Cloudflare for SaaS (2026-09-16)
+
+_Status: code BUILT + Worker deployed 2026-09-16; **waits for Peter to enable
+Cloudflare for SaaS on the stemfra.com zone** (dashboard: SSL/TLS → Custom
+Hostnames → Enable; payment details on the account; 100 hostnames included,
+then $0.10 per hostname per month). Until then `TENANT_CUSTOM_HOSTNAMES=false`
+keeps the legacy Pages attach._
+
+Why: every brand domain attached to a Pages project takes one of its 100
+custom-domain slots (Free plan). Subdomains left Pages on 2026-09-16 (the
+wildcard Worker); this moves brand domains off too. `lib/tenantHosts.js` is the
+ONE policy module; every caller (`attachSiteDomain`, `cms/domainController`,
+`admin/sitesController`, `domainPurchase` + `domainZone`) goes through it.
+
+| Domain kind | Mechanism (`mode`) | What serves it | Owner DNS |
+|---|---|---|---|
+| BYO (DNS at their registrar) | `hostname`: Custom Hostname on the stemfra.com zone, HTTP-validated DV cert, apex + www twin | tenant-router Worker via the zone's `*/*` route | ONE CNAME → `sites.stemfra.com` (apex: ALIAS / flattening, or connect `www` and redirect the root) |
+| Stemfra-registered (zone in our account, Case 7) | `zone`: Worker route `*<domain>/*` on THAT zone + proxied originless A records | tenant-router Worker on the domain's own zone, its own Universal SSL | none (we run the zone) |
+| Flag off | `pages`: the legacy Pages attach | Pages custom domain | CNAME → `{project}.pages.dev` |
+
+A hostname that is also a zone in the same Cloudflare account is not a
+documented Cloudflare for SaaS case, so registered domains deliberately never
+become custom hostnames.
+
+The Worker resolves any non-stemfra host through `sites.custom_domain` (a
+leading `www.` dropped), KV-cached like subdomains, and hands
+`/.well-known/pki-validation/` + `/.well-known/acme-challenge/` back to the
+edge so certificate validation is never intercepted. `sites.stemfra.com` itself
+answers with a short "Stemfra sites" page (never a tenant). `x-stemfra-tenant`
+carries the brand domain.
+
+**Go-live runbook (after Peter enables Cloudflare for SaaS):**
+1. `node -r dotenv/config scripts/setup-custom-hostnames.js --apply` → sets the
+   fallback origin to `sites.stemfra.com` (AAAA `100::` proxied, created
+   2026-09-16) and creates the `*/*` Worker route (Cloudflare refuses that
+   pattern with 100327 until SaaS is on). The apex bypass `stemfra.com/*` and the
+   ten infra bypasses already exist.
+2. Add `{ pattern = "*/*", zone_name = "stemfra.com" }` to
+   `workers/tenant-router/wrangler.toml` `routes` and redeploy, so a redeploy
+   never drops the catch-all.
+3. `TENANT_CUSTOM_HOSTNAMES=true` in the local `.env`; connect a throwaway BYO
+   domain from the CMS, add its CNAME, watch Settings → Domain go Connected
+   (status call = re-check), curl the host for `x-stemfra-router`.
+4. `scripts/setup-custom-hostnames.js --apply --migrate` moves
+   `argyleandsons.click` + `cleancutsbarber.click` (both zones in our account →
+   `zone` mode) and detaches their four Pages entries once active.
+5. Flip `TENANT_CUSTOM_HOSTNAMES=true` in deploy.yml (single source of truth).
+
+Rollback: flag false (legacy attach resumes), delete the `*/*` route, re-attach
+any migrated domain to Pages (`cf.attachCustomDomain`). Custom hostnames left in
+place are harmless.
 
 Every post-purchase step is best-effort (a hiccup never loses the paid
 registration); failures land in the `steps` map + the `site_activity` audit row
