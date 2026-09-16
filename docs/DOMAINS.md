@@ -48,8 +48,10 @@ Never inline these steps; they drifted once.
    account → Porkbun nameservers → the zone's pair → proxied apex+www records
    (originless A under Cloudflare for SaaS, CNAME → Pages in legacy mode) →
    Email Routing enable.
-4. **Brand-domain attach** (`lib/tenantHosts.attachBrandDomain`, §7): a Worker
-   route on the new zone (custom-hostnames mode) or the Pages attach (legacy).
+4. **Brand-domain attach** (`lib/tenantHosts.attachBrandDomain`, §7): custom
+   hostnames apex + www (custom-hostnames mode; the Porkbun ALIAS already
+   points at the target, so the site serves as soon as the certificate issues,
+   even before the nameservers move) or the Pages attach (legacy).
 5. `sites.custom_domain` written → the CMS + tenant site pick it up.
 
 ## 7. Brand domains without Pages slots: Cloudflare for SaaS (2026-09-16)
@@ -62,9 +64,11 @@ Proven the same night: a throwaway custom hostname
 (`saastest.cleancutsbarber.click`, DNS-only CNAME) went hostname active +
 certificate active in 50 s and served over TLS through the Worker (deleted
 after); the migration moved `argyleandsons.click` + `cleancutsbarber.click` to
-`zone` mode and detached their four Pages entries, all four hosts answer 200
-with `x-stemfra-router: stemfra-barbers` and robots/sitemap on the brand host.
-**Every Pages project now holds zero custom domains.**_
+custom hostnames (DNS-only CNAMEs in their zones) and detached their four Pages
+entries, all four hosts answer 200 with `x-stemfra-router: stemfra-barbers` and
+robots/sitemap on the brand host. **Every Pages project now holds zero custom
+domains.** Rollback = flag false + `cf.attachCustomDomain` per host + proxied
+CNAME → Pages in the zone (the hostnames can stay)._
 
 Why: every brand domain attached to a Pages project takes one of its 100
 custom-domain slots (Free plan). Subdomains left Pages on 2026-09-16 (the
@@ -72,15 +76,22 @@ wildcard Worker); this moves brand domains off too. `lib/tenantHosts.js` is the
 ONE policy module; every caller (`attachSiteDomain`, `cms/domainController`,
 `admin/sitesController`, `domainPurchase` + `domainZone`) goes through it.
 
-| Domain kind | Mechanism (`mode`) | What serves it | Owner DNS |
+| Domain kind | Mechanism (`mode`) | What serves it | DNS |
 |---|---|---|---|
-| BYO (DNS at their registrar) | `hostname`: Custom Hostname on the stemfra.com zone, HTTP-validated DV cert, apex + www twin | tenant-router Worker via the zone's `*/*` route | ONE CNAME → `sites.stemfra.com` (apex: ALIAS / flattening, or connect `www` and redirect the root) |
-| Stemfra-registered (zone in our account, Case 7) | `zone`: Worker route `*<domain>/*` on THAT zone + proxied originless A records | tenant-router Worker on the domain's own zone, its own Universal SSL | none (we run the zone) |
+| BYO (DNS at their registrar) | `hostname`: Custom Hostname on the stemfra.com zone, HTTP-validated DV cert, apex + www twin | tenant-router Worker via the zone's `*/*` route | owner adds ONE CNAME → `sites.stemfra.com` (apex: ALIAS / flattening, or connect `www` and redirect the root) |
+| Stemfra-registered (zone in our account, Case 7) | `hostname` too: the same custom hostnames | same | we write the CNAME ourselves in the domain's zone, **DNS-only** (`replaceZoneRecords`), so the host enters Cloudflare through stemfra.com like a BYO domain |
 | Flag off | `pages`: the legacy Pages attach | Pages custom domain | CNAME → `{project}.pages.dev` |
 
-A hostname that is also a zone in the same Cloudflare account is not a
-documented Cloudflare for SaaS case, so registered domains deliberately never
-become custom hostnames.
+**Retired the same night: a Worker route on the registered domain's own zone.**
+The first cut routed registered domains that way (no custom hostname, zone
+Universal SSL). `wrangler deploy` reconciles the script's routes on EVERY zone
+and silently deleted the routes it did not know, which took
+cleancutsbarber.click down for two minutes on the next Worker deploy. Custom
+hostnames are Cloudflare state no deploy touches, and the DNS-only same-account
+case was proven live (`saastest.cleancutsbarber.click`, then both `.click`
+domains: hostname + cert active within 90 s, no zone routes left). Never add
+per-zone Worker routes again; `attachBrandDomain` / `detachBrandDomain` delete
+any leftover.
 
 The Worker resolves any non-stemfra host through `sites.custom_domain` (a
 leading `www.` dropped), KV-cached like subdomains, and hands

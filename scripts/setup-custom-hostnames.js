@@ -24,8 +24,10 @@
 //      zone with their own Host, so the `*.stemfra.com/*` route never matches
 //      them) + a no-Worker BYPASS for the apex `stemfra.com/*` (the marketing
 //      site). Existing infra bypass routes (api/cms/crm/www…) keep winning.
-//   4. --migrate: per site with a custom_domain → tenantHosts.attachBrandDomain;
-//      then, for each hostname/route that is active, remove the Pages attach.
+//   4. --migrate: per site with a custom_domain → tenantHosts.attachBrandDomain
+//      (a domain whose zone we run gets its DNS-only CNAME written and any
+//      retired per-zone Worker route removed); once the hostname is active,
+//      remove the legacy Pages attach. Rerun until every row reads active.
 //
 // Token scopes: Zone:DNS:Edit, Zone:Workers Routes:Edit, Zone:SSL and
 // Certificates:Edit (custom hostnames), Cloudflare Pages:Edit (the detach).
