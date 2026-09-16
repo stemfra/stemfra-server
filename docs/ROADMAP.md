@@ -41,13 +41,13 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
   routes (setup script `--apply`), `stemfra-tenant-router` deployed with HOST_CACHE KV, verified
   from outside (clean-cuts/argyle → stemfra-barbers, ellaris-spa → stemfra-spa, lull → stemfra-massage,
   unknown host → 404, robots Allow, api/cms/crm/www bypass), `TENANT_WILDCARD_ROUTING=true` in
-  deploy.yml. **Custom Hostnames (item 4b) BUILT 2026-09-16, go-live ⏳ Peter**: `lib/tenantHosts.js`
-  (custom hostname for BYO, Worker route on our own zone for registered domains, legacy Pages
-  when off) behind `TENANT_CUSTOM_HOSTNAMES`, Worker redeployed with brand-host resolution,
-  `sites.stemfra.com` fallback-origin record + apex bypass applied; the `*/*` route, fallback
-  origin, test domain and the `.click` migration wait for Cloudflare for SaaS to be ENABLED on the
-  zone (dashboard, payment details; API 1404/1456/100327 until then). Runbook DOMAINS.md §7.
-  Earlier note kept below:
+  deploy.yml. **Custom Hostnames (item 4b) ✅ LIVE 2026-09-16** (Cloudflare for SaaS ✅ Peter
+  confirmed 2026-09-16): `lib/tenantHosts.js` (custom hostname for BYO, Worker route on our own
+  zone for registered domains, legacy Pages when off) behind `TENANT_CUSTOM_HOSTNAMES=true`,
+  Worker redeployed with brand-host resolution + the `*/*` route, fallback origin
+  `sites.stemfra.com` active, throwaway hostname proven (cert in 50 s), the two `.click` domains
+  migrated and their Pages entries detached: every Pages project holds ZERO custom domains now.
+  Runbook DOMAINS.md §7. Earlier note kept below:
 - Wildcard Worker was NOT live (2026-09-07, Cloudflare API; re-verified 2026-09-11: no `*` DNS,
   flag unset, remix-barbers attached as a Pages domain, 9/100 slots on stemfra-barbers; go-live
   ⏸ DEFERRED by Peter 2026-09-11): zero Worker routes on the
@@ -1331,10 +1331,11 @@ CMS boot spinner, card active states, FAQ+legal onboarding steps).
    (b) custom domains: Cloudflare for SaaS Custom Hostnames on the
    stemfra.com zone (fallback origin = the Worker), API-automated, auto-SSL,
    ~$0.10/hostname/mo after 100 (paying tenants only, scales linearly);
-   **BUILT 2026-09-16 (`lib/tenantHosts.js`, `lib/cloudflareCustomHostnames.js`,
-   `scripts/setup-custom-hostnames.js`, Worker brand-host resolution; registered
-   domains use a Worker route on their own zone instead). ⏳ Peter: enable
-   Cloudflare for SaaS on the zone, then the DOMAINS.md §7 runbook.**
+   **✅ DONE 2026-09-16 (server 7478238 + follow-up; `lib/tenantHosts.js`,
+   `lib/cloudflareCustomHostnames.js`, `scripts/setup-custom-hostnames.js`,
+   Worker brand-host resolution; registered domains use a Worker route on their
+   own zone instead). Cloudflare for SaaS ✅ Peter confirmed 2026-09-16; runbook
+   run, `.click` domains migrated, Pages slots at zero. DOMAINS.md §7.**
    (c) incremental migration: keep Pages builds, front with the Worker, swap
    the attach calls Pages API -> Custom Hostnames API in attachSiteDomain +
    cms/domainController.

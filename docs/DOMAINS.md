@@ -54,11 +54,17 @@ Never inline these steps; they drifted once.
 
 ## 7. Brand domains without Pages slots: Cloudflare for SaaS (2026-09-16)
 
-_Status: code BUILT + Worker deployed 2026-09-16; **waits for Peter to enable
-Cloudflare for SaaS on the stemfra.com zone** (dashboard: SSL/TLS → Custom
-Hostnames → Enable; payment details on the account; 100 hostnames included,
-then $0.10 per hostname per month). Until then `TENANT_CUSTOM_HOSTNAMES=false`
-keeps the legacy Pages attach._
+_Status: ✅ LIVE 2026-09-16. Cloudflare for SaaS enabled by Peter (dashboard,
+✅ Peter confirmed 2026-09-16; 100 hostnames included, then $0.10 per hostname
+per month), fallback origin `sites.stemfra.com` active, `*/*` route created
+(also in wrangler.toml), `TENANT_CUSTOM_HOSTNAMES=true` in deploy.yml + .env.
+Proven the same night: a throwaway custom hostname
+(`saastest.cleancutsbarber.click`, DNS-only CNAME) went hostname active +
+certificate active in 50 s and served over TLS through the Worker (deleted
+after); the migration moved `argyleandsons.click` + `cleancutsbarber.click` to
+`zone` mode and detached their four Pages entries, all four hosts answer 200
+with `x-stemfra-router: stemfra-barbers` and robots/sitemap on the brand host.
+**Every Pages project now holds zero custom domains.**_
 
 Why: every brand domain attached to a Pages project takes one of its 100
 custom-domain slots (Free plan). Subdomains left Pages on 2026-09-16 (the
