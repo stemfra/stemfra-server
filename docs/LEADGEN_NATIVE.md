@@ -164,6 +164,18 @@ We pay Apify per place, so nothing is thrown away any more.
   Fresha / Mindbody / Vagaro / another booking tool" by default (migration
   `call_scripts_platform_v1.sql`; tokens `{platform} {reviews} {rating}`).
 
+## 6d. Leads go straight to the pipeline (2026-09-18, Peter)
+
+The Review queue existed to approve an outreach DRAFT before it was sent. Leads now arrive without
+a draft, so a qualified lead is inserted with `review_status = 'approved'` and shows on the board
+as a New Lead at once. Consequences: (1) `outreachSequencer.autoApproveNewLeads` only picks up
+`needs_review` leads, so native leads are NOT queued for the automatic Claim email any more:
+sending is deliberate, from the drawer ("Send outreach", the on-demand "Outreach draft" section) or
+as a mass action on a filtered selection in the Table (Draft outreach · Mass email); (2) Review
+keeps only other sources (voice-call leads). The 204 old-rule leads were re-scored the same day
+(`scripts/rescore-old-leads.js --apply`: 70 quiet → Lost with the reason, 99 re-judged, 14 worked
+leads facts only, 202 copied into Places) and the 138 still in Review were approved onto the board.
+
 ## 7. Configuration
 
 | Env | Meaning |
