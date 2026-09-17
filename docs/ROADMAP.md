@@ -2444,6 +2444,18 @@ weak site but book through a marketplace (Places data: 7 of 8 busy Brooklyn salo
 them book on Vagaro / Fresha / Booksy) · phone-number dedupe · Toronto + London batches (nothing
 valid came from the n8n ones: it searched "<city>, USA") · CRM "Run details" view over the decisions.
 
+**🔎 REVIEW (Peter, 2026-09-17): the CRM's pipeline value is built on assumptions that today's
+business work puts in doubt.** `stemfra-ops/src/lib/leadValue.js` values every lead as monthly
+sales × 5% × 12, with placeholder monthly sales per vertical (barbershop $8,000, default $8,000)
+and 100% of a shop's sales flowing through the site. Against that: the agreed planning share is
+10% of a shop's sales in year one (20% target); the new target is busy shops, whose sales are far
+higher than $8,000; a cap around $400 a month is on the table, which would bound every lead at
+$4,800 a year; and review count + rating are now on every lead and could drive the estimate. Do
+not change the formula until the price shape is decided; then re-base it from the Master Plan v3
+assumptions and label the card "estimated". (Fixed the same day: the Leads page cards counted
+leads still in Review and test leads, 261 against a board of 70; they now count what the board
+shows.)
+
 **Pricing, under discussion (Peter 2026-09-17, nothing decided):** the busy-shop target makes an
 uncapped 5% compare badly with Booksy / Fresha (one-time new-client fees + $30 to $150 a month).
 Options on the table: a monthly cap around $400 (Peter: $200 is too low for us; owners already pay

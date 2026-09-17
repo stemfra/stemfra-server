@@ -28,7 +28,8 @@ router.post('/google-refresh/sweep', requireStaffRole(...PLATFORM_OPS), async (r
 router.post('/:id/google-refresh', requireStaffAuth, async (req, res) => {
   try {
     const dryRun = req.body?.dryRun === true;
-    const r = await refreshLeadFromGoogle(req.params.id, { dryRun, actor: actorOf(req) });
+    // Our own Places data first (free); `force: true` asks Google again for newer numbers.
+    const r = await refreshLeadFromGoogle(req.params.id, { dryRun, force: req.body?.force === true, actor: actorOf(req) });
     res.json(r);
   } catch (e) {
     res.status(500).json({ error: e.message });

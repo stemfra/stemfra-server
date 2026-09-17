@@ -98,6 +98,7 @@ module.exports = { getInfo, save };
 // POST /api/cms/google-profile/find { siteId, name, where } → { candidates }
 // One Apify Google Maps search (lib/googlePlacesFinder) for the typed name near
 // the typed place; a few candidates shaped for the wizard's "Is this you?" list.
+const placesLookup = require('../../lib/placesLookup');
 const finder = require('../../lib/googlePlacesFinder');
 
 async function find(req, res) {
@@ -106,11 +107,18 @@ async function find(req, res) {
     if (!siteId) return res.status(400).json({ success: false, message: 'Missing siteId.' });
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ success: false, message: 'Not your site.' });
-    if (!finder.configured()) return res.status(503).json({ success: false, message: 'Google lookup is not configured on this server.' });
     if (!String(name || '').trim()) return res.status(400).json({ success: false, message: 'Type your business name.' });
     const { data: full } = await supabase.from('sites').select('country').eq('id', siteId).maybeSingle();
+    // Our own data first (2026-09-17): an owner who arrives from our outreach is usually a shop
+    // lead-gen already scraped, so the answer is in leadgen_places for free. `fresh: true` (the
+    // "search Google again" path) or no match goes to Apify.
+    if (req.body?.fresh !== true) {
+      const rows = await placesLookup.placesByName({ name, where, country: full?.country || null });
+      const usable = rows.filter(placesLookup.isFresh);
+      if (usable.length) return res.json({ success: true, source: 'places', candidates: usable.map(placesLookup.candidateFromPlaceRow) });
+    }
     const candidates = await finder.findBusiness({ name, where, country: full?.country || 'US' });
-    res.json({ success: true, candidates });
+    res.json({ success: true, source: 'google', candidates });
   } catch (e) {
     console.error('[googleProfile.find]', e.message);
     res.status(502).json({ success: false, message: `Google lookup failed: ${e.message}` });
@@ -131,6 +139,32 @@ async function use(req, res) {
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ success: false, message: 'Not your site.' });
     const applied = [];
+
+    // The wizard picks the business through Google's address lookup in the browser, which
+    // returns no socials, description or claimed flag. When lead-gen already scraped this
+    // place, fill those from our own record (free), and note on the place and on its lead that
+    // the shop is now a tenant, so nobody keeps calling a client.
+    try {
+      const row = await placesLookup.placeByKey({ placeId: c.placeId, url: c.url })
+        || (await placesLookup.placesByName({ name: c.name, where: [c.city, c.state].filter(Boolean).join(' '), phone: c.phone }))[0] || null;
+      if (row) {
+        const known = placesLookup.candidateFromPlaceRow(row);
+        c.socials = { ...(known.socials || {}), ...Object.fromEntries(Object.entries(c.socials || {}).filter(([, v]) => v)) };
+        for (const k of ['description', 'category', 'website', 'neighborhood', 'location', 'rating', 'reviews']) if (c[k] == null || c[k] === '') c[k] = known[k];
+        if (!c.claimed && known.claimed) c.claimed = true;
+        if (!c.imagesCount && known.imagesCount) c.imagesCount = known.imagesCount;
+        if ((!c.openingHours || !c.openingHours.length) && known.openingHours.length) { c.openingHours = known.openingHours; c.businessHours = c.businessHours || known.businessHours; }
+        applied.push('stemfra_places');
+        await supabase.from('leadgen_places').update({ reason: `became a tenant (site ${siteId})` }).eq('id', row.id);
+        if (row.lead_id) {
+          const { data: ld } = await supabase.from('leads').select('notes').eq('id', row.lead_id).maybeSingle();
+          const line = `${new Date().toISOString().slice(0, 10)}: this business claimed its Stemfra site (site ${siteId}).`;
+          if (ld && !String(ld.notes || '').includes('claimed its Stemfra site')) {
+            await supabase.from('leads').update({ notes: ld.notes ? `${ld.notes}\n${line}` : line }).eq('id', row.lead_id);
+          }
+        }
+      }
+    } catch (e) { console.error('[googleProfile.use] places enrichment skipped:', e.message); }
 
     if (c.businessHours && typeof c.businessHours === 'object') {
       const { error } = await supabase.from('sites').update({ business_hours: c.businessHours }).eq('id', siteId);
