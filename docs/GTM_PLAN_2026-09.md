@@ -169,3 +169,27 @@ review-driven, new clients). Peter deferred the cap on 2026-09-16; this data reo
 commission if the booking is made in OUR engine. Two calendars means double-booking risk. Until
 there is a calendar sync or a clean import-and-switch path, the honest pitch is a switch with
 done-for-you migration, not a hybrid.
+
+## 10. What we sell (Peter, 2026-09-17, after the Gemini research)
+
+Not "a website". We sell **the shop's own branded place to be booked**, in this order:
+
+1. **Your clients see only you.** On Booksy, Fresha and the other marketplaces a shop's page sits
+   next to other shops, often cheaper ones, inside the same app. Every visit to rebook is a chance
+   to reconsider. On their own site there is nobody else. This is the headline for any shop on a
+   marketplace. (Evidence: marketplace design, Trustpilot summaries. "They push competitor
+   discounts to my clients" has no first-hand source yet: ask it as a question, never state it.)
+2. **A personalised, branded experience.** Their name, their address, their look, their photos,
+   their voice, from the Google listing to the confirmation text. A marketplace page looks like
+   every other page on that marketplace.
+3. **It grows with them.** Whole team, more locations, memberships, classes, the AI front desk,
+   reminders, win-back and reviews, with nothing per seat and no add-on price list.
+4. **Cost** comes last: free to claim, flat 5% of bookings (cap under discussion), no payment fees
+   from us on top of theirs because clients pay at the venue.
+
+**No coexistence (decided 2026-09-17).** We do not offer to run next to another booking tool: the
+owner would pay twice. We offer a SWITCH that we make easy, in two steps: (1) they send or export
+their client list and we upload it; (2) they replace the website and the booking link on their
+Google Business Profile with the new ones. The "Coexistence is unresolved" note in section 9 is
+closed by this decision. Every call script says it this way; the old "keep Fresha" lines are gone.
+This replaces the earlier "incremental, coexist" idea in the provider-switching notes.
