@@ -168,7 +168,8 @@ We pay Apify per place, so nothing is thrown away any more.
 
 | Env | Meaning |
 |---|---|
-| `LEADGEN_ENGINE` | `native` (default) or `n8n`. A request may override with `{engine}`. If the native keys are missing and the n8n webhook is set, the run falls back to n8n |
+| `LEADGEN_QUALIFY_MODEL` | judging model, default gpt-4o-mini |
+| `LEADGEN_MIN_VOLUME` | quiet-shop floor on `fit_score`, default 5 (25+ reviews at 4.0+) |
 | `APIFY_TOKEN` | Apify API token. **Production needs the GitHub secret `APIFY_TOKEN`** (deploy.yml passes it since 2026-09-17) |
 | `OPENAI_API_KEY` | shared with the other server AI features |
 | `LEADGEN_SCORING_MODEL` | scoring model, falls back to `LEADGEN_MODEL`, then gpt-4o |
@@ -191,6 +192,19 @@ the run, inserts nothing).
 - Proof runs 2026-09-17: Brooklyn barbershop (10 scraped → 5 leads, DB rows = summary) from the
   script; Queens beauty salon (10 scraped, 8 had a website, 1 duplicate → 1 lead, a GlossGenius
   storefront at 295 reviews, score 10) from the CRM button, bell received.
+
+## 8b. n8n retired + the 100-place proof (2026-09-17)
+
+Houston barbershops, 100 places: 3.4 minutes end to end (the old sync scrape died at 5), 100 places
+saved, 25 own site · 24 old-school · 18 too quiet · 13 "not a fit" · 20 leads, database = summary,
+no drafts written. The 13 exposed a model fault: gpt-4o-mini set `is_relevant=false` on shops it
+scored 8 to 9 (all on Booksy / GlossGenius: it misread the own-website rule). Fix: **relevance is
+decided in code** from a concrete `reject_reason` the model must name (chain · wrong_vertical ·
+outside_market · closed · not_end_client); a bare `is_relevant=false` is ignored. `rejudgePlaces()`
+then re-judged the kept places and recovered 14 leads with NO new scrape. After that the n8n
+branch was removed from `lib/leadgenRun.js` (cold = native only; `POST /run-complete` stays as a
+harmless endpoint). Rule learned again: facts and decisions in code, judgment only where needed,
+and check a big run's rejects by hand before trusting a new model.
 
 ## 9. Open items
 
