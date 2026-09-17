@@ -164,7 +164,7 @@ We pay Apify per place, so nothing is thrown away any more.
   Fresha / Mindbody / Vagaro / another booking tool" by default (migration
   `call_scripts_platform_v1.sql`; tokens `{platform} {reviews} {rating}`).
 
-## 6d. Leads go straight to the pipeline (2026-09-18, Peter)
+## 6d. Leads go straight to the pipeline (2026-09-17, Peter)
 
 The Review queue existed to approve an outreach DRAFT before it was sent. Leads now arrive without
 a draft, so a qualified lead is inserted with `review_status = 'approved'` and shows on the board
