@@ -2460,9 +2460,13 @@ monthly commission at 40,000 cents and shows the cap line on the statement + inv
 copy: Fees page, Pricing (headline offer card + FAQ "Is 5% more than I pay now?"), Claim page,
 claim email line "We only earn 5%…", Help Center `billing/commission-explained`; (3) A1 / A1b and
 the five provider call scripts (remove "do not promise a cap"); (4) CRM `lib/leadValue.js`: a
-lead's yearly value is bounded at $4,800; (5) decks + Master Plan v3. Terms assumed, Peter to
-confirm: per location (site); at-visit sales marked collected count toward the cap; currency
-equivalents for CAD / GBP to set.
+lead's yearly value is bounded at $4,800; (5) decks + Master Plan v3. **Terms ✅ Peter confirmed
+2026-09-17:** the cap is PER LOCATION (site); at-visit sales count toward the cap, and only sales
+from bookings made through our website count at all (walk-ins and owner-entered bookings carry no
+commission, P36, so they never touch the cap). Still to set: currency equivalents for CAD / GBP.
+**⏸ HOLD (Peter 2026-09-17): do NOT build the cap into billing or the public pages yet.** It stays a
+documented decision (research docs, SWOT, Pricing comparison) until Peter says go; reps may not
+promise it in writing before then.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 
