@@ -189,7 +189,62 @@ const normEmail = (e) => (typeof e === 'string' ? e.trim().toLowerCase() : '');
 const normPhoneKey = (p) => (typeof p === 'string' ? p.replace(/[^\d]/g, '') : '');
 const looksEmail = (e) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
 
-function cleanRow(raw) {
+// Birthdays arrive as 1990-03-05, 03/05/1990 (US), 05/03/1990 (UK), 5 Mar 1990, March 5, or
+// 03/05 with no year. `new Date()` reads every slash date as US order and shifts a day across
+// time zones, so dates are parsed by hand. `dayFirst` comes from the file (see dayFirstOf).
+const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+function parseBirthdate(value, dayFirst = false) {
+  const v = String(value ?? '').trim();
+  if (!v || /^0{4}-0{2}-0{2}/.test(v)) return null;
+  const ok = (y, m, d) => (m >= 1 && m <= 12 && d >= 1 && d <= 31 && y >= 1900 && y <= new Date().getFullYear())
+    ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : null;
+  let m = v.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);               // 1990-03-05
+  if (m) return ok(+m[1], +m[2], +m[3]);
+  m = v.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})(?:\D|$)/);    // 03/05/1990 or 05/03/90
+  if (m) {
+    let y = +m[3]; if (y < 100) y += y > (new Date().getFullYear() % 100) ? 1900 : 2000;
+    const a = +m[1], b = +m[2];
+    const useDayFirst = a > 12 ? true : b > 12 ? false : dayFirst;
+    return useDayFirst ? ok(y, b, a) : ok(y, a, b);
+  }
+  m = v.match(/^(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\.?,?\s+(\d{4})/);      // 5 Mar 1990
+  if (m && MONTHS[m[2].toLowerCase()]) return ok(+m[3], MONTHS[m[2].toLowerCase()], +m[1]);
+  m = v.match(/^([A-Za-z]{3})[A-Za-z]*\.?\s+(\d{1,2}),?\s+(\d{4})/);      // March 5, 1990
+  if (m && MONTHS[m[1].toLowerCase()]) return ok(+m[3], MONTHS[m[1].toLowerCase()], +m[2]);
+  if (/^\d{5}$/.test(v)) {                                                // Excel serial date
+    const d = new Date(Date.UTC(1899, 11, 30) + (+v) * 86400000);
+    return ok(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate());
+  }
+  return null; // no year (03/05, "March 5"): we store full dates only, so it is left empty
+}
+/** Does this file write dates day-first? True when any slash date has a first part over 12;
+ *  false when any has a second part over 12; otherwise the site's country decides (GB = day first). */
+function dayFirstOf(rawRows, fallback = false) {
+  for (const r of rawRows || []) {
+    const m = String(r?.birthdate ?? '').trim().match(/^(\d{1,2})[-/.](\d{1,2})[-/.]\d{2,4}/);
+    if (!m) continue;
+    if (+m[1] > 12) return true;
+    if (+m[2] > 12) return false;
+  }
+  return fallback;
+}
+
+// Consent cells come as Yes / TRUE / 1 / Subscribed / Opted in / Accepted … and the opposites.
+const YES = /^(1|true|yes|y|on|subscribed|opted[\s_-]?in|opt[\s_-]?in|accepted|accepts|allowed|enabled|granted|consented|active)$/i;
+const NO = /^(0|false|no|n|off|unsubscribed|opted[\s_-]?out|opt[\s_-]?out|declined|denied|disabled|blocked|bounced|never|none)$/i;
+const saysYes = (v) => v === true || YES.test(String(v ?? '').trim());
+const saysNo = (v) => v === false || NO.test(String(v ?? '').trim());
+
+/** "Dr. Maria del Carmen Lopez" → first "Maria", last "del Carmen Lopez"; "Lopez, Maria" → the same. */
+function splitFullName(full) {
+  let v = String(full ?? '').replace(/\s+/g, ' ').trim().replace(/^(mr|mrs|ms|miss|mx|dr)\.?\s+/i, '');
+  if (!v) return { first: null, last: null };
+  if (v.includes(',')) { const [last, first] = v.split(',').map((x) => x.trim()); return { first: first || null, last: last || null }; }
+  const parts = v.split(' ');
+  return { first: parts[0] || null, last: parts.slice(1).join(' ') || null };
+}
+
+function cleanRow(raw, { dayFirst = false } = {}) {
   const email = normEmail(raw.email);
   const phone = (raw.phone || '').toString().trim();
   const phoneKey = normPhoneKey(phone);
@@ -198,27 +253,30 @@ function cleanRow(raw) {
   const hasPhone = phoneKey.length >= 7;
   if (!hasEmail && !hasPhone) return { skip: 'no_contact' };
 
-  let birthdate = null;
-  if (raw.birthdate) {
-    const d = new Date(raw.birthdate);
-    if (!isNaN(d.getTime())) birthdate = d.toISOString().slice(0, 10);
-  }
   const tags = Array.isArray(raw.tags)
     ? raw.tags
-    : (typeof raw.tags === 'string' && raw.tags.trim() ? raw.tags.split(/[;,]/).map((t) => t.trim()).filter(Boolean) : []);
+    : (typeof raw.tags === 'string' && raw.tags.trim() ? raw.tags.split(/[;,|]/).map((t) => t.trim()).filter(Boolean) : []);
 
-  const truthy = (v) => v === true || /^(1|true|yes|y)$/i.test(String(v ?? '').trim());
+  // Names: separate columns win; a single "Name" / "Client" column is split.
+  let firstName = (raw.firstName || '').toString().trim() || null;
+  let lastName = (raw.lastName || '').toString().trim() || null;
+  if (!firstName && !lastName && raw.fullName) { const n = splitFullName(raw.fullName); firstName = n.first; lastName = n.last; }
+
+  // Email consent arrives either as an opt-OUT column (Yes = suppressed) or as an opt-IN /
+  // "accepts marketing" column (No = suppressed). Suppression is always honoured; a blank cell
+  // changes nothing.
+  const emailOptOut = saysYes(raw.emailOptOut) || saysNo(raw.emailOptIn);
+
   return {
-    firstName: (raw.firstName || '').toString().trim() || null,
-    lastName: (raw.lastName || '').toString().trim() || null,
+    firstName, lastName,
     email: hasEmail ? email : null,
     phone: phone || null,
     phoneKey,
-    birthdate,
+    birthdate: parseBirthdate(raw.birthdate, dayFirst),
     notes: (raw.notes || '').toString().trim() || null,
     tags,
-    emailOptOut: truthy(raw.emailOptOut),
-    smsOptIn: truthy(raw.smsOptIn),
+    emailOptOut,
+    smsOptIn: saysYes(raw.smsOptIn),
   };
 }
 
@@ -240,13 +298,20 @@ async function loadDedup(siteId) {
 // Classify the incoming rows against existing customers + within the batch itself.
 // Returns { rows: [{clean, action:'create'|'merge'|'skip', reason?, existingId?}], counts }.
 async function classify(siteId, rawRows) {
+  // Ambiguous slash dates (03/05/1990) follow the site's market: a European time zone = day first.
+  let dayFirstDefault = false;
+  try {
+    const { data: st } = await supabase.from('sites').select('time_zone').eq('id', siteId).maybeSingle();
+    dayFirstDefault = /^Europe\//.test(st?.time_zone || '');
+  } catch { /* US order */ }
+  const dayFirst = dayFirstOf(rawRows, dayFirstDefault);
   const { byEmail, byPhone, byId } = await loadDedup(siteId);
   const seenEmail = new Set(), seenPhone = new Set();
   let toCreate = 0, toMerge = 0, toSkip = 0;
   const rows = [];
 
   for (const raw of rawRows || []) {
-    const c = cleanRow(raw || {});
+    const c = cleanRow(raw || {}, { dayFirst });
     if (c.skip) { toSkip++; rows.push({ action: 'skip', reason: c.skip }); continue; }
 
     // Within-file dedup (same contact twice in the CSV → import once).
@@ -273,7 +338,7 @@ const OpenAI = require('openai');
 const importAi = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const IMPORT_MAP_MODEL = process.env.IMPORT_MAP_MODEL || 'gpt-4o-mini';
 
-const IMPORT_FIELD_KEYS = ['firstName', 'lastName', 'email', 'phone', 'birthdate', 'tags', 'notes', 'smsOptIn', 'emailOptOut'];
+const IMPORT_FIELD_KEYS = ['firstName', 'lastName', 'fullName', 'email', 'phone', 'birthdate', 'tags', 'notes', 'smsOptIn', 'emailOptOut', 'emailOptIn'];
 
 // Known export layouts (lowercase headers). Signature = headers that identify
 // the provider; map = header → our field. Refined as real exports come in.
@@ -329,20 +394,54 @@ const IMPORT_PRESETS = [
   },
 ];
 
-function matchImportPreset(headers) {
-  const lower = headers.map(h => String(h || '').toLowerCase().trim());
-  for (const preset of IMPORT_PRESETS) {
-    const hits = preset.signature.filter(sig => lower.includes(sig)).length;
-    if (hits >= preset.minMatch) {
-      const map = {};
-      headers.forEach((h, i) => {
-        const key = preset.map[lower[i]];
-        map[h] = key === undefined ? null : key;
-      });
-      return { name: preset.name, map };
-    }
+// Header → field guesses for anything a preset does not name (the same patterns the CMS uses
+// locally; '=' = exact match). Order matters: consent and birthdate before email / phone.
+const HEADER_PATTERNS = [
+  ['emailOptOut', ['opt out', 'opt-out', 'optout', 'unsubscrib', 'do not email', 'no email']],
+  ['emailOptIn', ['email opt in', 'email opt-in', 'email consent', 'email marketing', 'accepts marketing', 'accepts email', 'marketing consent', 'marketing opt', 'email subscription', 'newsletter']],
+  ['smsOptIn', ['sms opt', 'text opt', 'sms consent', 'text consent', 'sms marketing', 'text marketing', 'accepts sms', 'accepts text']],
+  ['birthdate', ['birth', 'dob', 'date of birth']],
+  ['firstName', ['first name', 'firstname', 'given name', 'fname', '=first']],
+  ['lastName', ['last name', 'lastname', 'surname', 'family name', 'lname', '=last']],
+  ['fullName', ['full name', 'fullname', 'client name', 'customer name', 'contact name', '=name', '=client', '=customer']],
+  ['email', ['email', 'e-mail']],
+  ['phone', ['mobile', 'cell', 'phone', 'telephone', '=tel', 'contact number']],
+  ['tags', ['=tags', '=tag', '=groups', '=group', 'label', 'segment']],
+  ['notes', ['note', 'comment', 'memo']],
+];
+function guessField(header) {
+  const h = String(header || '').toLowerCase().trim();
+  for (const [key, pats] of HEADER_PATTERNS) {
+    if (pats.some((p) => (p.startsWith('=') ? h === p.slice(1) : h.includes(p)))) return key;
   }
   return null;
+}
+
+/** The preset whose signature fits best (most hits, not the first that passes), then every
+ *  header the preset does not name goes through the pattern guesser instead of being dropped.
+ *  Each field is used once; among several phone columns the mobile one wins. */
+function matchImportPreset(headers) {
+  const lower = headers.map(h => String(h || '').toLowerCase().trim());
+  let best = null;
+  for (const preset of IMPORT_PRESETS) {
+    const hits = preset.signature.filter(sig => lower.includes(sig)).length;
+    if (hits < preset.minMatch) continue;
+    const score = hits / preset.signature.length + (preset.unique || []).filter(u => lower.includes(u)).length;
+    if (!best || score > best.score) best = { preset, score };
+  }
+  if (!best) return null;
+  const { preset } = best;
+  const map = {};
+  const used = new Set();
+  const order = headers.map((h, i) => i).sort((a, b) => (/mobile|cell/.test(lower[b]) ? 1 : 0) - (/mobile|cell/.test(lower[a]) ? 1 : 0));
+  for (const i of order) {
+    const named = Object.prototype.hasOwnProperty.call(preset.map, lower[i]);
+    const key = named ? preset.map[lower[i]] : guessField(lower[i]);
+    if (key && !used.has(key)) { map[headers[i]] = key; used.add(key); } else map[headers[i]] = null;
+  }
+  // A whole-name column is only useful when there is no separate first / last name.
+  if (used.has('firstName') || used.has('lastName')) for (const h of headers) if (map[h] === 'fullName') map[h] = null;
+  return { name: preset.name, map };
 }
 
 /** Mask a sample so structure survives but PII does not: digits → #, letters
@@ -370,7 +469,7 @@ async function aiMapColumns(headers, samples) {
         content: [
           'You map spreadsheet columns from a local-business client export onto a fixed set of customer fields.',
           `Allowed field values: ${IMPORT_FIELD_KEYS.join(', ')}, or null for columns that should not be imported (ids, addresses, spend history, appointment data, marketing stats).`,
-          'smsOptIn/emailOptOut are consent flags; only map clearly-labeled consent columns. Sample values are masked (digits are #, most letters are x) but keep their structure.',
+          'fullName is a single column holding the whole name (only when there is no separate first/last). smsOptIn/emailOptOut/emailOptIn are consent flags (emailOptIn = "accepts email marketing" style columns, emailOptOut = "unsubscribed" style); only map clearly-labeled consent columns. Sample values are masked (digits are #, most letters are x) but keep their structure.',
           'Each field may be used at most once. Return ONLY JSON: { "map": { "<exact header>": "<field or null>", ... } } covering every header.',
         ].join('\n'),
       },
@@ -597,4 +696,6 @@ async function announceCustomers(req, res) {
 module.exports = {
   mapImportColumns, setSuspended, sendReviewEmail, listCustomers, exportCustomers, importPreview, importCustomers,
   announceCustomers,
-  adminMapImportColumns, adminImportPreview, adminImportCustomers };
+  adminMapImportColumns, adminImportPreview, adminImportCustomers,
+  // exported for tests
+  _import: { parseBirthdate, dayFirstOf, splitFullName, cleanRow, matchImportPreset } };
