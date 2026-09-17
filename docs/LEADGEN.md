@@ -302,3 +302,8 @@ are present). New on `leads.qualification`: `booking_platform`, `review_count`, 
 `price_level`, `trait_volume` (`trait_affordability` mirrors it for the CRM card). New
 `pain_point_bucket` value `marketplace_only`. Run Summary adds `not_saved`. Rule: before a new
 import ships, read EVERY node, not only the changed ones, and test with max_results 10 first.
+
+## Native engine (2026-09-17, P41)
+
+Cold runs now run inside the server by default (`LEADGEN_ENGINE=native`); n8n v16 is the
+fallback. Full build doc, debugging guide and rules: **`docs/LEADGEN_NATIVE.md`**.

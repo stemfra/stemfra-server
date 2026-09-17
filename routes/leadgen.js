@@ -67,7 +67,7 @@ async function validateUserSession(req) {
 // Runs whose summary already reached the rep through the trigger response
 // (fast early exits); the /run-complete callback records them but does not
 // ring the bell a second time. In-process, short-lived, pruned on use.
-const { startRun, answeredInline } = require('../lib/leadgenRun');
+const { startRun, closeRun } = require('../lib/leadgenRun');
 const { startBatch, cancelBatch, batchStatus } = require('../lib/leadgenBatch');
 // ─── Run feedback: n8n → server (2026-09-13) ─────────────────────────────────
 // Every lead-gen run now ends in the workflow's "Run Summary" node, whatever
@@ -86,32 +86,7 @@ router.post('/run-complete', async (req, res) => {
     return res.status(401).json({ success: false, message: 'Bad secret' });
   }
   const { run_id: runId = null, message = '', summary = {} } = req.body || {};
-  const s = summary && typeof summary === 'object' ? summary : {};
-  const inserted = Number(s.inserted) || 0;
-  const status = s.stopped_at === 'failed' ? 'failed' : inserted > 0 ? 'completed' : 'empty';
-  const notes = String(message || '').slice(0, 500);
-
-  if (runId) {
-    const { data: run, error } = await supabase.from('leadgen_runs')
-      .update({ status, leads_found: inserted, completed_at: new Date().toISOString(), notes, metadata: s })
-      .eq('id', runId).select('id, requested_by, city, vertical').maybeSingle();
-    if (error) console.error('[leadgen] run-complete update failed:', error.message);
-
-    const alreadyToasted = answeredInline.delete(runId);
-    if (run?.requested_by && !alreadyToasted) {
-      const where = [run.city, run.vertical ? run.vertical.replace('_', ' ') : null].filter(Boolean).join(' · ');
-      const title = inserted > 0
-        ? `Lead-gen: ${inserted} new lead${inserted === 1 ? '' : 's'}${where ? ` (${where})` : ''}`
-        : `Lead-gen finished with no new leads${where ? ` (${where})` : ''}`;
-      const { error: nErr } = await supabase.rpc('crm_notify', {
-        p_user: run.requested_by, p_kind: 'leadgen_run', p_title: title, p_body: notes,
-        p_route: '/leads', p_entity_type: 'leadgen_run', p_entity_id: String(runId),
-      });
-      if (nErr) console.error('[leadgen] run-complete notify failed:', nErr.message);
-    }
-  } else {
-    console.log('[leadgen] run-complete without run_id (cron run?):', notes);
-  }
+  const { status } = await closeRun({ runId, message, summary });
   return res.json({ success: true, status });
 });
 

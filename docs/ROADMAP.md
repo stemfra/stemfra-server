@@ -2417,7 +2417,14 @@ n8n as the fallback until three real runs match it (counts, readiness tiers, dra
 in the stemfra server next to the CRM routes, NOT in the Stemfra AI runtime. Wins: no paste
 ritual, code in git with tests, progress from inside the run, the Supabase key out of
 workflow exports (the n8n export writes it in plain text). Stacy / Front desk / Concierge
-stay on n8n for now. 🔜 NEXT after today's calls.
+stay on n8n for now.
+
+**✅ BUILT + PROVEN 2026-09-17 (LOCAL, not pushed).** `lib/leadgenNative.js` (async Apify, gates,
+deterministic volume + booking platform, OpenAI JSON scoring, per-candidate decisions on the run
+row), `closeRun` shared with the n8n callback, `LEADGEN_ENGINE` (native default, n8n fallback),
+prompt in `prompts/leadgen-system.txt`. Proof: Brooklyn barbershop 10 → 5 leads (script) and
+Queens beauty salon 10 → 1 lead (CRM button, bell). Doc: `docs/LEADGEN_NATIVE.md`. ⏳ Peter:
+add the GitHub secret `APIFY_TOKEN` before the push, else production falls back to n8n.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 
