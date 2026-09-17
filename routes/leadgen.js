@@ -147,14 +147,13 @@ router.post('/draft', async (req, res) => {
   const ids = Array.isArray(req.body?.lead_ids) ? [...new Set(req.body.lead_ids)].slice(0, 25) : [];
   if (!ids.length) return res.status(400).json({ success: false, message: 'lead_ids is required (up to 25 per call).' });
   const { draftForLead } = require('../lib/leadgenNative');
-  const { data: tpl } = await supabase.from('email_templates').select('subject, body').eq('code', 'A1').eq('is_active', true).maybeSingle();
   const drafted = []; const failed = [];
   // Three at a time: fast enough for 25, gentle on the OpenAI rate limit.
   let next = 0;
   await Promise.all(Array.from({ length: Math.min(3, ids.length) }, async () => {
     while (next < ids.length) {
       const id = ids[next++];
-      try { drafted.push(await draftForLead(id, { template: tpl || null })); } catch (e) { failed.push({ lead_id: id, message: e.message }); }
+      try { drafted.push(await draftForLead(id)); // picks A1 (on a platform) or A1b (no storefront) per lead } catch (e) { failed.push({ lead_id: id, message: e.message }); }
     }
   }));
   return res.json({ success: true, drafted, failed });

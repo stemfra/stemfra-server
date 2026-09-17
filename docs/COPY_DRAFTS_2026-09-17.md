@@ -1,5 +1,7 @@
 # Copy drafts for approval: outreach A1 + marketing site (2026-09-17)
 
+_**Status 2026-09-17: section 1 (A1) APPROVED by Peter and LIVE** in the Template Manager: version A = code `A1` (shop on a booking platform), version B = new code `A1b` (no storefront); `draftForLead` picks by `booking_platform`; the draft cap is 190 words; the "other shops next to yours" line is only written for real marketplaces (Booksy, Fresha, Vagaro, Mindbody, StyleSeat, theCut, Schedulicity). Section 2 (site copy) is still a draft. Original note:_
+
 _Drafts only. Nothing here is live until Peter approves: A1 is edited in the CRM Template
 Manager (the lead-gen drafts follow it on the next run), the site copy lives in
 `stemfra_client`. Basis: `GTM_PLAN_2026-09.md` section 10 (what we sell, in order: clients see
@@ -121,3 +123,11 @@ for studios with class-pass apps).
 
 Ads (the $300 Facebook pilot) and the follow-up emails A2 to A20, which still carry the older
 angle. They should follow once A1 and the home page are approved.
+
+## Sources behind this copy
+
+- Peter's Gemini (Google AI mode) research thread on positioning, qualification and pitches: https://share.google/aimode/IYx0PoDAqg9H74ZjR
+- Mindbody, "4 Operational Pain Points That Push Studio Owners to Switch Software" (cost vs value, dated UX, support, hard exits): https://www.mindbodyonline.com/business/education/blog/4-operational-pain-points
+- Provider pricing, marketplace fees, contracts and complaints: `MARKET_RESEARCH_PROVIDERS_2026-09.md` (every figure linked there).
+- Owner complaints about Booksy, Fresha, Mindbody, Vagaro: `GTM_PLAN_2026-09.md` section 9.
+- Email deliverability rule (one link in a cold email): `EMAIL_DELIVERABILITY.md`.

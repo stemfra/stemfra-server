@@ -193,3 +193,16 @@ their client list and we upload it; (2) they replace the website and the booking
 Google Business Profile with the new ones. The "Coexistence is unresolved" note in section 9 is
 closed by this decision. Every call script says it this way; the old "keep Fresha" lines are gone.
 This replaces the earlier "incremental, coexist" idea in the provider-switching notes.
+
+## Sources (kept for every section above)
+
+- Peter's Gemini (Google AI mode) research thread: https://share.google/aimode/IYx0PoDAqg9H74ZjR
+- Mindbody, 4 operational pain points: https://www.mindbodyonline.com/business/education/blog/4-operational-pain-points
+- Mindbody contracts + cancellation (12 / 24 / 36 months, auto-renew): https://www.mindbodyonline.com/business/education/blog/mindbody-contracts-cancellation-data
+- Booksy pricing + Boost: https://biz.booksy.com/pricing · https://biz.booksy.com/features/boost · https://support.booksy.com/hc/en-us/articles/16486248108946-How-does-Boost-pricing-work · https://support.booksy.com/hc/en-us/articles/16485524178066-How-do-I-prevent-being-charged-for-Boost · https://support.booksy.com/hc/en-us/articles/16486241050514-How-do-I-claim-a-client-on-Boost
+- Fresha pricing + payments: https://www.fresha.com/pricing · https://www.fresha.com/help-center/knowledge-base/payments/620-set-up-fresha-payments
+- Vagaro pricing + client accounts: https://www.vagaro.com/pro/pricing · https://support.vagaro.com/hc/en-us/articles/22781768988187-Vagaro-Plans-Pricing-and-Premium-Features · https://support.vagaro.com/hc/en-us/articles/115003521813-Book-a-Service-Appointment-for-Customers-of-a-Vagaro-Business · https://glossgenius.com/blog/vagaro-cost
+- Mindbody pricing + marketplace fee: https://www.mindbodyonline.com/business/pricing · https://gymdesk.com/blog/mindbody-fees
+- Review pages read: https://www.trustpilot.com/review/booksy.com · https://www.capterra.com/p/142741/Booksy/reviews · https://www.trustpilot.com/review/fresha.com · https://www.softwareadvice.com/retail/shedul-profile/reviews/ · https://www.trustpilot.com/review/mindbodyonline.com · https://www.capterra.com/p/40229/MINDBODY/reviews/ · https://www.bbb.org/us/ca/san-luis-obispo/profile/computer-software-developers/mindbody-inc-1236-5002899/complaints · https://www.trustpilot.com/review/vagaro.com · https://www.capterra.com/p/153752/Vagaro/reviews/ · https://www.bbb.org/us/il/chicago/profile/marketing-consultant/booksy-inc-0654-1000106496/complaints
+- Competitor roundups (biased, used as leads only): https://www.setora.co.uk/blog/booksy-boost-commission-explained · https://www.setora.co.uk/blog/fresha-commission-fees-explained · https://www.timetailor.com/timetailor-alternatives/fresha-reddit-reviews · https://sorttheclicks.com/fresha-reviews-reddit/ · https://vibefam.com/mindbody-reviews-reddit-2026/ · https://glossgenius.com/blog/booksy-alternatives
+- Full provider landscape with sources: `MARKET_RESEARCH_PROVIDERS_2026-09.md`. Where reps find owners: `OWNER_SOURCING_2026-09.md`.
