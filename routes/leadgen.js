@@ -153,7 +153,8 @@ router.post('/draft', async (req, res) => {
   await Promise.all(Array.from({ length: Math.min(3, ids.length) }, async () => {
     while (next < ids.length) {
       const id = ids[next++];
-      try { drafted.push(await draftForLead(id)); // picks A1 (on a platform) or A1b (no storefront) per lead } catch (e) { failed.push({ lead_id: id, message: e.message }); }
+      // draftForLead picks A1 (on a platform) or A1b (no storefront) per lead
+      try { drafted.push(await draftForLead(id)); } catch (e) { failed.push({ lead_id: id, message: e.message }); }
     }
   }));
   return res.json({ success: true, drafted, failed });

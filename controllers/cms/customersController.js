@@ -245,8 +245,10 @@ function splitFullName(full) {
 }
 
 function cleanRow(raw, { dayFirst = false } = {}) {
-  const email = normEmail(raw.email);
-  const phone = (raw.phone || '').toString().trim();
+  // Google Contacts joins several values with " ::: ": the first one is the primary.
+  const firstOf = (v) => String(v ?? '').split(':::')[0].trim();
+  const email = normEmail(firstOf(raw.email));
+  const phone = firstOf(raw.phone);
   const phoneKey = normPhoneKey(phone);
   // Need at least a usable email or a phone with enough digits to be real.
   const hasEmail = email && looksEmail(email);
@@ -265,7 +267,11 @@ function cleanRow(raw, { dayFirst = false } = {}) {
   // Email consent arrives either as an opt-OUT column (Yes = suppressed) or as an opt-IN /
   // "accepts marketing" column (No = suppressed). Suppression is always honoured; a blank cell
   // changes nothing.
-  const emailOptOut = saysYes(raw.emailOptOut) || saysNo(raw.emailOptIn);
+  // Banned / blocked / deactivated at the old provider: keep the record (the owner may need
+  // the history) but tag it and never market to it.
+  const blocked = saysYes(raw.blocked) || /^(deactivated|inactive|banned|blocked)$/i.test(String(raw.blocked ?? '').trim());
+  if (blocked && !tags.includes('Blocked')) tags.push('Blocked');
+  const emailOptOut = saysYes(raw.emailOptOut) || saysNo(raw.emailOptIn) || blocked;
 
   return {
     firstName, lastName,
@@ -338,49 +344,125 @@ const OpenAI = require('openai');
 const importAi = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const IMPORT_MAP_MODEL = process.env.IMPORT_MAP_MODEL || 'gpt-4o-mini';
 
-const IMPORT_FIELD_KEYS = ['firstName', 'lastName', 'fullName', 'email', 'phone', 'birthdate', 'tags', 'notes', 'smsOptIn', 'emailOptOut', 'emailOptIn'];
+const IMPORT_FIELD_KEYS = ['firstName', 'lastName', 'fullName', 'email', 'phone', 'birthdate', 'tags', 'notes', 'smsOptIn', 'emailOptOut', 'emailOptIn', 'blocked'];
 
 // Known export layouts (lowercase headers). Signature = headers that identify
 // the provider; map = header → our field. Refined as real exports come in.
+// Headers from the vendors' own help pages or other vendors' migration guides
+// (docs/CLIENT_EXPORT_FORMATS_2026-09.md, with sources). `unique` headers identify a provider
+// beyond doubt and break ties. null = never import that column.
 const IMPORT_PRESETS = [
   {
-    name: 'Mindbody',
-    signature: ['first name', 'last name', 'email', 'mobile phone', 'birth date'],
-    minMatch: 4,
-    map: {
-      'first name': 'firstName', 'last name': 'lastName', 'email': 'email',
-      'mobile phone': 'phone', 'home phone': null, 'work phone': null,
-      'birth date': 'birthdate', 'birthday': 'birthdate', 'client id': null,
-      'notes': 'notes', 'tags': 'tags', 'liability release': null,
-    },
-  },
-  {
-    name: 'Square',
-    signature: ['first name', 'surname', 'email address', 'phone number'],
+    name: 'Fresha',
+    signature: ['first name', 'last name', 'mobile number', 'accepts marketing', 'accepts sms marketing'],
+    unique: ['accepts sms marketing', 'block reason'],
     minMatch: 3,
     map: {
-      'first name': 'firstName', 'surname': 'lastName', 'last name': 'lastName',
-      'email address': 'email', 'phone number': 'phone', 'birthday': 'birthdate',
-      'memo': 'notes', 'groups': 'tags', 'email subscription status': null,
+      'first name': 'firstName', 'last name': 'lastName', 'full name': null, 'email': 'email',
+      'mobile number': 'phone', 'mobile phone': 'phone', 'telephone': null,
+      'accepts marketing': 'emailOptIn', 'accepts sms marketing': 'smsOptIn',
+      'date of birth': 'birthdate', 'birthday': 'birthdate', 'note': 'notes', 'client notes': 'notes',
+      'blocked': 'blocked', 'block reason': null, 'client id': null, 'added': null, 'referral source': null,
     },
   },
   {
     name: 'Vagaro',
-    signature: ['first name', 'last name', 'mobile', 'email'],
+    signature: ['name', 'email', 'mobile', 'birthdate', 'customer since', 'last visited'],
+    unique: ['customer since', 'employees seen', 'points earned', 'day phone', 'night phone'],
+    minMatch: 3,
+    map: {
+      'name': 'fullName', 'first name': 'firstName', 'last name': 'lastName', 'email': 'email',
+      'mobile': 'phone', 'cell phone': 'phone', 'day': null, 'day phone': null, 'night': null, 'night phone': null,
+      'birthdate': 'birthdate', 'birthday': 'birthdate', 'tags': 'tags', 'customer notes': 'notes',
+      'amount paid': null, 'credit card': null, 'membership': null, 'online booking': null, 'referred by': null,
+    },
+  },
+  {
+    name: 'Square',
+    signature: ['first name', 'last name', 'surname', 'email address', 'phone number', 'memo'],
+    unique: ['square customer id', 'instant profile', 'email subscription status', 'email unsubscribed', 'memo'],
+    minMatch: 3,
+    map: {
+      'first name': 'firstName', 'surname': 'lastName', 'last name': 'lastName',
+      'email address': 'email', 'phone number': 'phone', 'birthday': 'birthdate',
+      'memo': 'notes', 'groups': 'tags',
+      'email subscription status': 'emailOptIn', 'email unsubscribed': 'emailOptOut',
+      'reference id': null, 'square customer id': null, 'nickname': null, 'company name': null,
+      'lifetime spend': null, 'transaction count': null, 'instant profile': null, 'creation source': null,
+    },
+  },
+  {
+    name: 'GlossGenius',
+    signature: ['name', 'email', 'phone', 'date of birth', 'banned'],
+    unique: ['banned'],
+    minMatch: 4,
+    map: { 'name': 'fullName', 'email': 'email', 'phone': 'phone', 'date of birth': 'birthdate', 'banned': 'blocked' },
+  },
+  {
+    name: 'Mindbody',
+    signature: ['first name', 'last name', 'email', 'mobile phone', 'birth date', 'birthdate', 'home phone', 'work phone'],
+    unique: ['rssid', 'medic alert', 'liability release'],
     minMatch: 4,
     map: {
       'first name': 'firstName', 'last name': 'lastName', 'email': 'email',
-      'mobile': 'phone', 'day phone': null, 'birthday': 'birthdate',
-      'customer notes': 'notes', 'tags': 'tags',
+      'mobile phone': 'phone', 'home phone': null, 'work phone': null,
+      'birth date': 'birthdate', 'birthdate': 'birthdate', 'birthday': 'birthdate', 'client id': null, 'id': null, 'rssid': null,
+      'notes': 'notes', 'notes1': 'notes', 'tags': 'tags', 'liability release': null,
+    },
+  },
+  {
+    name: 'MassageBook',
+    signature: ['first name', 'last name', 'email address', 'phone number', 'alternate number', 'photo url'],
+    unique: ['photo url', 'alternate number'],
+    minMatch: 4,
+    map: {
+      'first name': 'firstName', 'last name': 'lastName', 'email address': 'email', 'phone number': 'phone',
+      'alternate number': null, 'alternate phone number': null, 'birthday': 'birthdate', 'notes': 'notes',
+      'photo url': null, 'source': null,
+    },
+  },
+  {
+    name: 'WellnessLiving',
+    signature: ['first name', 'last name', 'username', 'phone number', 'client since date', 'client type'],
+    unique: ['username', 'client since date', 'belt'],
+    minMatch: 4,
+    map: {
+      'first name': 'firstName', 'last name': 'lastName', 'username': 'email', 'email': 'email',
+      'phone number': 'phone', 'home phone number': null, 'work phone number': null,
+      'birthday': 'birthdate', 'notes': 'notes', 'client type': 'tags', 'status': 'blocked',
+      'client id': null, 'imported': null, 'belt': null,
+    },
+  },
+  {
+    name: 'Jane',
+    signature: ['first name', 'last name', 'email', 'mobile phone', 'birth date', 'patient number', 'marketing email opt-in'],
+    unique: ['patient number', 'personal health number', 'marketing email opt-in'],
+    minMatch: 4,
+    map: {
+      'first name': 'firstName', 'last name': 'lastName', 'email': 'email', 'mobile phone': 'phone',
+      'home phone': null, 'work phone': null, 'fax phone': null, 'birth date': 'birthdate',
+      'marketing email opt-in': 'emailOptIn', 'patient number': null, 'personal health number': null,
+    },
+  },
+  {
+    name: 'Google Contacts',
+    signature: ['first name', 'last name', 'given name', 'family name', 'e-mail 1 - value', 'email 1 - value', 'phone 1 - value'],
+    unique: ['e-mail 1 - value', 'email 1 - value', 'phone 1 - value', 'group membership'],
+    minMatch: 3,
+    map: {
+      'first name': 'firstName', 'given name': 'firstName', 'last name': 'lastName', 'family name': 'lastName', 'surname': 'lastName',
+      'name': 'fullName', 'e-mail 1 - value': 'email', 'email 1 - value': 'email', 'phone 1 - value': 'phone',
+      'birthday': 'birthdate', 'notes': 'notes', 'labels': 'tags', 'group membership': 'tags',
     },
   },
   {
     name: 'Acuity / Squarespace',
-    signature: ['first name', 'last name', 'phone', 'email', 'notes'],
+    signature: ['first name', 'last name', 'phone', 'email', 'notes', 'days since last appointment'],
+    unique: ['days since last appointment'],
     minMatch: 4,
     map: {
       'first name': 'firstName', 'last name': 'lastName', 'email': 'email',
-      'phone': 'phone', 'notes': 'notes',
+      'phone': 'phone', 'notes': 'notes', 'days since last appointment': null,
     },
   },
   {
@@ -397,6 +479,7 @@ const IMPORT_PRESETS = [
 // Header → field guesses for anything a preset does not name (the same patterns the CMS uses
 // locally; '=' = exact match). Order matters: consent and birthdate before email / phone.
 const HEADER_PATTERNS = [
+  ['blocked', ['=banned', '=blocked', '=blacklisted']],
   ['emailOptOut', ['opt out', 'opt-out', 'optout', 'unsubscrib', 'do not email', 'no email']],
   ['emailOptIn', ['email opt in', 'email opt-in', 'email consent', 'email marketing', 'accepts marketing', 'accepts email', 'marketing consent', 'marketing opt', 'email subscription', 'newsletter']],
   ['smsOptIn', ['sms opt', 'text opt', 'sms consent', 'text consent', 'sms marketing', 'text marketing', 'accepts sms', 'accepts text']],
@@ -411,6 +494,8 @@ const HEADER_PATTERNS = [
 ];
 function guessField(header) {
   const h = String(header || '').toLowerCase().trim();
+  // Google Contacts pairs every value with a "… - Type" / "… - Label" column: never a value.
+  if (/ - (type|label)$/.test(h)) return null;
   for (const [key, pats] of HEADER_PATTERNS) {
     if (pats.some((p) => (p.startsWith('=') ? h === p.slice(1) : h.includes(p)))) return key;
   }
