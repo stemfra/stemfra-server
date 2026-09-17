@@ -206,3 +206,16 @@ This replaces the earlier "incremental, coexist" idea in the provider-switching 
 - Review pages read: https://www.trustpilot.com/review/booksy.com · https://www.capterra.com/p/142741/Booksy/reviews · https://www.trustpilot.com/review/fresha.com · https://www.softwareadvice.com/retail/shedul-profile/reviews/ · https://www.trustpilot.com/review/mindbodyonline.com · https://www.capterra.com/p/40229/MINDBODY/reviews/ · https://www.bbb.org/us/ca/san-luis-obispo/profile/computer-software-developers/mindbody-inc-1236-5002899/complaints · https://www.trustpilot.com/review/vagaro.com · https://www.capterra.com/p/153752/Vagaro/reviews/ · https://www.bbb.org/us/il/chicago/profile/marketing-consultant/booksy-inc-0654-1000106496/complaints
 - Competitor roundups (biased, used as leads only): https://www.setora.co.uk/blog/booksy-boost-commission-explained · https://www.setora.co.uk/blog/fresha-commission-fees-explained · https://www.timetailor.com/timetailor-alternatives/fresha-reddit-reviews · https://sorttheclicks.com/fresha-reviews-reddit/ · https://vibefam.com/mindbody-reviews-reddit-2026/ · https://glossgenius.com/blog/booksy-alternatives
 - Full provider landscape with sources: `MARKET_RESEARCH_PROVIDERS_2026-09.md`. Where reps find owners: `OWNER_SOURCING_2026-09.md`.
+
+## 11. Decisions 2026-09-18 (Peter)
+
+- **Busy shops that already own a website stay OUT of the target**, even when they book through a
+  marketplace: they already pay for a site. The gate stays as built (no own storefront). The
+  "wider gate" option raised in section 9 and in the SWOT is closed; those places remain in Places
+  as market data only. Consequence to remember: salons qualify far less often than barbers (own
+  website: London salons 65%, Toronto salons 56%, London barbers 22%, Toronto barbers 45%).
+- **No more Apify runs from the CRM for now.** Call the leads we have (New Lead: 157 US, 35 Canada,
+  58 UK after the 2026-09-18 runs and the re-score), then decide the strategy from the results.
+  Track per call: reached / interested / objection / the provider they use / renewal month.
+- Default lead-gen settings: 100 places, minimum score 7; qualified leads go straight to the
+  pipeline; outreach is drafted and sent deliberately (one lead or a filtered selection).
