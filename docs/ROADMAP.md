@@ -37,6 +37,8 @@ the code at the time of writing, never copied from an older doc. A reconciliatio
 - P18 NOT built (Stacy has only `clone`). P20 security page NOT built. P21: backups ✅,
   Supabase org still on the **free** plan (Management API, 2026-09-07). P26 NOT started.
 - P24 IS pushed (origin/main 2026-08-31); handoff "local only" notes are stale.
+- **P41 native lead-gen ✅ DONE + PUSHED 2026-09-17** (n8n cold lead-gen retired; every scraped
+  place kept in `leadgen_places`; drafts on demand; provider tags + pitches). See P41.
 - **Wildcard Worker LIVE 2026-09-16** (Peter: "go live"): `*.stemfra.com` A record + 10 bypass
   routes (setup script `--apply`), `stemfra-tenant-router` deployed with HOST_CACHE KV, verified
   from outside (clean-cuts/argyle → stemfra-barbers, ellaris-spa → stemfra-spa, lull → stemfra-massage,
@@ -2419,12 +2421,34 @@ ritual, code in git with tests, progress from inside the run, the Supabase key o
 workflow exports (the n8n export writes it in plain text). Stacy / Front desk / Concierge
 stay on n8n for now.
 
-**✅ BUILT + PROVEN 2026-09-17 (LOCAL, not pushed).** `lib/leadgenNative.js` (async Apify, gates,
-deterministic volume + booking platform, OpenAI JSON scoring, per-candidate decisions on the run
-row), `closeRun` shared with the n8n callback, `LEADGEN_ENGINE` (native default, n8n fallback),
-prompt in `prompts/leadgen-system.txt`. Proof: Brooklyn barbershop 10 → 5 leads (script) and
-Queens beauty salon 10 → 1 lead (CRM button, bell). Doc: `docs/LEADGEN_NATIVE.md`. ⏳ Peter:
-add the GitHub secret `APIFY_TOKEN` before the push, else production falls back to n8n.
+**✅ DONE 2026-09-17, PUSHED the same day (Peter: "push everything").** Full doc
+`docs/LEADGEN_NATIVE.md`. What shipped:
+- `lib/leadgenNative.js`: async Apify scrape (no 5-minute limit), every scraped place KEPT in
+  `leadgen_places` with a status, free gates in code (own site → old-school → too quiet →
+  duplicate), judging on gpt-4o-mini with NO draft, relevance decided in code from a named
+  `reject_reason`, vendor emails dropped, per-place decisions on the run row, live progress.
+- Drafts on demand (`POST /api/leadgen/draft`; Review card + queue buttons), Places app in the CRM
+  (`/lead-places`, promote by hand), `rejudgePlaces()` to re-apply new rules to kept data for free.
+- One run at a time (409), menu-bar progress chip, Fetch Leads locked while a run works.
+- Booking-provider tag on the lead card + drawer; one call script per provider (Booksy, Fresha,
+  Mindbody, Vagaro, other) opens by default (`call_scripts.platform`).
+- **n8n cold lead-gen RETIRED** after the 100-place proof (Houston: 100 places, 3.4 min, DB =
+  summary, 20 leads + 14 recovered by re-judging). `APIFY_TOKEN` secret ✅ Peter confirmed 2026-09-17.
+- Targeting re-based the same day: busy shops (200+ reviews, 4.5+) without their own storefront;
+  quiet shops are dropped (`GTM_PLAN_2026-09.md` §9). Owner-sourcing playbook:
+  `docs/OWNER_SOURCING_2026-09.md`.
+
+**🔜 Follow-ups (not started):** rewrite template A1 (subject + body assume a weak site; the new
+audience has none) · a "Re-judge" action in the Places app · widen the gate to busy shops that own a
+weak site but book through a marketplace (Places data: 7 of 8 busy Brooklyn salons own a site, 3 of
+them book on Vagaro / Fresha / Booksy) · phone-number dedupe · Toronto + London batches (nothing
+valid came from the n8n ones: it searched "<city>, USA") · CRM "Run details" view over the decisions.
+
+**Pricing, under discussion (Peter 2026-09-17, nothing decided):** the busy-shop target makes an
+uncapped 5% compare badly with Booksy / Fresha (one-time new-client fees + $30 to $150 a month).
+Options on the table: a monthly cap around $400 (Peter: $200 is too low for us; owners already pay
+$200 to $400 in subscriptions, per Neil's call) or a subscription tier with the first month free.
+"Clients pay at the venue, we add no payment fees" is a supporting argument, not the headline.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 
