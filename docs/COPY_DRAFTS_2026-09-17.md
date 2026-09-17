@@ -65,7 +65,7 @@ Stemfra
   `booking_platform`. Recommendation: (b), it is explicit and both stay editable in the CRM.
 - "5% of what is booked through the site": the commission doc says 5% of ALL sales through the
   site incl. at-visit sales marked collected. The email stays with the simpler phrase; the Fees
-  page carries the detail. If the cap is decided, add "never more than $X a month" here.
+  page carries the detail. **The cap IS decided (2026-09-17: $400 a month): add "never more than $400 a month" to A1, A1b, the claim email line and the site copy when the cap is built into billing (ROADMAP "PRICING DECIDED").**
 
 ## 2. Marketing site (stemfra.com)
 

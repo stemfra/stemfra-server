@@ -6,6 +6,15 @@ half of Master Plan v3 (stemfra_business); the pricing decisions live in ROADMAP
 "Pricing justification". Figures marked "estimate" are to be replaced by the measured
 numbers from the first paid pilot and the first signed clients._
 
+> **Where this plan stands (2026-09-17).** Written on the 16th and extended on the 17th, so later
+> sections overrule earlier ones. Current truth: price = **5% of bookings, capped at $400 a month**
+> (section 11); target = busy, established shops WITHOUT their own website, old-school listings and
+> shops that own a site are out (sections 9, 11); what we sell = "your clients see only you", your
+> brand, room to grow, price last; a switch, never coexistence (section 10); leads go straight to
+> the pipeline and calling is the engine (247 of 248 New Leads have a phone, 13 an email); no more
+> scraping until the current pool is called. Figures from our own data:
+> `MARKET_RESEARCH_PROVIDERS_2026-09.md` sections 1a and 1b.
+
 ## 1. Who we sell to
 
 Owners who already act online: a claimed Google profile, a booking app they pay for
@@ -18,11 +27,12 @@ Why: the transcript. The owner argued against "a website" for ten minutes, accep
 "$2.50 on a $50 cut" in one sentence, and said "send me one client and I might go for it".
 Price was never the objection; the product framing was. He will not log into anything.
 
-## 2. The offer and its story (no cap, flat 5%)
+## 2. The offer and its story (5%, capped at $400 a month since 2026-09-17)
 
-Free website, no setup fee, no monthly fee, flat 5% on bookings through the site. A monthly
-cap was proposed and DEFERRED (learn from real clients first; a cap gives away revenue on the
-busiest shops). The pitch leads with the clients they already have:
+Free website, no setup fee, no monthly fee, flat 5% on bookings through the site, never more
+than $400 a month. (On 2026-09-16 the cap was proposed and deferred; on 2026-09-17 Peter decided
+it at $400 after the provider research showed an uncapped 5% was the one number a busy owner
+could not accept.) The pitch leads with the clients they already have:
 
 1. Import your client list (we do it, from Booksy, Fresha, Square or a spreadsheet).
 2. Win back the ones who stopped coming, automated, in your name, with your booking link.
@@ -138,8 +148,8 @@ stores `booking_platform`, `review_count`, `rating`, `price_level` on `leads.qua
 **Supply check (our own data, 2026-09-16 New York, 600 places scraped, 129 leads kept):** 6 leads
 have 200+ reviews at 4.5+, 21 have 75 to 199, 34 have 25 to 74, 63 have under 25. Only 6 sit on a
 booking platform. So the ideal lead is about 1% of scraped places under the current "no real
-website" gate. OPEN DECISION: also admit busy shops that have their own (weak) site but book
-through a marketplace; that is a different pitch (replace the site, keep or move the booking).
+website" gate. (The option of also admitting busy shops that own a weak site but book through a
+marketplace was CLOSED on 2026-09-17: they already pay for a site, they are not our target.)
 
 **Verified owner complaints (research 2026-09-17; use in CALLS and ADS as questions, never as
 claims in cold email; re-check a number before quoting it):**
@@ -157,18 +167,15 @@ vagaro.com/pro/pricing, Trustpilot / Capterra / Software Advice / BBB review pag
 NOT verified: any Reddit thread (blocked), "Booksy pushes competitor discounts", Mindbody's
 "30 to 50% termination penalty" and its $139 to $599 tiers.
 
-**The uncomfortable comparison (must be answered before we pitch busy shops).** Their fees are
-ONE-TIME on a new client (Booksy 30%, Fresha 20%) plus about $30 to $150 a month. Ours is 5% of
-EVERY booking through the site, existing clients included, with no cap. A shop booking $25,000 a
-month through us pays $1,250; on Booksy it pays well under $200. The bigger the shop, the worse
-we compare, which is exactly the shop the new rubric targets. Options: a monthly cap, a lower
-rate above a threshold, or 5% only on bookings the site's growth tools produce (win-back,
-review-driven, new clients). Peter deferred the cap on 2026-09-16; this data reopens it.
+**The uncomfortable comparison, and its answer.** Their fees are ONE-TIME on a new client (Booksy
+30%, Fresha 20%) plus about $30 to $150 a month; ours is 5% of every booking through the site,
+existing clients included. Uncapped, a shop booking $25,000 a month would have paid us $1,250
+against well under $200 on Booksy, and the bigger the shop the worse we compared. **Answered on
+2026-09-17 by the $400 cap:** that shop now pays $400 (1.6%), with the website and the growth tools
+included. Tables: `MARKET_RESEARCH_PROVIDERS_2026-09.md` section 1a, `PRICING_COMPETITORS.md`.
 
-**Coexistence is unresolved.** "Keep Booksy for the calendar, own the storefront" only earns us
-commission if the booking is made in OUR engine. Two calendars means double-booking risk. Until
-there is a calendar sync or a clean import-and-switch path, the honest pitch is a switch with
-done-for-you migration, not a hybrid.
+**Coexistence: decided against (see section 10).** We sell a switch made easy, never a second
+system beside their current one.
 
 ## 10. What we sell (Peter, 2026-09-17, after the Gemini research)
 
@@ -184,7 +191,7 @@ Not "a website". We sell **the shop's own branded place to be booked**, in this 
    every other page on that marketplace.
 3. **It grows with them.** Whole team, more locations, memberships, classes, the AI front desk,
    reminders, win-back and reviews, with nothing per seat and no add-on price list.
-4. **Cost** comes last: free to claim, flat 5% of bookings (cap under discussion), no payment fees
+4. **Cost** comes last: free to claim, flat 5% of bookings, never more than $400 a month, no payment fees
    from us on top of theirs because clients pay at the venue.
 
 **No coexistence (decided 2026-09-17).** We do not offer to run next to another booking tool: the
