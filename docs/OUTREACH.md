@@ -184,3 +184,16 @@ Our model, therefore: the composer stays locked until (a) Send Claim during a ca
   mail today).
 - Warm-track (`N8N_LEADGEN_WARM_URL`) workflow: same contract, separate n8n flow.
 - UK sole-trader detection is manual (Companies House link on the lead form → `leads.entity_type`); the gate is automatic. A Companies House API lookup by name is the next step when UK volume justifies it.
+
+## Canada gate (CASL), 2026-09-17
+
+`outreachCompliance.emailAllowed(lead)` now refuses a cold email to a Canadian lead (region = a
+province or phone country CA) unless a basis exists: the lead came to us (any inbound source), has
+replied, is a client (`stage = won`), or a rep recorded `qualification.casl_basis` (where the
+address is published by the business, checked that no "no solicitation" notice sits beside it).
+Why: CASL is opt-in, the sender carries the burden of proof per message, and lead-gen does not
+record where a scraped address was published. Peter's rule: if a send can raise a legal claim, it
+is not sent. Canada is a phone-first market for us. The three Toronto leads queued by the old
+auto-send on 2026-09-17 were held before sending. The gate is enforced wherever the PECR gate is
+(claim send, sequencer, send-outreach, handover); selects on those paths must include
+`region, phone_country, entity_type, qualification, outreach_reply_text, source, stage`.
