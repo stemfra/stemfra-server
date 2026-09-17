@@ -134,6 +134,21 @@ What it tells us:
 - **Cost per lead:** about $14 of Apify for 450 places and 125 leads: roughly 11 cents a lead,
   3 cents a place.
 
+## 1c. Which platform serves which business (who we meet on calls)
+
+| Our vertical | Platforms built for it (strongest first) | Marketplace among them | Premium / contract tools |
+|---|---|---|---|
+| Barbershops | Booksy, theCut, Squire, Square, Setmore, Fresha, Vagaro, StyleSeat (solo barbers) | Booksy, theCut, Fresha, Vagaro, StyleSeat | Boulevard, Mangomint (rare) |
+| Beauty and hair salons | Fresha, Vagaro, GlossGenius, Square, StyleSeat (solo), Booksy, Rosy, DaySmart, SalonBiz | Fresha, Vagaro, StyleSeat, Booksy | Boulevard, Mangomint, Phorest, Meevo, Zenoti (chains) |
+| Day spas | Vagaro, Fresha, Booker (Mindbody), Mangomint, Boulevard, DaySmart Spa | Vagaro, Fresha, Mindbody app (via Booker) | Booker, Boulevard, Meevo, Zenoti |
+| Massage studios | MassageBook, Vagaro, Jane, ClinicSense, Noterro, Fresha, Square | MassageBook, Vagaro, Fresha | Jane (clinical), Mindbody |
+| Yoga and Pilates studios | Mindbody, Momence, WellnessLiving, Arketa, Walla, Mariana Tek, TeamUp, Acuity | Mindbody / ClassPass, WellnessLiving Explorer | Mindbody, WellnessLiving, Mariana Tek, Walla |
+| CrossFit boxes and gyms | PushPress, Wodify, Zen Planner, Glofox, Pike13, TeamUp, Mindbody | Mindbody / ClassPass | Glofox, Zen Planner, Mindbody |
+| UK, any vertical | Fresha, Treatwell, Phorest, Timely, Salonized, Booksy | Fresha, Treatwell, Booksy | Phorest |
+| Horizontal (any service business) | Square Appointments, Acuity, Setmore, SimplyBook.me, Wix Bookings | Square Go (US, small) | none |
+
+The per-platform "Built for" and "Markets" columns are in `PRICING_COMPETITORS.md` section 1.
+
 ## 2. Comparison: what a 5-chair shop pays (software only, before card processing)
 
 | Provider | Entry price | Per staff? | Marketplace + new-client fee | Contract | Own website | About $/mo for 5 chairs | Main complaint |
