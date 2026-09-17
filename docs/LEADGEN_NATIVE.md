@@ -131,6 +131,39 @@ every Fetch Leads button reads "Fetching…" and is disabled. The server enforce
 unless the body carries `allow_parallel: true`. Proof runs: London barbershop (GB, 10 → 8
 leads), Bronx barbershop from the CRM with the chip and the lock on screen.
 
+## 6c. Keep every place, draft on demand (2026-09-17, Peter)
+
+We pay Apify per place, so nothing is thrown away any more.
+
+- **`leadgen_places`** (migration `leadgen_places_v1`, staff RLS): one row per Google place
+  (`place_key` = placeId), the Google record, the facts computed in code (`has_own_site`,
+  `booking_platform`, `readiness`, `review_count`, `rating`, `fit_score` = trait_volume) and a
+  `status`: `own_site` · `old_school` · `low_volume` · `not_relevant` · `no_contact` · `qualified`
+  · `promoted` (+ `lead_id`) · `new`. A later run refreshes the facts; a place that became a lead
+  stays `promoted`.
+- **Order of the gates** (all free, in code): own website → old-school → too quiet
+  (`fit_score` under `LEADGEN_MIN_VOLUME`, default 5 = 25+ reviews at 4.0+) → already a lead. Only
+  what passes reaches the model.
+- **Two prompts**: `prompts/leadgen-qualify.txt` (judge + score, NO draft, model
+  `LEADGEN_QUALIFY_MODEL` default gpt-4o-mini) and `prompts/leadgen-draft.txt` (the A1-based draft
+  for ONE lead, model `LEADGEN_SCORING_MODEL` / gpt-4o). `prompts/leadgen-system.txt` is the older
+  single prompt, kept only as the source the n8n fallback was built from.
+- **Leads are inserted without a draft.** `POST /api/leadgen/draft {lead_ids[]}` (up to 25) writes
+  drafts when staff ask: the Review card's "Draft outreach" button or the queue's "Draft N now".
+  Note the Review queue's own words: sends go out as the branded Claim email; the draft is call
+  context, which is why paying for one on every lead was waste.
+- **Places in the CRM**: app "Places" (`/lead-places`, `pages/LeadPlaces.jsx`): stat cards (kept,
+  became leads, busy shops and how many own a site, platforms), views All / Qualified / Own
+  website / Too quiet / Old-school / Not a fit, filters (vertical, platform, size, search), kebab
+  "Add to the pipeline" (`POST /api/leadgen/places/:id/promote`, refuses old-school listings) and
+  "Open on Google Maps". Endpoints: `GET /api/leadgen/places`, `/places/stats`.
+- **Vendor emails are dropped** (`ownerEmail`): a scraped `help.us@booksy.com` reached two leads
+  and one was emailed before this guard.
+- **Provider tag + pitch**: CRM `lib/bookingPlatform.js` (keep its patterns in step with
+  `PLATFORMS` here), tag on the lead card + drawer, `call_scripts.platform` opens "On Booksy /
+  Fresha / Mindbody / Vagaro / another booking tool" by default (migration
+  `call_scripts_platform_v1.sql`; tokens `{platform} {reviews} {rating}`).
+
 ## 7. Configuration
 
 | Env | Meaning |

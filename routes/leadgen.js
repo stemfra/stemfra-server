@@ -99,6 +99,67 @@ router.post('/trigger', async (req, res) => {
   return res.status(out.status).json(out.json);
 });
 
+// ─── Places: every scraped place, kept (2026-09-17) ──────────────────────────
+// GET  /api/leadgen/places?status=&platform=&vertical=&country=&region=&city=&min_fit=&own_site=&q=&page=&per=
+// GET  /api/leadgen/places/stats        counts by status + platform (the market picture)
+// POST /api/leadgen/places/:id/promote  a kept place becomes a lead (approved, no draft)
+// POST /api/leadgen/draft {lead_ids[]}  draft the A1 outreach ON DEMAND (max 25 per call)
+router.get('/places/stats', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  const { data, error } = await supabase.from('leadgen_places').select('status, booking_platform, has_own_site, fit_score').limit(50000);
+  if (error) return res.status(500).json({ success: false, message: error.message });
+  const by = (k) => (data || []).reduce((m, r) => { const v = r[k] || 'none'; m[v] = (m[v] || 0) + 1; return m; }, {});
+  const busy = (data || []).filter((r) => r.fit_score >= 8);
+  return res.json({ success: true, total: (data || []).length, by_status: by('status'), by_platform: by('booking_platform'),
+    busy: { total: busy.length, own_site: busy.filter((r) => r.has_own_site).length, on_platform: busy.filter((r) => r.booking_platform).length } });
+});
+router.get('/places', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  const f = req.query;
+  const per = Math.min(Math.max(parseInt(f.per, 10) || 25, 1), 100);
+  const page = Math.max(parseInt(f.page, 10) || 1, 1);
+  let q = supabase.from('leadgen_places')
+    .select('id, name, vertical, country, region, city, phone, email, website, has_own_site, booking_platform, readiness, review_count, rating, price_level, fit_score, status, reason, lead_score, lead_id, source_detail, last_seen_at', { count: 'exact' });
+  if (f.status === 'qualified_all') q = q.in('status', ['qualified', 'promoted']);
+  else if (f.status) q = q.eq('status', f.status);
+  if (f.platform === 'any') q = q.not('booking_platform', 'is', null); else if (f.platform) q = q.eq('booking_platform', f.platform);
+  for (const k of ['vertical', 'country', 'region', 'city']) if (f[k]) q = q.eq(k, f[k]);
+  if (f.min_fit) q = q.gte('fit_score', parseInt(f.min_fit, 10) || 0);
+  if (f.own_site === 'true') q = q.eq('has_own_site', true); else if (f.own_site === 'false') q = q.eq('has_own_site', false);
+  if (f.q) q = q.ilike('name', `%${String(f.q).replace(/[%_,]/g, ' ').trim()}%`);
+  const { data, error, count } = await q.order('fit_score', { ascending: false }).order('review_count', { ascending: false }).range((page - 1) * per, page * per - 1);
+  if (error) return res.status(500).json({ success: false, message: error.message });
+  return res.json({ success: true, places: data || [], total: count || 0, page, per });
+});
+router.post('/places/:id/promote', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  try {
+    const out = await require('../lib/leadgenNative').promotePlace(req.params.id, { userId: user.id });
+    return res.json({ success: true, ...out });
+  } catch (e) { return res.status(400).json({ success: false, message: e.message }); }
+});
+router.post('/draft', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  const ids = Array.isArray(req.body?.lead_ids) ? [...new Set(req.body.lead_ids)].slice(0, 25) : [];
+  if (!ids.length) return res.status(400).json({ success: false, message: 'lead_ids is required (up to 25 per call).' });
+  const { draftForLead } = require('../lib/leadgenNative');
+  const { data: tpl } = await supabase.from('email_templates').select('subject, body').eq('code', 'A1').eq('is_active', true).maybeSingle();
+  const drafted = []; const failed = [];
+  // Three at a time: fast enough for 25, gentle on the OpenAI rate limit.
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(3, ids.length) }, async () => {
+    while (next < ids.length) {
+      const id = ids[next++];
+      try { drafted.push(await draftForLead(id, { template: tpl || null })); } catch (e) { failed.push({ lead_id: id, message: e.message }); }
+    }
+  }));
+  return res.json({ success: true, drafted, failed });
+});
+
 // ─── GET /api/leadgen/active ─────────────────────────────────────────────────
 // The run that is working right now (status requested, under 35 minutes old) with the
 // native engine's live progress, for the CRM's menu-bar progress chip and the Fetch
