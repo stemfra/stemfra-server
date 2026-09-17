@@ -14,7 +14,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > -1 
   const out = await startRun(user, {
     system: 'cold', engine: 'native', dry_run: !process.argv.includes('--apply'),
     vertical: arg('vertical', 'barbershop'), city: arg('city', 'Brooklyn'), state_name: arg('state', null),
-    country: arg('country', 'US'), max_results: Number(arg('max', 10)), min_score: Number(arg('min', 5)),
+    country: arg('country', 'US'), max_results: Number(arg('max', 10)), min_score: Number(arg('min', 7)),
   });
   console.log(out.status, out.json.message, '| run', out.runId);
   if (!out.done) return;
