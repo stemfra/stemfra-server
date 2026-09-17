@@ -99,6 +99,27 @@ router.post('/trigger', async (req, res) => {
   return res.status(out.status).json(out.json);
 });
 
+// ─── GET /api/leadgen/active ─────────────────────────────────────────────────
+// The run that is working right now (status requested, under 35 minutes old) with the
+// native engine's live progress, for the CRM's menu-bar progress chip and the Fetch
+// Leads lock. { run: null } when idle.
+router.get('/active', async (req, res) => {
+  const user = await validateUserSession(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+  const since = new Date(Date.now() - 35 * 60_000).toISOString();
+  const { data } = await supabase.from('leadgen_runs')
+    .select('id, city, vertical, country, max_results, requested_at, requested_by, metadata')
+    .eq('status', 'requested').gte('requested_at', since).order('requested_at', { ascending: false }).limit(1);
+  const r = data && data[0];
+  if (!r) return res.json({ success: true, run: null });
+  const p = r.metadata?.progress || {};
+  return res.json({ success: true, run: {
+    id: r.id, city: r.city, vertical: r.vertical, country: r.country, max_results: r.max_results,
+    requested_at: r.requested_at, requested_by: r.requested_by, engine: r.metadata?.engine || 'n8n',
+    stage: p.stage || 'starting', done: p.done ?? null, total: p.total ?? null,
+  } });
+});
+
 // ─── POST /api/leadgen/batch ─────────────────────────────────────────────────
 // Many runs back to back on the server (lib/leadgenBatch.js): { runs: [{vertical,
 // city, country, country_name, state_code, state_name, max_results, min_score}],
