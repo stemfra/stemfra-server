@@ -186,9 +186,31 @@ before pushing those verticals.
 - **Zenoti.** Enterprise; no public prices; auto-renews yearly with 60 days' notice; up to 20% at
   renewal; CSV export at "then-current data export fees" (V, terms). Overkill for our audience;
   we meet it only in chains.
-- **Rosy, DaySmart Salon (Salon Iris), SalonBiz, Shortcuts, Kitomba, Timely, iSalon, Squire.**
-  Named as migration sources by GlossGenius, Vagaro, Phorest and Jane. Profiles still to be
-  researched (section 6).
+- **Booker (by Mindbody).** Day spas, salons, franchises. "Starting at $139" per location (V);
+  $139 / $289 / $469 / $599 tiers with a 12-month minimum (3P). Lists the business in the Mindbody
+  consumer app beside competitors. Same contract terms as Mindbody: 12 / 24 / 36 months,
+  auto-renew, 30 days' notice, generally no mid-term exit (V). Owners: a bill that went from $85
+  to $599, cannot cancel, downtime, no weekend support. The most locked-in vendor of all: call 60
+  to 90 days before renewal.
+- **DaySmart Salon (formerly Salon Iris; Orchid = DaySmart Spa).** $29 (1 user) / $69 (3) / $149
+  (3, with text marketing + reputation) / $199 (6), +$9 per extra user (V). A real AI website
+  builder with hosting and own domain exists as a paid add-on, price not published (V). Owners:
+  slow support, cancellation by email that takes weeks (BBB D-), data not fully exportable after
+  cancelling. About $87 to $167 for five staff.
+- **Rosy (Fullsteam).** "Just Me" $29, tiers by provider count, cheaper with RosyPay (from 2.55% +
+  $0.10); a website builder sits in the premium package (3P). Capterra 4.7: few complaints
+  (support response, reporting). About $69 to $130 for five.
+- **SalonBiz.** Commission hair salons. $160 with its payments / $185 without for up to 5
+  professionals; $265 / $300 to 12 (V). No website builder, no marketplace, no contract. Owners:
+  crashes, long support waits, dated.
+- **Timely (EverCommerce).** Strong UK / AU / NZ. About $26 to $47 for the first staff member and
+  $24 to $36 for each extra (3P; the vendor page did not render); about $155 for five. Owners: the
+  per-staff price grows with the team. 50,000 professionals.
+- **Envision, Shortcuts, Kitomba.** Quote-only legacy tools (Envision about $179 for five, 3P;
+  Shortcuts from $29 per user, 14,000+ businesses, surprise contract renewals reported; Kitomba is
+  NZ / AU). Low priority for US / CA / UK.
+- **Squire (barbers), iSalon (UK).** Named as migration sources by Vagaro and Phorest; not yet
+  profiled.
 
 ### Clinical and massage
 
@@ -227,8 +249,7 @@ processor at about 3.5%). Happy and month to month: PushPress, Wodify, TeamUp.
 
 ## 6. Still to research
 
-Rosy, DaySmart Salon / Salon Iris, SalonBiz, Booker's own terms, Squire (barbers), Timely,
-Shortcuts, Kitomba, iSalon (UK); exact client-export column headers per provider (in progress, for
+Squire (barbers) and iSalon (UK) profiles; live quotes for Rosy, Timely, Booker tiers; exact client-export column headers per provider (in progress, for
 the CMS import presets); US-browser re-check of Fresha, Vagaro and Mindbody prices; real quotes
 for Phorest, Meevo and Zenoti.
 
@@ -249,6 +270,8 @@ for Phorest, Meevo and Zenoti.
 **Acuity / Wix / Setmore / SimplyBook:** https://acuityscheduling.com/pricing · https://acuityscheduling.com/ · https://help.acuityscheduling.com/hc/en-us/articles/47575509977997-Change-your-scheduling-page-link · https://help.acuityscheduling.com/hc/en-us/articles/16676916553485-Exporting-Acuity-Scheduling-appointments-and-clients · https://www.capterra.com/p/191978/Acuity-Scheduling/reviews/ · https://www.trustpilot.com/review/acuityscheduling.com · https://www.wix.com/app-market/web-solution/bookings · https://support.wix.com/en/article/wix-bookings-upgrading-wix-bookings · https://www.wix.com/plans · https://www.websitebuilderexpert.com/website-builders/wix-pricing/ · https://support.wix.com/en/article/wix-payments-service-fees · https://forum.wixstudio.com/t/wix-bookings-staff-members-as-site-collaborators-limiting-them-at-5-and-10-sure/62904 · https://support.wix.com/en/article/exporting-or-embedding-your-wix-site-elsewhere · https://www.trustpilot.com/review/wix.com · https://www.setmore.com/pricing · https://www.capterra.com/p/122035/SetMore/reviews/ · https://trafft.com/setmore-reviews/ · https://simplybook.me/en/pricing · https://www.capterra.com/p/140086/Simplybook-me/reviews/ · https://schedulingkit.com/pros-and-cons/simplybook-pros-and-cons · https://www.g2.com/products/simplybook-me/reviews
 
 **Boulevard / Mangomint / Phorest / Meevo / Zenoti:** https://www.joinblvd.com/pricing · https://www.joinblvd.com/features/data-migration · https://thesalonbusiness.com/boulevard-software-review/ · https://glossgenius.com/blog/boulevard-price · https://www.mangomint.com/go/switch-from-boulevard/ · https://www.trustpilot.com/review/www.joinblvd.com · https://www.capterra.com/p/180087/Boulevard/ · https://www.softwareadvice.com/retail/boulevard-profile/reviews/ · https://www.digitalcommerce360.com/2025/07/21/boulevard-raises-80-million-to-accelerate-ai-for-self-care/ · https://www.mangomint.com/pricing/ · https://www.mangomint.com/legal/platform-terms/ · https://www.mangomint.com/go/switch-from-vagaro-now/ · https://thesalonbusiness.com/mangomint-review/ · https://www.trustpilot.com/review/mangomint.com · https://www.capterra.com/p/187593/Mangomint/ · https://www.phorest.com/us/pricing/ · https://www.phorest.com/us/termsandconditions/ · https://www.phorest.com/compare/ · https://pabau.com/blog/phorest-pricing/ · https://support.phorest.com/hc/en-us/articles/360016261860-Online-Booking-Fee-FAQ · https://www.capterra.com/p/113530/Phorest-Salon-Software/pricing/ · https://www.trustpilot.com/review/phorest.com · https://www.softwareadvice.com/salon/phorest-profile/reviews/ · https://www.salontoday.com/1095821/phorest-unveils-lineup-and-teases-a-suite-of-strategic-ai-features-for-sold-out-salon-owners-summit-2026 · https://www.meevo.com/pricing · https://www.meevo.com/terms-of-service · https://www.meevo.com/features/meevopay · https://pabau.com/blog/meevo-pricing/ · https://www.capterra.com/p/172058/Meevo-2/reviews/ · https://www.zenoti.com/pricing · https://www.zenoti.com/trust/terms-and-conditions · https://pabau.com/blog/zenoti-pricing/ · https://schedulingkit.com/pricing-guides/zenoti-pricing · https://www.capterra.com/p/131057/ZENOTI/reviews/ · https://www.trustpilot.com/review/zenoti.com · https://www.zenoti.com/thecheckin/switching-from-boulevard-to-zenoti · https://www.zenoti.com/thecheckin/switching-from-mindbody-to-zenoti · https://www.zenoti.com/thecheckin/switch-from-vagaro-to-zenoti
+
+**Booker / DaySmart / Rosy / SalonBiz / Timely / Envision / Shortcuts / Kitomba:** https://www.booker.com/ · https://www.booker.com/pricing · https://thesalonbusiness.com/booker-vs-mindbody/ · https://www.capterra.com/p/90708/Booker/reviews/ · https://www.daysmart.com/salon/pricing/ · https://www.daysmart.com/salon/features/salon-website-builder/ · https://www.softwareadvice.com/salon/salon-iris-profile/ · https://www.bbb.org/us/mi/ann-arbor/profile/computer-hardware/daysmart-software-inc-0372-90014580 · https://www.capterra.com/p/132391/Orchid-Medical-Spa/ · https://rosysalonsoftware.com/ · https://rosysalonsoftware.com/pricing/ · https://rosysalonsoftware.com/salon-website-builder/ · https://www.thesmbguide.com/rosy · https://www.cardfellow.com/blog/rosy-salon-software-review/ · https://costbench.com/software/salon-spa/rosy-salon/ · https://www.softwareadvice.com/retail/rosy-salon-profile/ · https://www.capterra.com/p/68391/Rosy-Salon-and-Spa/ · https://www.salonbizsoftware.com/ · https://www.salonbizsoftware.com/pricing/ · https://www.softwareadvice.com/retail/salonbiz-profile/reviews/ · https://www.capterra.com/p/9175/SalonBiz/ · https://envisionnow.com/pricing/ · https://www.softwareadvice.com/barbershop/envision-salon-profile/ · https://www.shortcutssoftware.com/ · https://www.softwareadvice.com/barbershop/shortcuts-profile/ · https://www.kitomba.com/pricing/ · https://www.kitomba.com/nz/single-site-pricing/ · https://timetobook.co.nz/blog/what-does-salon-software-cost-nz · https://www.capterra.co.nz/software/91452/kitomba · https://pabau.com/blog/timely-pricing/ · https://www.softwareadvice.com/product/26047-Timely/ · https://schedulingkit.com/pricing-guides/timely-pricing · https://investors.evercommerce.com/news-releases/news-release-details/evercommerce-completes-acquisition-timely-leading-business
 
 **Treatwell / Salonized / MassageBook / Jane / ClinicSense / Noterro:** https://www.treatwell.co.uk/partners/pricing/ · https://www.treatwell.co.uk/partners/ · https://www.treatwell.co.uk/info/supplier-terms-and-conditions/ · https://www.dothebeauty.com/blog/treatwell-connect-review · https://www.capterra.com/p/181827/Treatwell/reviews/ · https://www.trustpilot.com/review/treatwell.co.uk · https://help.salonized.com/en/articles/572113-what-are-salonized-plans-and-pricings · https://www.salonized.com/en/pricing · https://hji.co.uk/treatwell-acquires-dutch-salon-software-company-salonized · https://www.capterra.com/p/141697/Salonized/reviews/ · https://pro.massagebook.com/pricing · https://www.capterra.com/p/147523/MassageBook/reviews/ · https://jane.app/pricing · https://jane.app/guide/jane-payments-faq · https://jane.app/guide/importing-from-fresha · https://jane.app/guide/batch-chart-export-for-practitioners · https://pabau.com/blog/jane-app-pricing/ · https://www.capterra.com/p/178984/Jane-App/reviews/ · https://clinicsense.com/pricing · https://www.capterra.com/p/178722/ClinicSense/reviews/ · https://www.noterro.com/pricing · https://www.capterra.com/p/164994/SOAP-Vault/reviews/
 
