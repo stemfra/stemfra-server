@@ -41,13 +41,54 @@ reps: ask about the pain, never state another company's fee as a fact.
    (Meevo: one export, for a fee, within 30 days; Zenoti: CSV at "then-current data export fees";
    Phorest: engineer export only if fees are paid) make "we load your client list for you" worth
    saying early.
-5. **On software cost alone we lose for a busy shop, and every researcher said so.** A 5-chair shop
-   pays about $40 to $230 a month on the mainstream tools and $150 to $540 on the premium ones. 5%
-   of $30,000 in bookings is $1,500. For membership gyms it is worse: 150 members at $150 = $22,500
-   a month, 5% = $1,125 against software bills of $180 to $620. The pitch must rest on the branded
-   site, win-back and reviews, a team that runs it, and no fixed fee in a slow month. This is the
-   evidence behind the cap discussion (Peter: about $400) and suggests a carve-out or a cap for
-   recurring gym memberships.
+5. **Price: uncapped we lost for a busy shop; with the $400 cap (decided 2026-09-17) we are inside
+   the range owners already pay.** A 5-chair shop pays about $40 to $230 a month on the mainstream
+   tools and $150 to $540 on the premium ones. Uncapped, 5% of $30,000 in bookings was $1,500 and a
+   150-member gym was $1,125. Capped, the most any owner pays is $400 a month (5% stops growing at
+   $8,000 of monthly bookings), and a quiet month costs what it books: $0 on no bookings, $100 on
+   $2,000. No provider in this research prices that way: they all charge the same fee in a dead
+   month, most add per-seat and add-on fees, and the marketplaces add 15% to 35% on new clients.
+   Against the cheap tools (GlossGenius $56, Square $49 to $64, Setmore $25 to $60) we are still
+   dearer for a busy shop, so there the case is the website + win-back + reviews + a team that
+   runs it; against the premium and contract tools the cap makes us equal or cheaper with no
+   contract. For membership gyms and studios we are in effect a flat $400 product.
+
+## 1b. What our own lead-gen data says (671 places, 2026-09-17)
+
+Five 50 to 100 place pulls with the native engine, every place kept (`leadgen_places`).
+
+| Market | Places | Own website | Unclaimed listing | Busy (200+ at 4.5+) | Under 25 reviews | Booking tool detected | Email on listing | Phone | Median reviews | Became leads |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Houston barbershops | 100 | 24% | 25% | 12% | 30% | 12% | 13% | 93% | 57 | 34 |
+| Toronto barbershops | 99 | 45% | 12% | 36% | 19% | 19% | 26% | 97% | 149 | 20 |
+| Toronto beauty salons | 50 | 56% | 4% | 32% | 8% | 8% | 26% | 100% | 160 | 15 |
+| London barbershops | 100 | 22% | 8% | 21% | 11% | 8% | 13% | 86% | 120 | 45 |
+| London beauty salons | 100 | 65% | 11% | 17% | 21% | 17% | 40% | 97% | 72 | 11 |
+
+What it tells us:
+
+- **Salons own websites, barbers do not.** 56% to 65% of salons already have a site (out of our
+  target by decision), against 22% to 45% of barbers. Per dollar of scraping, barbershops give two
+  to four times the leads. London barbers are the best market so far (45 leads per 100 places),
+  Houston next (34), London salons the worst (11).
+- **Toronto and London are busier markets than Houston** (median 120 to 160 reviews against 57;
+  36% of Toronto barbers are in the top band). Houston has three times the unclaimed listings
+  (25%): more old-school shops.
+- **The marketplace story is the minority case.** A booking tool shows on only 70 of 671 places
+  (Booksy 20, Setmore 13, Fresha 12, Square 8, Vagaro 3, GlossGenius 2, other 12), and on 26 of
+  the 333 places that became leads. Caveat: we read the listing's website and booking links;
+  "Reserve with Google" buttons are not always in the scrape, so the true share is higher. Even
+  so, the typical qualified lead is an established shop with NO storefront that books by phone,
+  walk-in or Instagram. The A1b pitch ("deserves its own front door") and the "No website" call
+  script are the main ones; the provider pitches are for the minority.
+- **Busy shops mostly own a site already.** 119 busy places, 76 with their own website. 42 busy
+  shops have no storefront: 6% of what we scrape. That is the premium of the pool: 43 of the 248
+  New Leads.
+- **This is a phone business.** 247 of 248 New Leads have a phone; 13 have an owner email. Email
+  outreach cannot be the engine; calls (and Instagram by hand) are. Canada and UK sole traders
+  cannot be cold-emailed anyway.
+- **Cost per lead:** about $14 of Apify for 450 places and 125 leads: roughly 11 cents a lead,
+  3 cents a place.
 
 ## 2. Comparison: what a 5-chair shop pays (software only, before card processing)
 

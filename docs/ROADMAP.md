@@ -2449,18 +2449,20 @@ business work puts in doubt.** `stemfra-ops/src/lib/leadValue.js` values every l
 sales × 5% × 12, with placeholder monthly sales per vertical (barbershop $8,000, default $8,000)
 and 100% of a shop's sales flowing through the site. Against that: the agreed planning share is
 10% of a shop's sales in year one (20% target); the new target is busy shops, whose sales are far
-higher than $8,000; a cap around $400 a month is on the table, which would bound every lead at
-$4,800 a year; and review count + rating are now on every lead and could drive the estimate. Do
-not change the formula until the price shape is decided; then re-base it from the Master Plan v3
+higher than $8,000; the $400 a month cap (DECIDED 2026-09-17) bounds every lead at $4,800 a year; and review count + rating are now on every lead and could drive the estimate. The price shape is now decided, so re-base it from the Master Plan v3
 assumptions and label the card "estimated". (Fixed the same day: the Leads page cards counted
 leads still in Review and test leads, 261 against a board of 70; they now count what the board
 shows.)
 
-**Pricing, under discussion (Peter 2026-09-17, nothing decided):** the busy-shop target makes an
-uncapped 5% compare badly with Booksy / Fresha (one-time new-client fees + $30 to $150 a month).
-Options on the table: a monthly cap around $400 (Peter: $200 is too low for us; owners already pay
-$200 to $400 in subscriptions, per Neil's call) or a subscription tier with the first month free.
-"Clients pay at the venue, we add no payment fees" is a supporting argument, not the headline.
+**PRICING DECIDED 2026-09-17 (Peter): 5% of bookings, capped at $400 a month.** Supersedes "no
+cap for now" (2026-09-16). 🔜 BUILD (not started): (1) `lib/commissionMeter.js` caps each site's
+monthly commission at 40,000 cents and shows the cap line on the statement + invoice; (2) public
+copy: Fees page, Pricing (headline offer card + FAQ "Is 5% more than I pay now?"), Claim page,
+claim email line "We only earn 5%…", Help Center `billing/commission-explained`; (3) A1 / A1b and
+the five provider call scripts (remove "do not promise a cap"); (4) CRM `lib/leadValue.js`: a
+lead's yearly value is bounded at $4,800; (5) decks + Master Plan v3. Terms assumed, Peter to
+confirm: per location (site); at-visit sales marked collected count toward the cap; currency
+equivalents for CAD / GBP to set.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 

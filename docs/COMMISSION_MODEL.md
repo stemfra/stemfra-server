@@ -18,6 +18,14 @@ about **how we *collect* that commission**.
 
 ## 1. Commission model — DECIDED
 
+> **UPDATE 2026-09-17 (Peter): the 5% is CAPPED at $400 a month.** "A flat 5% of bookings, never
+> more than $400 a month." Why: the agreed target is busy shops, where an uncapped 5% ($1,500 on
+> $30,000 of bookings) compared badly with every competitor; owners already pay $200 to $400 a
+> month for software (Neil's call); $200 was judged too low for us. Assumed terms, to confirm: per
+> location (site); at-visit sales marked collected count toward the cap. NOT yet in the meter or
+> the public pages: see ROADMAP "PRICING DECIDED 2026-09-17". Evidence:
+> `MARKET_RESEARCH_PROVIDERS_2026-09.md`, `SWOT_2026-09.md`.
+
 - **Flat 5% on ALL sales (unified).** Online bookings + at-visit sales the tenant marks
   **"collected" in the CMS** (Reports v2 / `BookingDetailModal` → `metadata.collected`,
   already built) = our source of truth for total GMV. No tiers, no setup fee, no monthly

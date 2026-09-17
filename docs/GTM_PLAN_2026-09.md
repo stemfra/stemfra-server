@@ -209,6 +209,14 @@ This replaces the earlier "incremental, coexist" idea in the provider-switching 
 
 ## 11. Decisions 2026-09-17 (Peter)
 
+- **PRICE: a flat 5% of bookings, never more than $400 a month (decided).** Rationale: owners
+  already pay $200 to $400 a month for software (Neil's call), $200 would be too low for us, and an
+  uncapped 5% was the one number a busy owner could not accept. Say it as an advantage: free to
+  claim, nothing in a quiet month, never more than $400 in a busy one, everything included, no
+  contract. Assumed terms, to confirm: per location; at-visit sales marked collected count toward
+  the cap. Still to carry through: commission meter, Fees, Pricing, FAQ, claim email, A1 / A1b,
+  call scripts, decks, Master Plan v3.
+
 - **Busy shops that already own a website stay OUT of the target**, even when they book through a
   marketplace: they already pay for a site. The gate stays as built (no own storefront). The
   "wider gate" option raised in section 9 and in the SWOT is closed; those places remain in Places
