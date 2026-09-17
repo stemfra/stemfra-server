@@ -125,3 +125,47 @@ New York: barbershops 24 had a website / 30 old-school / 26 leads; salons 19 / 4
 CrossFit 87 / 5 / 2; yoga 92 / 0 / 6; massage 39 / 8 / 47; spa (60 places) 37 / 0 / 16.
 Fitness in New York is saturated with websites (the wedge barely applies); beauty and
 massage carry the gap. Toronto and London are appended when their runs close.
+
+## 9. Who to target, re-based (2026-09-17, from Peter's Gemini research + our own verification)
+
+**Correction to our earlier classification.** We were qualifying on "no website" alone and
+treating low review counts as neutral. On a commission model the prospect's SALES VOLUME is the
+whole value of the account, so the rubric is now volume first: 200+ Google reviews at 4.5+ is
+the top band, under 25 reviews is a drop. Second signal: the listing's website or Book button
+points at a booking marketplace (the shop rents its storefront). n8n v16 scores this way and
+stores `booking_platform`, `review_count`, `rating`, `price_level` on `leads.qualification`.
+
+**Supply check (our own data, 2026-09-16 New York, 600 places scraped, 129 leads kept):** 6 leads
+have 200+ reviews at 4.5+, 21 have 75 to 199, 34 have 25 to 74, 63 have under 25. Only 6 sit on a
+booking platform. So the ideal lead is about 1% of scraped places under the current "no real
+website" gate. OPEN DECISION: also admit busy shops that have their own (weak) site but book
+through a marketplace; that is a different pitch (replace the site, keep or move the booking).
+
+**Verified owner complaints (research 2026-09-17; use in CALLS and ADS as questions, never as
+claims in cold email; re-check a number before quoting it):**
+
+| Platform | Documented terms | Best-evidenced owner complaint |
+|---|---|---|
+| Booksy | $29.99/mo + $20/mo per extra staff; Boost = one-time 30% of a new client's first visit (help centre: $10 min, $100 max), opt-in | Boost fee charged on clients the shop says it already had; clients see other shops in the app |
+| Fresha | Free plan ended; $19.95/mo solo or $14.95 per team member; 20% one-time new-client fee ($6 min); paid add-ons | End of "free forever", fee on the salon's own clients, slow support, payout holds (minority) |
+| Mindbody | 12, 24 or 36 month auto-renewing terms, 30 days' notice; from $79/mo per location | Cannot cancel, renewals, price rises, dated UX (104 BBB complaints in 3 years) |
+| Vagaro | $30/mo base, about $10 per extra calendar, add-ons (site $20, forms $10, text marketing from $20, branded app $100) | Add-on creep to $100 to $200/mo; clients must create a Vagaro account to book |
+
+Sources: biz.booksy.com/pricing, biz.booksy.com/features/boost, fresha.com/pricing,
+mindbodyonline.com/business/education/blog/mindbody-contracts-cancellation-data,
+vagaro.com/pro/pricing, Trustpilot / Capterra / Software Advice / BBB review pages for each.
+NOT verified: any Reddit thread (blocked), "Booksy pushes competitor discounts", Mindbody's
+"30 to 50% termination penalty" and its $139 to $599 tiers.
+
+**The uncomfortable comparison (must be answered before we pitch busy shops).** Their fees are
+ONE-TIME on a new client (Booksy 30%, Fresha 20%) plus about $30 to $150 a month. Ours is 5% of
+EVERY booking through the site, existing clients included, with no cap. A shop booking $25,000 a
+month through us pays $1,250; on Booksy it pays well under $200. The bigger the shop, the worse
+we compare, which is exactly the shop the new rubric targets. Options: a monthly cap, a lower
+rate above a threshold, or 5% only on bookings the site's growth tools produce (win-back,
+review-driven, new clients). Peter deferred the cap on 2026-09-16; this data reopens it.
+
+**Coexistence is unresolved.** "Keep Booksy for the calendar, own the storefront" only earns us
+commission if the booking is made in OUR engine. Two calendars means double-booking risk. Until
+there is a calendar sync or a clean import-and-switch path, the honest pitch is a switch with
+done-for-you migration, not a hybrid.

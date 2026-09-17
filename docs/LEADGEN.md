@@ -290,3 +290,15 @@ already in the CRM were set to `stage = lost` with the reason on 2026-09-16 (kep
 so their calls and history stay attached). The earlier "done-for-you track" wording is retired;
 old-school shops will meet Stemfra through the marketplace's facts-only listings (P38), never
 through a rep's time.
+
+## v16 (2026-09-17): volume-first scoring, markets, booking platform
+
+Audit of the live workflow found a subscription-era system prompt (retired pricing, "not
+US-based" hard reject), an Apify location hardcoded to "<city>, USA", and an insert count that
+included ignored duplicates. `n8n-workflows/make-v16.js` builds the corrected import from v15
+(both files carry live secrets: never commit or share). Prompt source of truth:
+`n8n-workflows/leadgen-system-prompt.txt` (the build refuses to run if retired pricing strings
+are present). New on `leads.qualification`: `booking_platform`, `review_count`, `rating`,
+`price_level`, `trait_volume` (`trait_affordability` mirrors it for the CRM card). New
+`pain_point_bucket` value `marketplace_only`. Run Summary adds `not_saved`. Rule: before a new
+import ships, read EVERY node, not only the changed ones, and test with max_results 10 first.
