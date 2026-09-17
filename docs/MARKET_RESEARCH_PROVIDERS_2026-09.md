@@ -53,6 +53,50 @@ reps: ask about the pain, never state another company's fee as a fact.
    runs it; against the premium and contract tools the cap makes us equal or cheaper with no
    contract. For membership gyms and studios we are in effect a flat $400 product.
 
+## 1a. The price in figures: what a 5-chair shop pays per month
+
+Stemfra = 5% of what is booked through the site, never more than $400. Everyone else charges the
+same software fee whatever the month was like (5-chair figures from section 2; marketplace rows
+add the new-client fee on about 10 marketplace clients a month; card processing excluded for all).
+
+| Monthly bookings → | $0 (closed / dead month) | $2,000 | $5,000 | $8,000 | $15,000 | $30,000 | Website included? | Contract? |
+|---|---|---|---|---|---|---|---|---|
+| **Stemfra (5%, cap $400)** | **$0** | **$100** | **$250** | **$400** | **$400** | **$400** | **Yes, built and run for them** | **No** |
+| Stemfra before the cap | $0 | $100 | $250 | $400 | $750 | $1,500 | | |
+| Square Appointments | $49 to $64 | same | same | same | same | same | Subdomain only | No |
+| GlossGenius | $56 | same | same | same | same | same | Templated booking page | No |
+| Vagaro | $64 to $120 | same | same | same | same | + 20% on new marketplace clients | Add-on $20 | No |
+| Fresha | $75 | $155 | $155 | $155 | $155 | $155 | No | No |
+| Booksy | $110 | $230 | $230 | $230 | $230 | $230 | No | No |
+| Mangomint | $160 to $190 | same | same | same | same | same | No (widget) | No |
+| Boulevard | $143 to $208 | same | same | same | same | same | No (widget) | 12 months |
+| StyleSeat (5 pros) | $175 to $225 | + 30% of each new client's first visit, + $2.35 per booking paid by the client | | | | | Add-on $10 | No |
+| Phorest | $150 to $300 (est.) | same + about $1 per online booking | | | | | No | 1 year, auto-renew |
+| Mindbody | $279 to $500+ | same | same | same | same | same | Widgets | 12 to 36 months |
+| Zenoti | $440 to $540 (est.) | same | same | same | same | same | No | Auto-renew, +20% at renewal |
+| Treatwell (UK) | about £35 + 35% of each new client's first booking: about £350 to £420 with 20 new clients | | | | | | No | 30 days' notice |
+
+**Break-even: below this level of monthly bookings Stemfra costs the owner LESS than their tool.**
+
+| Against | Their monthly cost | Stemfra is cheaper while bookings are under | Above that, the most we ever cost more by |
+|---|---|---|---|
+| Square / GlossGenius | about $56 | $1,120 a month | $344 |
+| Vagaro (with add-ons) | about $100 | $2,000 | $300 |
+| Fresha / Booksy (with marketplace clients) | $155 to $230 | $3,100 to $4,600 | $170 to $245 |
+| Boulevard / Mangomint | about $180 | $3,600 | $220 |
+| Mindbody (Accelerate) | about $279 | $5,580 | $121 |
+| Mindbody with the branded app, Zenoti, PushPress full stack, Zen Planner, Walla | $440 to $650 | **always** (we cap at $400) | never |
+
+How to say it: "In a slow month you pay less than you pay today, often nothing. In your best
+month you never pay more than $400, and that includes the website, your whole team, the reminders,
+the win-back and the reviews." Against the $56 tools do not argue price: argue what they do not
+get for $56.
+
+A year at a glance (5-chair shop booking $8,000+ every month): Stemfra $4,800 · GlossGenius $672 ·
+Booksy $1,320 to $2,760 · Fresha $900 to $1,860 · Boulevard $1,716 to $2,496 · Mindbody $3,348 to
+$6,000+ · Zenoti $5,280 to $6,480 (+ about $2,000 onboarding). A shop booking $3,000 a month
+through the site pays Stemfra $1,800 a year.
+
 ## 1b. What our own lead-gen data says (671 places, 2026-09-17)
 
 Five 50 to 100 place pulls with the native engine, every place kept (`leadgen_places`).
