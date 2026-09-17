@@ -119,6 +119,18 @@ While the run works, `metadata.progress` holds `{stage, apify_run_id, location, 
    about $0.25 of Apify and a few cents of OpenAI.
 5. **Server log lines** are prefixed `[leadgen native]`.
 
+## 6b. Progress and the one-run lock (2026-09-17)
+
+While a run works, `metadata.progress` = `{stage: scraping | scoring | saving, done, total, ...}`
+(scraping counts the Apify dataset's items, scoring counts finished candidates).
+`GET /api/leadgen/active` (staff JWT) returns the run in progress or `{run: null}`. The CRM polls
+it (`useActiveLeadgenRun`, 4 s while busy, 30 s idle): the menu-bar chip
+`components/os/LeadgenProgressChip.jsx` shows "Fetching leads · Scoring 3 of 7" with a bar, and
+every Fetch Leads button reads "Fetching…" and is disabled. The server enforces the same rule:
+`startRun` answers 409 `run_in_progress` while a `requested` run under 35 minutes old exists,
+unless the body carries `allow_parallel: true`. Proof runs: London barbershop (GB, 10 → 8
+leads), Bronx barbershop from the CRM with the chip and the lock on screen.
+
 ## 7. Configuration
 
 | Env | Meaning |
