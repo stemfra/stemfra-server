@@ -72,6 +72,7 @@ const allowedOrigins = [
   'http://localhost:5180',   // stemfra_cms (dev)
   'http://localhost:5178',   // stemfra-ops CRM (dev)
   'http://localhost:5183',   // stemfra_business (dev — plans & pitch decks)
+  'http://localhost:5192',   // stemfra_client on its fallback port (launch.json `client_alt`, when 5173 is taken)
 ];
 
 // Pattern-matched origins for the multi-tenant Cloudflare Pages deployments.

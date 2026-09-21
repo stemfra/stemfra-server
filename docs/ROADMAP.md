@@ -125,9 +125,12 @@ addendum (markets + `leads.vertical`), P34 lead text conversations + consent pro
 Claim page. Later the same day (all PUSHED by night): P34 follow-ups (composer, Not relevant,
 ConsentGate, transcripts, notes, Do not call, one Leads toolbar, name rule), P36 walk-ins
 without commission, `leads.readiness` (n8n pastes deferred), dialer 12100 fix, survey doc.
-🔜 NEXT: P37 custom-build verticals (scope the offer + first scrape), then P32 phase 2 (needs
-the P30 service account); wildcard Worker go-live ⏸ DEFERRED by Peter 2026-09-11. Peter began
-US sales calls 2026-09-11 (Neil's Barbershop call = the source of P36, P37 and the transcripts).
+**Status 2026-09-21 (rewritten):** wildcard Worker + Custom Hostnames ✅ LIVE 2026-09-16; P41
+native lead-gen ✅ DONE 2026-09-17; price ✅ DECIDED 2026-09-17 (5% capped at $400, terms
+confirmed, build ⏸ ON HOLD by Peter); no more Apify runs for now, the current pool is being
+called. 🔜 NEXT: P37 custom-build verticals (scope the offer + first scrape), then P32 phase 2
+(needs the P30 service account). Peter began US sales calls 2026-09-11 (Neil's Barbershop call =
+the source of P36, P37 and the transcripts).
 
 ### 🚀 ACTIVE ARC (2026-08-18): LAUNCH — phased, barbershop first → **[`LAUNCH_PLAN.md`](LAUNCH_PLAN.md)**
 Peter's 10 launch tasks (VSL video · 3-contact prospecting sequence · Stacy+routes refresh ·
