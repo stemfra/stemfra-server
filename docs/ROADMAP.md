@@ -2467,9 +2467,18 @@ lead's yearly value is bounded at $4,800; (5) decks + Master Plan v3. **Terms �
 2026-09-17:** the cap is PER LOCATION (site); at-visit sales count toward the cap, and only sales
 from bookings made through our website count at all (walk-ins and owner-entered bookings carry no
 commission, P36, so they never touch the cap). Still to set: currency equivalents for CAD / GBP.
-**⏸ HOLD (Peter 2026-09-17): do NOT build the cap into billing or the public pages yet.** It stays a
-documented decision (research docs, SWOT, Pricing comparison) until Peter says go; reps may not
-promise it in writing before then.
+**Status 2026-09-22 (rewritten):** Peter lifted the hold on the PUBLIC copy. (2) ✅ DONE 2026-09-22
+(client `a9bbd5c5`, LOCAL): Home "How it works", Pricing sub-line + offer card, FAQ (three answers,
+"Is 5% more than I pay now?" rewritten around the cap), About, Start (consent line + footnote), Claim
+chips, the six Solutions FAQs, Fees policy (new "Monthly cap" paragraph, version 2026-09-22), Terms
+(cap sentence, version 2026-09-22, STEMfra casing fixed), Help Center (what-is-stemfra +
+commission-explained with a "$400 monthly cap" section, invoice bullet); concierge chat knowledge
+(server `6356a74`). Not done: the claim EMAIL line. **(1) the commission meter cap is STILL NOT
+BUILT and the public pages now promise it**: `lib/commissionMeter.js` must cap at 40,000 cents per
+site per month before the first invoice can exceed $400 (no real tenant yet, so no exposure today;
+build it before the first paying client, ~20 lines + a "cap applied" line item). (3) A1 / A1b + the
+five call scripts, (4) CRM leadValue bound, (5) decks + Master Plan v3: not started. CAD / GBP
+equivalents still unset (the pages say $400).
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 
