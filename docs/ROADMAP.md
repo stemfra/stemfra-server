@@ -1839,6 +1839,10 @@ template audit, P25); pairs naturally with the Stacy native-mode migration.
 
 ## P27 — Claim prefill from scraped business data (proposed 2026-09-09, Peter's ask)
 
+_2026-09-22: P27 is now the prerequisite for the "see your shop on its own website in 60
+seconds" ad funnel (`docs/AD_FUNNEL_2026-09.md`, agreed with Peter). Until it ships the ads say
+"see a live site built for a shop like yours"._
+
 Peter, looking at Fresha's unclaimed-venue page for GD Barbershop (name, address, hours,
 map, "Suggest an update"): if we already scrape a business, the claim link should land the
 owner on a site that already knows them, so the setup wizard is a confirm-or-edit, not a
