@@ -2393,6 +2393,15 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
+## P43 — Pre-invoice review (from the Gemini evaluation, 2026-09-22; recorded)
+
+The 24-hour auto-collect rule (P13) bills 5% on a booking the owner forgot to mark as a no-show,
+and the owner only finds out on the invoice. Before each monthly statement: a bell + email three
+days ahead listing the bookings about to be billed with one-tap "did not happen" per row, and the
+same list on the CMS billing page. Cuts disputes and the "audit your invoice" feeling that a
+subscription tool never causes. Small: the meter already knows the rows. Not started; build with
+the commission cap. Source: `docs/GEMINI_EVALUATION_2026-09-22.md`.
+
 ## P42 — Wizard intro slides per vertical (Peter, 2026-09-16; parked, no change today)
 
 The `/setup` intro ("Let's set up <name>", Start) rotates the same four slides for every
