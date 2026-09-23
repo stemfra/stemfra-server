@@ -59,14 +59,15 @@ function html({ post, photo, logo, w, h, story }) {
 <style>
   html,body{margin:0;width:${w}px;height:${h}px;background:#2B2622;font-family:'Hanken Grotesk',Inter,system-ui,sans-serif;color:#E6DDCD;overflow:hidden}
   .photo{position:absolute;left:0;top:0;width:${w}px;height:${photoH}px;object-fit:cover;filter:saturate(.92) contrast(1.02)}
-  .fade{position:absolute;left:0;top:${photoH - 220}px;width:${w}px;height:220px;background:linear-gradient(180deg,rgba(43,38,34,0) 0%,#2B2622 100%)}
-  .body{position:absolute;left:${pad}px;right:${pad}px;top:${photoH + (story ? 24 : 12)}px}
+  .fade{position:absolute;left:0;top:${photoH - 300}px;width:${w}px;height:300px;background:linear-gradient(180deg,rgba(43,38,34,0) 0%,#2B2622 100%)}
+  .body{position:absolute;left:${pad}px;right:${pad}px;bottom:${story ? 150 : 64}px}
+  .row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:${story ? 64 : 44}px}
   .eyebrow{font-size:${story ? 26 : 24}px;letter-spacing:.32em;text-transform:uppercase;color:#C9B891;font-weight:500;margin:0 0 ${story ? 34 : 26}px}
-  h1{font-weight:300;font-size:${story ? 92 : 78}px;line-height:1.04;letter-spacing:-.015em;margin:0;color:#F5EFE6}
+  h1{font-weight:300;font-size:${story ? 86 : 78}px;line-height:1.04;letter-spacing:-.015em;margin:0;color:#F5EFE6}
   .rule{width:56px;height:2px;background:#C9B891;opacity:.9;margin:${story ? 40 : 32}px 0}
   .sub{font-size:${story ? 36 : 31}px;line-height:1.4;font-weight:300;color:#E6DDCD;max-width:${w - 2 * pad - 40}px;margin:0}
-  .cta{position:absolute;left:${pad}px;bottom:${story ? 180 : 72}px;font-size:${story ? 30 : 27}px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;color:#F5EFE6}
-  .logo{position:absolute;right:${pad}px;bottom:${story ? 168 : 60}px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .cta{font-size:${story ? 30 : 27}px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;color:#F5EFE6}
+  .logo{display:flex;flex-direction:column;align-items:center;gap:12px}
   .logo img{height:${story ? 64 : 58}px}
   .logo span{font-size:${story ? 18 : 16}px;letter-spacing:.34em;color:#E6DDCD;font-weight:500}
 </style></head><body>
@@ -77,9 +78,11 @@ function html({ post, photo, logo, w, h, story }) {
     <h1>${post.headline}</h1>
     <div class="rule"></div>
     <p class="sub">${SUB}</p>
+    <div class="row">
+      <div class="cta">${CTA}</div>
+      <div class="logo"><img src="${logo}"><span>STEMFRA</span></div>
+    </div>
   </div>
-  <div class="cta">${CTA}</div>
-  <div class="logo"><img src="${logo}"><span>STEMFRA</span></div>
 </body></html>`;
 }
 
