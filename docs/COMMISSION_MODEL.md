@@ -22,8 +22,11 @@ about **how we *collect* that commission**.
 > more than $400 a month." Why: the agreed target is busy shops, where an uncapped 5% ($1,500 on
 > $30,000 of bookings) compared badly with every competitor; owners already pay $200 to $400 a
 > month for software (Neil's call); $200 was judged too low for us. Assumed terms, to confirm: per
-> location (site); at-visit sales marked collected count toward the cap. NOT yet in the meter or
-> the public pages: see ROADMAP "PRICING DECIDED 2026-09-17". Evidence:
+> location (site); at-visit sales marked collected count toward the cap. Terms confirmed by Peter
+> 2026-09-17 (per location; only bookings made through the website count, walk-ins never).
+> **In the meter since 2026-09-24** (`COMMISSION_DEFAULTS.capCents = 40000`, `min(5%, cap)` per
+> site per month in the site's currency, cap line on the invoice PDF) and on the public pages since
+> 2026-09-22. Status per item: ROADMAP "PRICING DECIDED 2026-09-17". Evidence:
 > `MARKET_RESEARCH_PROVIDERS_2026-09.md`, `SWOT_2026-09.md`.
 
 - **Flat 5% on ALL sales (unified).** Online bookings + at-visit sales the tenant marks

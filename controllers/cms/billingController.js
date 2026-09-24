@@ -9,6 +9,7 @@ const { logSiteActivity } = require('../../lib/activity');
 const { streamInvoicePdf } = require('../../lib/invoicePdf');
 const { getCommissionBank } = require('../../lib/commission');
 const { resolveBillingIdentity, saveCompanyBillingProfile, IDENTITY_KEYS } = require('../../lib/billingProfile');
+const { listReviewBookings } = require('../../lib/preInvoiceReview');
 
 const CONTACT_COLS = 'full_name, first_name, last_name, email, phone, country, state, billing_profile';
 
@@ -66,7 +67,11 @@ async function getBilling(req, res) {
   // fallback) — what the Billing details tab edits + invoices print.
   const billingIdentity = await resolveBillingIdentity(siteId);
 
-  return res.json({ subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank });
+  // P43: the bookings the 24-hour rule marked collected this month, for the
+  // "about to be billed" review card (best-effort; the page renders without it).
+  const preInvoice = await listReviewBookings(siteId).catch((e) => { console.error('[billing] pre-invoice list failed:', e.message); return null; });
+
+  return res.json({ subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice });
 }
 
 // POST /api/cms/billing/change-plan { siteId, tier }

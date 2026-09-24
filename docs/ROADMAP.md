@@ -461,6 +461,8 @@ make editable → build (current text = defaults so nothing changes until edited
    approved campaign; all fixtures + the seeded test consent cleaned.
    ⚠ Remaining Peter action: opt in for real via CMS → Settings → Notifications
    SmsAlertsCard (no consent rows exist yet; nothing sends until owners opt in).
+   Re-checked 2026-09-24: still 1 prefs row with an `sms` key and 0 consents; code is done,
+   this is only Peter's own test-tenant opt-in (low priority).
 5. **P10 case 42 "Remix" R2/R3** (AI theme composer engine) — R1 registry done; rest pending.
 6. **P10 case 1 remainder** — task videos + a "What's new" channel (guidance polish shipped).
 7. **VSL production** (P12 "Last") — deliberately last.
@@ -2013,8 +2015,11 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   `TWILIO_PHONE_NUMBER_GB`. ✅ Mark's UK mobile **+44 7449 911044** bought the same evening (Voice →
   concierge, SMS → sms-inbound), secret `VOICE_PHONE_NUMBER_GB`. All four numbers' webhooks
   verified from the Active Numbers page 2026-09-10; both US numbers stay on the 10DLC Messaging
-  Service, the UK ones on plain webhooks (UK mobiles text UK handsets only). ⏳ Peter: the two
-  secrets + a deploy re-run.
+  Service, the UK ones on plain webhooks (UK mobiles text UK handsets only). ✅ Verified 2026-09-24:
+  all four numbers are in `config/twilio.js` `KNOWN_LINE_LOCATIONS`, deploy.yml carries the four
+  secrets, and the UK Mark line has received inbound texts on production (Sep 11, 17, 18). Only
+  the GitHub secret VALUES are unseen from a session (no outbound from a GB/CA line yet): confirm
+  once from a UK lead's Call widget ("Your number shows as +44…").
   ✅ Canada bought the same evening: staff **+1 365 361 5576** (inbound-voice + sms-inbound,
   `TWILIO_PHONE_NUMBER_CA`) and Mark **+1 365 696 5918** (concierge + sms-inbound,
   `VOICE_PHONE_NUMBER_CA`), Markham ON (Twilio has no 416/647 inventory). No emergency address
@@ -2042,8 +2047,8 @@ Ireland (English, EUR), Netherlands (English-fluent), Germany (largest), then th
   - Per-market senders: `config/twilio.js` `smsFrom(country)` / `voiceFrom(country)` read
     `TWILIO_PHONE_NUMBER_GB|CA` and `VOICE_PHONE_NUMBER_GB|CA` (blank = today's numbers); the
     Claim SMS and Mark's outbound calls use them. Env documented in `.env.example` +
-    deploy.yml. ⏳ Peter: buy the UK mobile + Toronto numbers, set the secrets, point each
-    number's Voice / SMS webhooks at api.stemfra.com in the Console.
+    deploy.yml. ✅ Peter confirmed 2026-09-10 (numbers bought, webhooks pointed); code + prod
+    inbound verified 2026-09-24 (see section 2 above).
   - Tenant websites: ONE money formatter, `formatMoney` in `@stemfra/site-data`
     (`narrowSymbol`, cents only when non-zero); every archetype and template page that
     rendered `$` literals or `en-US` currency now formats in the site's currency (CAD reads
@@ -2403,8 +2408,19 @@ The 24-hour auto-collect rule (P13) bills 5% on a booking the owner forgot to ma
 and the owner only finds out on the invoice. Before each monthly statement: a bell + email three
 days ahead listing the bookings about to be billed with one-tap "did not happen" per row, and the
 same list on the CMS billing page. Cuts disputes and the "audit your invoice" feeling that a
-subscription tool never causes. Small: the meter already knows the rows. Not started; build with
-the commission cap. Source: `docs/GEMINI_EVALUATION_2026-09-22.md`.
+subscription tool never causes. Small: the meter already knows the rows. Source:
+`docs/GEMINI_EVALUATION_2026-09-22.md`.
+**✅ BUILT 2026-09-24 (server + CMS, LOCAL, built with the cap):** `lib/preInvoiceReview.js`:
+`listReviewBookings(siteId)` = this month's bookings the auto-collect rule marked collected
+(`metadata.auto_collected`, at-visit, not owner-entered) with totals at 5%; `sweepOnce` runs in the
+last 3 days of the month (twice a day, `PRE_INVOICE_REVIEW_ENABLED=false` to stop; skips demo/test
+sites), one bell (`cms_notifications` type `pre_invoice_review`, billing) + one email per site per
+month (`ownerPreInvoiceReview`, magic link to /billing/invoices). `GET /api/cms/billing` now returns
+`preInvoice`; the CMS Invoices page shows the "N bookings are about to be billed" card with a "Did
+not happen" button per row (the Bookings page's no-show write, so the customer still gets the
+"we missed you" note) and refreshes. Verified: dry-run list + sweep on the DB (window logic, 18
+sites, 0 auto-collected rows today because the sweeper skips demo sites), email template render,
+CMS tsc clean. Not verified visually (no auto-collected booking exists to show the card).
 
 ## P42 — Wizard intro slides per vertical (Peter, 2026-09-16; parked, no change today)
 
@@ -2486,12 +2502,21 @@ commission, P36, so they never touch the cap). Still to set: currency equivalent
 chips, the six Solutions FAQs, Fees policy (new "Monthly cap" paragraph, version 2026-09-22), Terms
 (cap sentence, version 2026-09-22, STEMfra casing fixed), Help Center (what-is-stemfra +
 commission-explained with a "$400 monthly cap" section, invoice bullet); concierge chat knowledge
-(server `6356a74`). Not done: the claim EMAIL line. **(1) the commission meter cap is STILL NOT
-BUILT and the public pages now promise it**: `lib/commissionMeter.js` must cap at 40,000 cents per
-site per month before the first invoice can exceed $400 (no real tenant yet, so no exposure today;
-build it before the first paying client, ~20 lines + a "cap applied" line item). (3) A1 / A1b + the
-five call scripts, (4) CRM leadValue bound, (5) decks + Master Plan v3: not started. CAD / GBP
-equivalents still unset (the pages say $400).
+(server `6356a74`).
+**Status 2026-09-24 (rewritten):** (1) ✅ DONE 2026-09-24 (server, LOCAL): `COMMISSION_DEFAULTS.capCents
+= 40000` (overridable in `crm_settings.commission`), `meterSiteCommission` bills `min(5% of GMV,
+cap)` per site per month in the site's currency and stores `uncapped_cents / cap_cents /
+cap_applied` on the line item + `metadata.cap_applied`; the invoice PDF prints the stream lines at
+the uncapped 5% plus a negative "Monthly cap applied: never more than $400.00 a month" line so the
+parts sum to the total (legacy rows render unchanged). Dry-run on the forge-and-bell fixture + a
+synthetic capped month verified. (2) claim EMAIL line ✅ DONE 2026-09-24 ("…never more than $400 a
+month"). (3) the three provider call scripts (On Fresha / Mindbody / Vagaro) ✅ DONE 2026-09-24
+(DB): "Do not promise a cap." → "The cap is real and you can say it: never more than $400 a month
+per location, and only bookings made through the website count." A1 / A1b carry no cap line yet
+(wording is Peter's call; they never mentioned a cap, so nothing false is out). (4) ✅ DONE
+2026-09-24 (CRM `leadValue.js` `COMMISSION_CAP = 400`, monthly commission bounded, so yearly value
+≤ $4,800). (5) decks + Master Plan v3: not started. CAD / GBP equivalents still unset (the cap is
+"400" in the site's currency until Peter decides).
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 

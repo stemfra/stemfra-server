@@ -20,6 +20,7 @@ const { startLifecycleSweeper } = require('./lib/lifecycleSweeper');
 const { startMembershipRenewalSweeper } = require('./lib/membershipRenewalSweeper');
 const { startBookingCheckoutSweeper } = require('./lib/bookingCheckoutSweeper');
 const { startBookingAutoCollectSweeper } = require('./lib/bookingAutoCollectSweeper');
+const { startPreInvoiceReviewSweeper } = require('./lib/preInvoiceReview');
 const { startDomainRenewalSweeper } = require('./lib/domainRenewalSweeper');
 const { startNexusSweeper } = require('./lib/nexusSweeper');
 const { startReconSweeper } = require('./lib/reconSweeper');
@@ -282,6 +283,10 @@ server.listen(PORT, () => {
   // marked collected within 24h of its scheduled time is auto-marked collected
   // (enters the commission basis). Skips demo sites → inert until a real tenant.
   startBookingAutoCollectSweeper();
+  // Pre-invoice review (P43, 2026-09-24): three days before the month closes,
+  // bell + email the owner the bookings the 24-hour rule collected, with a
+  // "did not happen" escape per row. Skips demo sites → inert until a real tenant.
+  startPreInvoiceReviewSweeper();
   // Domain renewals (2026-08-10): T-30 renewal invoice at renewal retail +
   // T-7 reminders; expiry notices when the tenant turned auto-renew off.
   // Inert until a managed domain is within 35 days of expiry.

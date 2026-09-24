@@ -347,6 +347,38 @@ function ownerRenewalDigest({ dueCount, overdueCount, amountLabel, monthLabel, d
   });
 }
 
+// Pre-invoice review (P43). Stemfra → site owner, three days before the month
+// closes: the bookings the 24-hour rule marked as collected, so the owner can say
+// "did not happen" BEFORE the 5% lands on the statement. Returns {html, text}.
+function ownerPreInvoiceReview({ businessName, greetingName, count, monthLabel, closesOn, amountLabel, commissionLabel, capLabel, dashboardUrl }) {
+  const n = count || 0;
+  const url = dashboardUrl || `${CMS_URL}/billing/invoices`;
+  const intro = `Hi ${greetingName || 'there'}, your ${monthLabel} statement for ${businessName} closes on ${closesOn}. ${n === 1 ? 'One booking was' : `${n} bookings were`} marked as collected by the 24-hour rule because ${n === 1 ? 'it was' : 'they were'} never updated after the appointment time.`;
+  const ask = 'Open the list and tap "Did not happen" on any booking that never took place. Everything left on the list is billed at 5% on the statement.';
+  const html = renderEmail({
+    preheader: `${n} booking${n === 1 ? '' : 's'} to review before your ${monthLabel} statement.`,
+    eyebrow: 'Billing',
+    heading: n === 1 ? '1 booking to review' : `${n} bookings to review`,
+    paragraphs: [intro, ask],
+    rows: [
+      { label: 'Bookings', value: String(n), bold: true },
+      { label: 'Sales on the list', value: amountLabel },
+      { label: '5% on these', value: commissionLabel },
+      capLabel ? { label: 'Monthly cap', value: `never more than ${capLabel}` } : null,
+    ],
+    cta: { label: 'Review the bookings', url },
+    note: 'Nothing is charged online. Bookings you mark as "did not happen" drop off the statement automatically.',
+    reason: "You're receiving this because your Stemfra website takes bookings paid at the venue. Billing notices cannot be turned off.",
+  });
+  const text = [
+    n === 1 ? '1 booking to review' : `${n} bookings to review`, '', intro, '', ask, '',
+    `Bookings: ${n}`, `Sales on the list: ${amountLabel}`, `5% on these: ${commissionLabel}`,
+    ...(capLabel ? [`Monthly cap: never more than ${capLabel}`] : []), '',
+    `Review the bookings: ${url}`,
+  ].join('\n');
+  return { html, text };
+}
+
 // Membership signup (pay-at-venue). Stemfra → site owner. The customer signed up
 // online; the owner signs the agreement + collects payment in person, then
 // confirms it in the CMS. Not a Stripe charge, so the copy says "confirm at the
@@ -972,7 +1004,7 @@ function prospectClaimEmail({ touch = 1, firstName, businessName, verticalLabel 
       + checklist(features)
       + para('Click "Claim" if you need this website.');
   const paragraphs = [];
-  const note = 'We only earn 5% on the bookings it brings you.';
+  const note = 'We only earn 5% on the bookings it brings you, never more than $400 a month.';
   // Deliverability (2026-09-03 A/B rounds, docs/EMAIL_DELIVERABILITY.md): a
   // COLD touch 1 carries exactly ONE link destination (the claim URL — hero
   // image + button) and a link-free footer, opt-out = "reply stop"; the same
@@ -1024,6 +1056,7 @@ module.exports = {
   ownerChatLeadNotification,
   ownerMembershipSignup,
   ownerRenewalDigest,
+  ownerPreInvoiceReview,
   membershipActivated,
   membershipRenewed,
   membershipRenewalReminder,
