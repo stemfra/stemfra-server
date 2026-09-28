@@ -9,7 +9,7 @@ const side = (label) => `aside a:has-text("${label}")`;
 export default {
   id: '01-welcome',
   title: 'Welcome to your Dashboard',
-  description: 'A tour of the Stemfra CMS: the dashboard, the sidebar, the top bar, Stacy and the guided tour.',
+  description: 'A tour of the Stemfra CMS: the dashboard, the sidebar, the top bar, the setup badge, Stacy and the quick actions.',
   intro: 'In this video we will show you around your dashboard, the place where you edit your website and run your bookings.',
   outro: 'Thanks for watching. Questions go under the video, or ask Stacy inside your CMS.',
   async start({ page, base }) {
@@ -81,7 +81,7 @@ export default {
       say: 'Docs opens the help guides, and New site adds another business to your account.',
       run: async ({ cursor }) => { await cursor.sweep([{ target: 'text=Docs', at: 'docs' }, { target: 'text=New site', at: 'new site' }]); } },
     { id: 'top-4',
-      say: 'The green Published pill tells you the site is live. Its menu is where you open the site and the publish checklist.',
+      say: 'The green Published pill tells you the site is live. Its menu opens the live site, or takes it back to preview.',
       run: async ({ cursor, page }) => {
         await cursor.hover('text=Published', { at: 'published pill', settle: 500 });
         await cursor.click('button[aria-label="Publish menu"]', { at: 'its menu', after: 1500 });
@@ -94,31 +94,33 @@ export default {
       say: 'The bell shows new enquiries, bookings and invoices.',
       run: async ({ cursor }) => { await cursor.hover('[data-tour="notif-bell"]', { at: 'bell', settle: 1000 }); } },
 
+    // Stacy's rail and the setup checklist changed on 2026-09-14 (re-cut
+    // 2026-09-25): no Chat / History / Setup tabs, a greeting band and a
+    // "Chat options" menu instead; the checklist is the top-bar Setup badge.
+    { id: 'setup-1', title: 'The setup badge',
+      say: 'Next to Publish, the Setup badge counts your setup steps. Open it for the list: what is left to do and what is done, in three stages, each step with a button that takes you to the right page or walks you through it on screen.',
+      run: async ({ cursor, page }) => {
+        await cursor.click('[data-tour="setup-progress"] button', { at: 'setup badge', after: 1200 });
+        await cursor.sweep([
+          { target: 'button:has-text("To do")', at: 'left to do' }, { target: 'button:has-text("Done")', at: 'what is done' },
+          { target: 'text=Make it yours', at: 'three stages' }, { target: 'button:has-text("Set up")', at: 'right page' },
+          { target: 'button:has-text("Show me how")', at: 'walks you through' },
+        ]).catch(() => {});
+        await page.keyboard.press('Escape').catch(() => {});
+        await page.mouse.click(700, 600).catch(() => {}); // click-away closes the dropdown
+      } },
     { id: 'stacy-1', title: 'Stacy',
-      say: 'This is Stacy, your CMS copilot. Ask her anything about your site, and she answers from your real data.',
+      say: 'This is Stacy, your CMS copilot. Ask her anything about your site, and she answers from your real data. She also drafts your text: focus any field and the draft goes straight in with one click.',
       run: async ({ cursor, page }) => {
         await cursor.click('[data-tour="stacy-launcher"]', { at: 'stacy', after: 1200 });
-        await page.locator('button:has-text("Setup")').first().click({ timeout: 1500 }).catch(() => {});
-        await cursor.hover('textarea[placeholder*="Ask Stacy"]', { at: 'ask her', settle: 600 });
-      } },
-    { id: 'stacy-2',
-      say: 'Stacy also keeps your setup checklist in three stages: Make it yours, Get found on Google, and Before you publish. Each step opens the right page, and Show me how walks you through it on screen.',
-      run: async ({ cursor }) => {
-        await cursor.sweep([
-          { target: 'text=Make it yours', at: 'make it yours' }, { target: 'text=Get found on Google', at: 'get found' },
-          { target: 'text=Before you publish', at: 'before you publish' }, { target: 'text=Open', at: 'opens the right page' },
-          { target: 'text=Show me how', at: 'show me how' },
-        ]);
-      } },
-    { id: 'stacy-3',
-      say: 'She can also draft your text. Focus any field and the draft goes straight in with one click.',
-      run: async ({ cursor }) => {
-        await cursor.hover('text=Set up, I can draft it', { at: 'draft your text', settle: 1000 }).catch(() => {});
+        await cursor.hover("text=Hi, I'm Stacy", { at: 'ask her', settle: 500 }).catch(() => {});
+        await cursor.hover('textarea[placeholder*="Ask Stacy"]', { at: 'drafts your text', settle: 800 });
         await cursor.click('button[aria-label="Close"]', { at: 'one click', after: 600 }).catch(() => {});
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
       } },
 
-    { id: 'tour-1', title: 'Take the tour',
-      say: 'If you prefer to be shown around inside the CMS, open Quick actions and choose Take a quick tour. The tour runs on your own site.',
-      run: async ({ cursor }) => { await cursor.hover('text=Quick actions', { at: 'quick actions', settle: 400 }); await cursor.hover('button:has-text("Take a quick tour")', { at: 'take a quick tour', settle: 1200 }); }, hold: 1.0 },
+    { id: 'tour-1', title: 'Quick actions',
+      say: 'Quick actions are the shortcuts you use most. Update your website reopens the setup wizard from your first day, whenever your details change, and Finish setup opens the same list as the badge.',
+      run: async ({ cursor }) => { await cursor.hover('text=Quick actions', { at: 'quick actions', settle: 400, scroll: true }); await cursor.hover('a:has-text("Update your website")', { at: 'update your website', settle: 900 }).catch(() => {}); await cursor.hover('button:has-text("Finish setup")', { at: 'finish setup', settle: 1200 }).catch(() => {}); }, hold: 1.0 },
   ],
 };

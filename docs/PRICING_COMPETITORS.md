@@ -69,6 +69,59 @@ re-check on the vendor's page before quoting._
   them Stemfra is in effect a $400 a month product: against stacks of $390 to $860 that is
   competitive, and it should be pitched as a flat, all-included price.
 
+## 2b. A two-plan menu: "Flat rate" beside "5% capped at $400" (Peter's idea, researched 2026-09-24)
+
+Peter's proposal: two tiers on the pricing page, Fixed ($279 a month) and Variable (5% of
+bookings, capped at $400), so a commission-averse owner is not lost. What the market does:
+
+| Company | Entry plan | Fixed plan | What the fixed plan buys | Break-even |
+|---|---|---|---|---|
+| Owner.com (done-for-you restaurant site + ordering, the closest analog) | Flexible: $249/mo + 5% per order | Flat Rate: $499/mo, 0% restaurant fee | Predictability at volume; recommended "at $5k+/mo online sales"; switch any time, month to month | $5,000/mo ($249 + 5% × $5,000 = $499) |
+| Amazon selling plans | Individual: $0.99 per item | Professional: $39.99/mo | Removes the per-item fee only; the 8% to 15% referral fee stays on BOTH plans; Pro also unlocks the Buy Box and ads | 40 items/mo |
+| Toast (restaurant POS) | Pay-as-you-go: $0/mo at about 3.09% to 3.69% + 15¢ | Point of Sale: $69/mo at about 2.49% + 15¢ | A LOWER rate, never a zero rate | volume where 0.6 to 1.2 points of processing exceed $69 |
+| Square Appointments | Free: $0/mo at 2.6% + 15¢ in person, 3.3% + 30¢ online | Plus $49 / Premium $149 per location at 2.5% + 15¢, 2.9% + 30¢ | Lower rates + features; the percentage never goes away | tens of thousands in card volume |
+| Treatwell (UK salons) | Subscription from about €29/mo | Advanced about €49/mo | 35% one-time on marketplace-sourced new clients on every plan; 0% on repeat and direct bookings | n/a (both carry the commission) |
+
+The pattern: **a fixed fee buys a lower rate or predictability, never a cheaper way to remove the
+percentage.** Owner.com is the only one whose flat plan removes the restaurant's percentage, and it
+prices that plan at 2× the flexible base, above the flexible plan's cost until $5,000 of sales
+(and diners still pay Owner a 5% fee on both plans). Industry-wide, hybrid (subscription + usage)
+is the growing norm: Metronome's January 2025 survey of 100 SaaS companies found 85% have adopted
+usage-based pricing; Chargebee's 2025 report puts hybrid at 43% of companies (third-party figures).
+
+**The arithmetic on $279 + 0%.** Break-even against 5% is $5,580 of monthly bookings through the
+site. Every client above it picks Flat and pays $279 instead of up to $400: a 30% cut on exactly
+the accounts the GTM plan targets (busy shops, 200+ reviews) and on every fitness or membership
+business, which "hits the cap at once" (section 2). A plan the client only chooses when it is
+cheaper for them is a price cut, not a new segment. Under the year-one revenue model (GTM §6,
+10% to 20% of sales through the site) most barbers and salons stay under $5,580 and keep paying 5%,
+so the loss concentrates on the top 20% to 30% of clients; blended, roughly a 10% revenue cut.
+
+**Recommended shape, if a flat option is offered.** Keep the entry plan as it is and name it for
+what it is: **Pay as you go: free to claim, 5% of bookings, never more than $400 a month.** Add
+**Flat rate: $399 a month (or $449), 0% on bookings, same inclusions, switch any time**, the
+Owner.com design. At $399 the flat plan never earns less than the cap: an owner who dislikes
+percentages pays for certainty, a rational owner stays on 5%, and no top account gets a 30%
+discount. Present it as "the same maximum, paid the predictable way", which also makes the cap
+read as a feature. A third column can be the P37 custom build (from $3,000) once scoped, giving
+the classic three-tier page without a decoy that costs money.
+
+**What we do not know yet:** whether commission aversion exists in our pool. The Gemini transcript
+owner accepted "$2.50 on a $50 cut" in one sentence; Neil's call gave "owners already pay $200 to
+$400 a month"; no call has produced "I will not pay a percentage". Cheapest test: add the flat
+option to the call scripts as a fallback line and count how often it is asked for over the next
+50 calls before printing it on the pricing page (a page change is a Fees/Terms version bump).
+
+Sources (checked 2026-09-24): Owner.com pricing (official) https://www.owner.com/pricing ·
+Amazon selling plans (official) https://sell.amazon.com/blog/amazon-professional-vs-individual-selling-plan ·
+Toast pricing (official page 403 from a script; third-party, 12 May 2026)
+https://www.upmenu.com/blog/toast-pricing/ · Square Appointments (official page truncated;
+third-party, 26 Jun 2026) https://koalendar.com/blog/square-appointments-pricing and the official
+https://squareup.com/us/en/appointments/pricing · Treatwell pricing (official)
+https://www.treatwell.co.uk/partners/pricing/ and https://propartnercare.treatwell.com/s/?language=en_US&view=article&path=How-does-Treatwell-s-commission-work-1 ·
+Metronome, State of Usage-Based Pricing 2025 https://metronome.com/state-of-usage-based-pricing-2025 ·
+Chargebee / OpenView hybrid figures as cited by https://www.maxio.com/resources/2025-saas-pricing-trends-report (third-party).
+
 ## 3. History: the read on 10% (rejected 2026-09-15)
 
 A flat 10% was considered and rejected: the mainstream tools land at 2.7% to 3.5% all-in, the high
