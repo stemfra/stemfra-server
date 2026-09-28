@@ -20,6 +20,8 @@ const { sendOwnerSms } = require('../lib/ownerSmsAlerts');
 const { runMembershipTool } = require('../lib/frontdeskMemberships');
 const frontdeskBrain = require('../lib/frontdeskBrain');
 const { placeBooking, bookClassSession } = require('../controllers/bookingController');
+const { clientIp } = require('../lib/clientIp');
+const agentBudget = require('../lib/agentBudget');
 
 const ALLOWED_CHAT = ['live', 'previewing'];
 
@@ -43,7 +45,8 @@ function rateLimited(key, limit = 20, windowMs = 60_000) {
 
 async function appendMessages(id, msgs) {
   const { data } = await supabase.from('agent_conversations').select('messages').eq('id', id).single();
-  const messages = [...(data?.messages || []), ...msgs];
+  // Storage cap (P45): a conversation keeps its most recent messages only.
+  const messages = await agentBudget.capStored([...(data?.messages || []), ...msgs]);
   await supabase.from('agent_conversations').update({ messages }).eq('id', id);
 }
 
@@ -329,8 +332,8 @@ async function send(req, res) {
     const { siteId, conversationId, message, memberToken } = req.body || {};
     if (!siteId || !message || !String(message).trim()) return res.status(400).json({ error: 'message is required.' });
 
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
-    if (rateLimited(`${ip}:${siteId}`)) return res.status(429).json({ error: 'Too many messages — please slow down a moment.' });
+    const ip = clientIp(req); // never the caller-written first x-forwarded-for value (P45)
+    if (rateLimited(`${ip}:${siteId}`)) return res.status(429).json({ error: 'Too many messages. Please slow down a moment.' });
 
     // Tenant: the site must exist and be live (or previewing, for testing).
     const { data: site } = await supabase.from('sites')
@@ -353,15 +356,31 @@ async function send(req, res) {
     let history = [];
     let bookingState = null; // merged in-progress booking, persisted in tool_log
     let membershipState = null; // merged in-progress membership signup, persisted in tool_log
+    let turns = 0;              // visitor messages already in this conversation (budget)
     if (convId) {
       const { data: conv } = await supabase.from('agent_conversations')
         .select('messages, tool_log').eq('id', convId).eq('site_id', siteId).eq('agent', 'frontdesk').maybeSingle();
       if (conv) {
         history = (conv.messages || []).slice(-12);
+        turns = (conv.messages || []).filter(m => m && m.role === 'user').length;
         bookingState = conv.tool_log?.booking_state || null;
         membershipState = conv.tool_log?.membership_state || null;
       } else convId = null;
     }
+
+    // Budget (P45): count the message and stop calling the model once a cap is
+    // passed (this conversation, this address, this site, or the whole agent
+    // for the day). The visitor still gets an answer that names the ways to
+    // reach the business; nothing is stored for a refused message, so a flood
+    // cannot fill the database either.
+    const budget = await agentBudget.guard({ agent: 'frontdesk', siteId, ip, turns });
+    if (!budget.ok) {
+      return res.json({
+        reply: agentBudget.fallbackReply({ agent: 'frontdesk', reason: budget.reason, business: site.company?.name || null, bookingUrl: true }),
+        conversationId: convId || null, card: null, quick_replies: [], limited: budget.reason,
+      });
+    }
+
     if (!convId) {
       const { data: created, error } = await supabase.from('agent_conversations')
         .insert({ site_id: siteId, agent: 'frontdesk', created_by: null, model: FRONTDESK_MODEL, title: String(message).trim().slice(0, 60), status: 'open' })
@@ -389,7 +408,9 @@ async function send(req, res) {
     const zone = baseContext.business?.time_zone || 'America/New_York';
     const today = DateTime.now().setZone(zone).toFormat("yyyy-MM-dd '('cccc')'");
     const business = site.company?.name || null;
-    const userMsg = { role: 'user', content: String(message).trim(), ts: new Date().toISOString() };
+    // Input cap (P45): one message is a question, never a document.
+    const capped = await agentBudget.capInput('frontdesk', message);
+    const userMsg = { role: 'user', content: capped.text, ts: new Date().toISOString() };
 
     let reply = '';
     let lead = null;

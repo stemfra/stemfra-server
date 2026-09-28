@@ -133,6 +133,30 @@ On success: streams the file directly into `cloudinary.uploader.upload_stream` (
 
 **Payments (`/api/cms/payments`, `controllers/cms/paymentsController.js`)** — Stripe Connect (Express). `POST /connect-link` (create/reuse Express account + onboarding link), `GET /status?siteId=` (refresh capabilities from Stripe; also returns `account.livemode` for the CMS "Test mode" badge), `POST /dashboard-link` (added 2026-06-23 — `stripe.accounts.createLoginLink` → Express dashboard, for the CMS "Manage in Stripe" link), `GET /healthcheck`.
 
+## Agent abuse and spend protection (P45, 2026-09-28)
+
+No tenant pays for AI usage (commission model), so every agent has a ceiling. Two modules, and
+every new agent endpoint uses both:
+
+- **`lib/clientIp.js` `clientIp(req)`** is the ONLY way to read a caller's address.
+  `cf-connecting-ip`, then the LAST `x-forwarded-for` hop, and only in production
+  (`TRUST_FORWARDED` overrides); elsewhere the socket address. Never read the first
+  `x-forwarded-for` value again: the caller writes it.
+- **`lib/agentBudget.js`**: `guard({agent, siteId, ip, ownerId, turns})` counts the message in
+  `agent_usage` (migration `agent_usage_v1`, function `agent_usage_bump`) and returns
+  `{ok:false, reason}` past a cap (conversation, ip, owner, site, global). On a refusal the
+  controller answers with `fallbackReply(...)` in the agent's normal response shape plus
+  `limited: <reason>`, never an error, and stores nothing. `capInput(agent, text)` and
+  `capStored(messages)` cap a message and a conversation. Caps: `DEFAULTS` in the module,
+  overridden by `crm_settings` key `agent_budget`. The guard fails OPEN when the counter cannot be
+  read (the per-minute limiter still applies). Test: `node -r dotenv/config
+  scripts/agent-budget-test.js`.
+- Voice: `VOICE_MAX_CALL_MINUTES` (20) and `VOICE_MAX_CALLS_PER_NUMBER` (10 a day) in
+  `voiceController.js`.
+- Narration relay for the tutorial recorder: `routes/admin/narrate.js` (`x-leadgen-secret`).
+
+Open items and the audit table: `docs/ROADMAP.md` P45.
+
 ## Staff handover (`/api/admin/handover/*`, P32 phase 1, 2026-09-10)
 
 `controllers/admin/handoverController.js` + `routes/admin/handover.js` (super_admin + admin). `GET /preview?from=&to=` = the leaver's book (leads / deals / outreach_sent_by counts, the clients past first contact with an email = stages contacted…won, not do_not_email, not test), a rendered sample of template **H1** ("New account manager", `email_templates`, part outbound) and the Workspace checklist. `POST /run {from, to, notifyLeadIds, deactivate}` reassigns `leads.assigned_to` + `outreach_sent_by` + `deals.assigned_to` (feed rows `lead_reassigned` / `deal_reassigned`), sends the introduction email to the ticked clients **from the successor's own mailbox** via `gmailOutreach.sendAsRep` (domain-wide delegation works for any @stemfra.com; PECR `emailAllowed` + the compliance footer apply; 1.5 s between sends), then deactivates the profile (`is_active=false`, presence offline, lock PIN deleted). Contacts / companies only carry `created_by`, so they are not reassigned. Workspace steps (forwarding, suspend, alias, delete) stay manual until phase 2 (Admin SDK on the P30 service account). CRM: Team page kebab → "Hand over…" (`components/team/HandoverModal.jsx`, `hooks/useHandover.js`).

@@ -17,6 +17,7 @@
 // resubmit the campaign.
 
 const { parsePhoneNumber } = require('libphonenumber-js');
+const { clientIp } = require('../../lib/clientIp');
 const supabase = require('../../config/supabase');
 const { twilioClient, twilioFrom, smsFromForNumber, publicBaseUrl } = require('../../config/twilio');
 
@@ -70,7 +71,7 @@ async function optIn(req, res) {
     consent_text: SMS_CONSENT_TEXT,
     consent_version: SMS_CONSENT_VERSION,
     consented_at: new Date().toISOString(),
-    consented_ip: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || null,
+    consented_ip: clientIp(req),
     opted_out_at: null,
   };
 

@@ -2402,6 +2402,143 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
+## P45 — Agent abuse and spend protection (Peter's question 2026-09-28; audit done, build started)
+
+Peter: "How are we protecting our AI front desk and other agents against bots or continuous use
+that can drain AI credits quickly, or a cyber attack, especially as we are not metering tenants?"
+Under the commission model no tenant pays for usage, so every abused message is Stemfra's cost.
+OWASP calls the risk LLM10 Unbounded Consumption ("denial of wallet"); its mitigation is rate
+limits + input caps + per-user quotas + monitoring together.
+
+**Audit of the code, 2026-09-28 (verified by reading, not from docs):**
+
+| Surface | Guard today | Gap |
+|---|---|---|
+| Front desk chat (`/api/site-chat`) | 20 msgs/min per IP+site (in memory), 12-message history, `max_tokens` 900, 10 KB body | IP read from the FIRST `x-forwarded-for` value (caller-controlled: a rotating header is never limited); no daily ceiling (28,800 msgs/day per address per site, about $290/day at ~1 cent a message on GPT-4o, estimate); no bot check; limits reset on restart |
+| Concierge (`/api/concierge`) | same limiter, per IP | same gaps |
+| Stacy (`/api/cms/assistant`) | owner JWT + site ownership | no rate limit at all; accounts are free to create |
+| Mark inbound (`/api/voice`) | `max_tokens` 90 per turn | no maximum call length, no per-caller cap (outbound has a daily cap) |
+| Sign-up, lead forms, newsletter, claim | per-IP limiters | same spoofable IP source |
+| `agent_conversations.messages` | none | grows without bound per conversation |
+
+**Build list, in order of value for effort:**
+
+1. **One trusted client-IP helper** (`lib/clientIp.js`): `cf-connecting-ip` first (set by
+   Cloudflare, not by the caller), then the LAST hop of `x-forwarded-for`, then the socket. Every
+   limiter uses it.
+2. **Budgets in the database** (`lib/agentBudget.js` + table `agent_usage`): per conversation
+   (40 messages), per site per day (300), per IP per day (150), and a global daily circuit breaker
+   with a staff alert. Past a cap the chat stops calling the model and answers with the contact
+   path (phone, contact page), so the visitor is still served. Caps in `crm_settings.agent_budget`
+   so staff can tune them without a deploy.
+3. **Cloudflare Turnstile, invisible, on the first message** of a public chat (free, no request
+   cap). Server verifies the token once per conversation. Needs a site key + secret (Peter,
+   Cloudflare dashboard). Built behind env so it is off until the keys exist.
+4. **OpenAI: a hard monthly budget + one key per agent** (front desk, concierge, Stacy, Mark,
+   back office), so one drained agent cannot take the others down. Peter, OpenAI dashboard;
+   the server already reads a key per call site, so this is env only.
+5. **One Cloudflare rate rule** on `/api/site-chat/*` and `/api/concierge/*` as the layer in front
+   of ours. Peter, Cloudflare dashboard.
+6. **Cheaper model for the front desk.** The Stemfra AI session's bake-off (2026-09-18) cleared
+   lower-cost models; decision + a live comparison on real front desk transcripts before switching.
+7. **Stacy limits** (per owner per hour and per day) **and a maximum call length for Mark**
+   (Twilio `timeLimit`) plus a per-caller daily cap.
+8. **Input cap** (1,000 characters a message) and a **conversation size cap** in storage.
+
+**Status 2026-09-28 (server, LOCAL, not pushed):**
+
+- ✅ **1 BUILT + VERIFIED.** `lib/clientIp.js`; every limiter and consent stamp uses it
+  (site chat, concierge, sign-up, setup call, claim, SMS consent, security events). Forwarded
+  headers are trusted in production only (`TRUST_FORWARDED` overrides). Proof on the local server:
+  35 requests with a rotating `x-forwarded-for` + `cf-connecting-ip` were 35 x 200 before, and
+  30 x 200 then 5 x 429 after.
+- ✅ **2 BUILT + VERIFIED.** Migration `agent_usage_v1` APPLIED (table `agent_usage`, function
+  `agent_usage_bump`, service role writes, staff read). `lib/agentBudget.js`: `guard`, `capInput`,
+  `capStored`, `fallbackReply`; defaults front desk 40 per chat / 150 per address / 300 per site /
+  3,000 a day, concierge 40 / 100 / 1,500, Stacy 120 per chat / 200 per owner / 300 per site /
+  2,000; overrides in `crm_settings.agent_budget` (re-read every minute). A site or global cap
+  rings every admin's bell and emails `NOTIFY_EMAIL`, once a day per cap. Wired into
+  `siteChatController.send`, `conciergeController.send`, `assistantController.send`. Verified:
+  `scripts/agent-budget-test.js` (4th message from one address blocked at cap 3, a 5-message chat
+  blocked, counters written and removed) and two real front desk messages with the address cap at
+  1 (first answered by the model, second by the fallback, nothing stored for the second).
+- ✅ **7 BUILT, NOT YET EXERCISED ON A CALL** (Twilio runs from production only): Stacy = 20 a
+  minute per owner + the daily budget; Mark = `VOICE_MAX_CALL_MINUTES` (20) closing line +
+  scheduled hangup, and `VOICE_MAX_CALLS_PER_NUMBER` (10 a day, in memory) answered with a spoken
+  line and a hangup. First production call after the deploy is the check.
+- ✅ **8 BUILT + VERIFIED.** Input cap per message (1,000 characters; Stacy 4,000; the
+  concierge's client-sent history is cut the same way); a conversation stores its latest 200
+  messages.
+- ⏳ **3 Turnstile**: not started; needs the site key + secret (Peter), then the server check and
+  the two widgets (`FrontDeskChat` archetype, the concierge widget in stemfra_client).
+- ⏳ **4 OpenAI budget + one key per agent** and **5 the Cloudflare rate rule**: Peter, dashboards.
+- ⏳ **6 cheaper front desk model**: decision + a transcript comparison first.
+- ➕ **9 (found while building) Lock the origin to Cloudflare.** A caller who reaches the VPS
+  without passing Cloudflare can write `cf-connecting-ip` himself. Firewall rule on the VPS:
+  accept 443 only from Cloudflare's published ranges. Infra, Peter + Hostinger panel.
+
+Sources: OWASP LLM10 (genai.owasp.org/llmrisk/llm102025-unbounded-consumption/, verified),
+Cloudflare "Stop malicious bots" (developers.cloudflare.com, verified), Turnstile pricing
+(prosopo.io, third-party).
+
+## P44 — CRM serves both products: websites + Stemfra AI (Peter, 2026-09-24; recorded, not started)
+
+The CRM stays the one sales and operations surface for the company (leads, deals, billing,
+compliance, team); the Stemfra AI dashboard at ai.stemfra.com stays the tenant's surface
+(workspaces, usage, review queue). Two facts shape the join: the CRM's database is the platform's
+Supabase project and Stemfra AI's is a different project, so the CRM never queries AI tables
+directly; and the platform's staff JWTs come from a different auth project than the AI server
+verifies. Every link is therefore an API call in one direction: provisioning and reads from the
+CRM into the AI server's admin API, lead capture from the AI side into the CRM. Context:
+`docs/STEMFRA_AI_POSITIONING_2026-09.md` (§3e catalogue, §3g dashboard) and
+`docs/STEMFRA_AI_CONSOLIDATION_PLAN_2026-09.md` (§W1, §W5). Order = leverage; 1 to 4 make an AI
+lead sellable, 5 to 9 make it deliverable and billable.
+
+1. **Product dimension on leads.** `leads.product` = `websites | ai` (default `websites` for every
+   existing row) and, for AI leads, `leads.recipe` from the catalogue slug list (front_desk,
+   lead_finding, inbox, reports, knowledge, documents, integrations). A product pill beside the
+   country pills; filters, presets and Table columns through the existing helper pattern
+   (`stemfra-ops/src/lib/leadFilters` + `leadTable`). `vertical` stays for websites leads only.
+2. **Lead value per product.** `stemfra-ops/src/lib/leadValue.js` prices everything as capped 5% of
+   estimated sales. An AI lead = build fee + 12 months of run fee from the Recipe's plan row (item
+   8). One branch in that file; every KPI, card and leaderboard follows.
+3. **Scripts and templates per product.** Pipeline stages stay. `call_scripts` and `email_templates`
+   gain `product` (default `websites`); the AI family gets its own script rows (discovery call for
+   an automation build, not the provider-switch script) and an outreach family with the same
+   compliance footer. The Template Manager filters by the lead's product.
+4. **Inbound from ai.stemfra.com.** The workflow-page intake forms and the questionnaire's first
+   step post into the CRM as leads with `product = ai` and the recipe set, through the existing
+   `stemfra_crm` connector path in the AI runtime (same endpoint the Front Desk uses to capture
+   leads). Source `ai_site`. No new intake endpoint.
+5. **Hiring-signal leads land in the CRM.** The AI side's hiring-signal pool (consolidation plan
+   §W3) writes its scored companies as CRM leads for Stemfra's own reps: source `hiring_signal`,
+   rationale + drafted messages in the outreach draft section, `product = ai`. That is the Leads
+   app, not a new app.
+6. **Won → provision.** When an AI deal is won, the CRM calls the AI server's admin API to create
+   the workspace and set `workspace_products`, the way Provision creates a site today. The AI
+   server must accept a staff call: a second issuer (the platform project's JWKS) verified next to
+   its own, with an allowlist of staff roles. Preferred over a shared service token because the AI
+   server already verifies JWTs this way for its own project. Raised with the AI session through
+   Peter (its repo, its change).
+7. **Read-only "AI workspaces" page** under Platform in the CRM, fed by that same admin API:
+   tenant, active recipes, usage, spend, last activity, open review items. No writes from the CRM
+   into AI data.
+8. **Billing on System A.** An AI client = a one-off build charge + a monthly run subscription on
+   the same `billing_charges` ledger, same invoice PDF, same reconciliation engine. The plan
+   catalog gets one plan row per Recipe with `build_cents` + `run_cents_monthly`; commission
+   fields stay null for AI plans.
+9. **Custom Pricing quotes** gain Recipe templates, so a scoped build quote for an AI workflow comes
+   from the same quote tool the custom website builds use (P37).
+
+**Idea recorded, not scoped (Peter, 2026-09-24, from Relevance AI's home page):** a live "what our
+agents are doing" board in the CRM: a table or moving cards of requests passing through the AI
+agents as they arrive and complete (task, run by, model, outcome, cost). Peter's own caveat: at
+volume the stream moves too fast to read. Shape that survives volume: four aggregate counters
+(tasks today, spend today, average cost per task, share reviewed OK) over a rolling window of the
+last 20 events that only ticks when something new lands, plus a per-tenant filter; the AI server
+already meters every dispatcher call, so the data source is its `executions` table exposed through
+the same admin API as item 7 (polling every 10 s, not a socket, for v1). Belongs after item 7.
+
 ## P43 — Pre-invoice review (from the Gemini evaluation, 2026-09-22; recorded)
 
 The 24-hour auto-collect rule (P13) bills 5% on a booking the owner forgot to mark as a no-show,
@@ -2517,6 +2654,10 @@ per location, and only bookings made through the website count." A1 / A1b carry 
 2026-09-24 (CRM `leadValue.js` `COMMISSION_CAP = 400`, monthly commission bounded, so yearly value
 ≤ $4,800). (5) decks + Master Plan v3: not started. CAD / GBP equivalents still unset (the cap is
 "400" in the site's currency until Peter decides).
+**Flat plan UNDER CONSIDERATION, not effective (Peter, 2026-09-24):** a flat monthly subscription
+beside the 5% plan as a second option for tenants. Research + recommended shape (flat at or above
+the cap, "Pay as you go" / "Flat rate" naming, test in call scripts first) in
+`PRICING_COMPETITORS.md` §2b. Nothing on the pages, in billing or in the scripts until decided.
 
 ## P40 — AI auto-draft SMS replies + Auto mode (Peter's ask 2026-09-15, recorded)
 

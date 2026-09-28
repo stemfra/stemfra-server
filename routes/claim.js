@@ -14,7 +14,8 @@ const hits = new Map();
 function limited(ip, max = 120) {
   const now = Date.now(); const arr = (hits.get(ip) || []).filter((t) => now - t < 60_000); arr.push(now); hits.set(ip, arr); return arr.length > max;
 }
-const ipOf = (req) => (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || null;
+const { clientIp } = require('../lib/clientIp');
+const ipOf = (req) => clientIp(req); // trusted address, never the caller-written header (P45)
 
 const loadLead = (token) => leadForClaimToken(token);
 

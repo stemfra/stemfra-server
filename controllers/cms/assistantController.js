@@ -19,6 +19,18 @@ const { buildSiteContext } = require('../../lib/stacyContext');
 const { buildOnboardingChecklist, setOnboardingState } = require('../../lib/stacyOnboarding');
 const { logSiteActivity } = require('../../lib/activity');
 const { CMS_GUIDE } = require('../../lib/cmsRoutes');
+const agentBudget = require('../../lib/agentBudget');
+
+// Per-owner burst limit (P45): Stacy sits behind a login, but accounts are free
+// to create, so she gets the same per-minute limiter the public chats have.
+const stacyHits = new Map();
+function stacyRateLimited(key, limit = 20, windowMs = 60_000) {
+  const now = Date.now();
+  const arr = (stacyHits.get(key) || []).filter(t => now - t < windowMs);
+  arr.push(now);
+  stacyHits.set(key, arr);
+  return arr.length > limit;
+}
 
 const STACY_N8N_URL = process.env.STACY_N8N_URL;          // public n8n Stacy webhook
 const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;        // sent as x-leadgen-secret (server→n8n convention)
@@ -112,7 +124,8 @@ function normalizeAction(a) {
 // Append messages to a conversation's jsonb array (single owner per chat → no race concern at S1).
 async function appendMessages(id, msgs) {
   const { data } = await supabase.from('agent_conversations').select('messages').eq('id', id).single();
-  const messages = [...(data?.messages || []), ...msgs];
+  // Storage cap (P45): a conversation keeps its most recent messages only.
+  const messages = await agentBudget.capStored([...(data?.messages || []), ...msgs]);
   await supabase.from('agent_conversations').update({ messages }).eq('id', id);
 }
 
@@ -195,7 +208,22 @@ async function send(req, res) {
       return res.status(503).json({ error: 'Stacy is not configured on the server yet.' });
     }
 
-    const userMsg = { role: 'user', content: String(message).trim(), ts: new Date().toISOString() };
+    // Burst limit + daily budget (P45): per owner, per site, and Stacy as a
+    // whole. A refused message is answered in the same shape, without the model.
+    if (stacyRateLimited(req.cmsUser.id)) return res.status(429).json({ error: 'Too many messages. Please slow down a moment.' });
+    const budget = await agentBudget.guard({
+      agent: 'stacy', siteId, ownerId: req.cmsUser.id,
+      turns: (conv.messages || []).filter(m => m && m.role === 'user').length,
+    });
+    if (!budget.ok) {
+      return res.json({
+        reply: agentBudget.fallbackReply({ agent: 'stacy', reason: budget.reason }),
+        handoff: false, action: null, conversationId, links: [], card: null, quick_replies: [], limited: budget.reason,
+      });
+    }
+
+    const capped = await agentBudget.capInput('stacy', message);
+    const userMsg = { role: 'user', content: capped.text, ts: new Date().toISOString() };
     // Stacy gets the CMS map (where to change what); the public Front Desk does not.
     const context = await buildSiteContext(siteId, { includeCmsMap: true });
     const history = (conv.messages || []).slice(-12); // recent turns only

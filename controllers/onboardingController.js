@@ -4,6 +4,7 @@
 // (preview-then-publish); abuse is bounded by a light per-IP rate limit + the
 // fact that a previewing site can't be published without paying.
 const { onboardCustomer } = require('../lib/onboardSite');
+const { clientIp } = require('../lib/clientIp');
 const { attachSiteDomain } = require('../lib/attachSiteDomain');
 const { sendOwnerWelcome } = require('../lib/ownerWelcome');
 
@@ -24,7 +25,7 @@ function rateLimited(ip) {
 
 async function signup(req, res) {
   try {
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || 'unknown';
+    const ip = clientIp(req);
     if (rateLimited(ip)) return res.status(429).json({ error: 'Too many signups from here — please try again later.' });
 
     const {
@@ -92,7 +93,7 @@ async function signupAuthenticated(req, res) {
     const { data: { user }, error: uErr } = await supabase.auth.getUser(jwt);
     if (uErr || !user?.email) return res.status(401).json({ error: 'Your sign-in session is invalid. Please try again.', code: 'unauthenticated' });
 
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || 'unknown';
+    const ip = clientIp(req);
     if (rateLimited(ip)) return res.status(429).json({ error: 'Too many signups from here — please try again later.' });
     const {
       name, company, vertical, starterId, city, template, firstName, lastName, country, state,

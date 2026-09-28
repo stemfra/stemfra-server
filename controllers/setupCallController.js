@@ -2,6 +2,7 @@
 // No auth (public prospects); writes go through the service-role client in
 // lib/setupCall. A small per-IP in-memory rate limit protects the booking POST.
 const setupCall = require('../lib/setupCall');
+const { clientIp } = require('../lib/clientIp');
 
 const hits = new Map();
 function rateLimited(ip, max = 8, windowMs = 60000) {
@@ -37,7 +38,7 @@ async function availability(req, res) {
 // POST /api/setup-call/book — { name, email, phone?, businessName?, vertical?, notes?, date, time, leadId? }
 async function book(req, res) {
   try {
-    const ip = String(req.headers['x-forwarded-for'] || req.ip || 'unknown').split(',')[0].trim();
+    const ip = clientIp(req);
     if (rateLimited(ip)) return res.status(429).json({ success: false, message: 'Too many requests — please try again shortly.' });
     const b = req.body || {};
     const r = await setupCall.book({

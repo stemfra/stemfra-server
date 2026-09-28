@@ -205,6 +205,7 @@ app.use('/api/admin/domains', require('./routes/admin/domains'));
 app.use('/api/admin/templates', require('./routes/admin/templates'));
 app.use('/api/admin/subscriptions', require('./routes/admin/subscriptions'));
 app.use('/api/admin/billing', require('./routes/admin/billing'));
+app.use('/api/admin/narrate', require('./routes/admin/narrate')); // tutorial narration relay (ElevenLabs is region-blocked from the Mac)
 app.use('/api/admin/compliance', require('./routes/admin/compliance'));
 app.use('/api/admin/recon', require('./routes/admin/recon'));
 app.use('/api/admin/backups', require('./routes/admin/backups')); // P21 nightly data backups

@@ -52,8 +52,32 @@ function transferAvailable() {
 // reach the conversation that asked for the transfer.
 const sessionsBySid = new Map();
 
+// Call caps (P45, 2026-09-28): every minute on the phone costs Twilio + the
+// model, and inbound calls had no ceiling. One number may open
+// VOICE_MAX_CALLS_PER_NUMBER (default 10) calls a day; one call lasts at most
+// VOICE_MAX_CALL_MINUTES (default 20). Counts are in memory (a restart resets
+// them), which is enough for a guard that must never block the TwiML path on a
+// database read.
+const MAX_CALLS_PER_NUMBER = Number(process.env.VOICE_MAX_CALLS_PER_NUMBER) || 10;
+const MAX_CALL_MINUTES = Number(process.env.VOICE_MAX_CALL_MINUTES) || 20;
+const callsToday = new Map(); // `${yyyy-mm-dd}|${from}` -> count
+function overDailyCalls(from) {
+  if (!from) return false;
+  const day = new Date().toISOString().slice(0, 10);
+  if (callsToday.size > 5000) for (const k of callsToday.keys()) if (!k.startsWith(day)) callsToday.delete(k);
+  const key = `${day}|${from}`;
+  const n = (callsToday.get(key) || 0) + 1;
+  callsToday.set(key, n);
+  return n > MAX_CALLS_PER_NUMBER;
+}
+
 // POST /api/voice/concierge/incoming — Twilio voice webhook for inbound calls.
 function conciergeIncoming(req, res) {
+  if (overDailyCalls(req.body?.From)) {
+    console.warn('[voice] inbound call refused: daily cap for', req.body?.From);
+    return res.type('text/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response><Say>Thanks for calling Stemfra. We have spoken several times today, so please send us a note from the contact page at stemfra dot com and a teammate will get back to you. Goodbye.</Say><Hangup/></Response>`);
+  }
   console.log('[voice] inbound call → TwiML served (From:', req.body?.From || '?', ')');
   // interruptible=any + interruptSensitivity=high → most responsive barge-in.
   const base = (process.env.PUBLIC_BASE_URL || `https://${req.headers.host}`).replace(/\/+$/, '');
@@ -258,6 +282,15 @@ function handleRelay(ws) {
           });
         }
         voiceBrain.warmup();   // prime the LLM connection while the greeting plays → fast first reply
+        // Length cap (P45): at the limit Mark says one closing line, then the
+        // call is ended through the same scheduled hangup end_call uses.
+        session.lengthTimer = setTimeout(() => {
+          console.warn('[voice] ⏱ call reached', MAX_CALL_MINUTES, 'minutes, closing —', session.callSid);
+          session.abort?.abort();
+          session.actionsTaken.push('length_cap');
+          safeSend(ws, { type: 'text', token: 'We have reached the time limit for this call. A teammate will follow up with you, and you can reach us any time at stemfra dot com. Thank you for calling. Goodbye.', last: true });
+          scheduleHangup(session, 12000);
+        }, MAX_CALL_MINUTES * 60_000);
         break;
       }
       case 'prompt': {
@@ -338,6 +371,7 @@ function handleRelay(ws) {
   });
 
   ws.on('close', () => {
+    if (session.lengthTimer) clearTimeout(session.lengthTimer);
     if (session.callSid) sessionsBySid.delete(session.callSid);
     console.log('[voice] ■ call ended —', session.history.length, 'turns');
     finalizeCall(session).catch((e) => console.error('[voice] finalize error:', e.message));

@@ -9,6 +9,8 @@ const supabase = require('../config/supabase');
 const { DateTime } = require('luxon');
 const { buildConciergeContext } = require('../lib/conciergeContext');
 const conciergeBrain = require('../lib/conciergeBrain');
+const { clientIp } = require('../lib/clientIp');
+const agentBudget = require('../lib/agentBudget');
 
 let fireSpeedToLead = null;
 try { ({ fireSpeedToLead } = require('../routes/speedToLead')); } catch { /* optional */ }
@@ -77,11 +79,12 @@ async function captureLead(lead) {
 // POST /api/concierge/send  { message, history?: [{role, content}] }
 async function send(req, res) {
   try {
-    const { message, history } = req.body || {};
+    const { history } = req.body || {};
+    let { message } = req.body || {};
     if (!message || !String(message).trim()) return res.status(400).json({ error: 'message is required.' });
 
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
-    if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages — please slow down a moment.' });
+    const ip = clientIp(req); // never the caller-written first x-forwarded-for value (P45)
+    if (rateLimited(ip)) return res.status(429).json({ error: 'Too many messages. Please slow down a moment.' });
 
     if (CONCIERGE_MODE === 'native' ? !conciergeBrain.isConfigured() : !CONCIERGE_N8N_URL) {
       return res.status(503).json({ error: 'The assistant is not configured yet.' });
@@ -89,9 +92,29 @@ async function send(req, res) {
 
     const context = buildConciergeContext();
     const today = DateTime.now().setZone('America/New_York').toFormat("yyyy-MM-dd '('cccc')'");
+    // History comes from the widget (this chat is stateless), so each entry is
+    // cut to the input cap too: a caller cannot pad the prompt through it (P45).
+    const maxChars = (await agentBudget.getBudget()).concierge.max_chars || 1000;
     const hist = Array.isArray(history)
       ? history.slice(-12).filter(m => m && typeof m.role === 'string' && typeof m.content === 'string')
+        .map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content.slice(0, maxChars) }))
       : [];
+
+    // Budget (P45): this address and the whole agent, per day. The length of
+    // the chat is the widget's own count, so it is a courtesy cap, not a guard.
+    const budget = await agentBudget.guard({
+      agent: 'concierge', ip,
+      turns: Array.isArray(history) ? history.filter(m => m && m.role === 'user').length : 0,
+    });
+    if (!budget.ok) {
+      return res.json({
+        reply: agentBudget.fallbackReply({ agent: 'concierge', reason: budget.reason }),
+        quick_replies: [],
+        card: { kind: 'cta', actions: ['start_free', 'contact'].filter(k => CTA_LINKS[k]).map(k => ({ label: CTA_LABELS[k], href: CTA_LINKS[k] })) },
+        limited: budget.reason,
+      });
+    }
+    message = (await agentBudget.capInput('concierge', message)).text;
 
     let reply = '', lead = null, quickReplies = [], ctaKeys = [], wantsBooking = false;
     try {
@@ -147,7 +170,7 @@ async function send(req, res) {
 // through the public booking endpoints with these.
 async function callConfig(req, res) {
   try {
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+    const ip = clientIp(req);
     if (rateLimited(`cfg:${ip}`, 30)) return res.status(429).json({ error: 'Too many requests.' });
 
     const { data: site } = await supabase
