@@ -2402,6 +2402,31 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
+## P46 — Cookie consent on stemfra.com and the tenant sites (Peter, 2026-09-29; recorded, not started)
+
+Peter noticed that every competitor site opens with a cookie permission banner and asked that it
+be noted for Stemfra. Checked the same day: the marketing site loads no analytics or advertising
+script, and the tenant sites write one functional localStorage entry (the boot loader theme
+cache), so nothing today requires consent. It becomes required the day any of these goes live,
+and all are planned: the Meta pixel, the TikTok pixel, any analytics cookie, the owner-facing
+traffic analytics if it uses a cookie. UK and EU visitors need opt-in before non-essential
+cookies (PECR / GDPR); several US states need a visible opt-out.
+
+Build, in order:
+1. **One consent component** in `@stemfra/archetypes` (tenant sites) and its twin in
+   `stemfra_client`: Accept / Reject with equal weight, a "Cookie settings" link in the footer,
+   the choice stored first-party, no non-essential script loaded before a yes.
+2. **A loader gate**: every pixel or analytics script goes through one `loadIfConsented(kind)`
+   helper, never a bare script tag.
+3. **Privacy policy**: a cookie section naming each cookie, its purpose and its life; bump the
+   version in `lib/legalDocs.js` with the page's "Last updated" line.
+4. **Tenant sites**: the owner's own pixels (a future CMS field) load through the same gate, and
+   the banner carries the tenant's brand, not ours.
+5. Theme the banner with the site tokens; verify it does not cover the booking button on mobile.
+
+Rule until then: no pixel and no analytics cookie ships on any Stemfra surface before item 1 and 2.
+Context: `docs/research/COMPETITOR_SITES_2026-09-29.md`.
+
 ## P45 — Agent abuse and spend protection (Peter's question 2026-09-28; audit done, build started)
 
 Peter: "How are we protecting our AI front desk and other agents against bots or continuous use
