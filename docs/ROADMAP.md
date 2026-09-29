@@ -2445,7 +2445,7 @@ limits + input caps + per-user quotas + monitoring together.
    (Twilio `timeLimit`) plus a per-caller daily cap.
 8. **Input cap** (1,000 characters a message) and a **conversation size cap** in storage.
 
-**Status 2026-09-28 (server, LOCAL, not pushed):**
+**Status 2026-09-28, PUSHED + LIVE 2026-09-29 (server d3c9b16; verified in production: the rotating-header test through Cloudflare is 30 x 200 then 5 x 429, the new routes answer, health green):**
 
 - ✅ **1 BUILT + VERIFIED.** `lib/clientIp.js`; every limiter and consent stamp uses it
   (site chat, concierge, sign-up, setup call, claim, SMS consent, security events). Forwarded
