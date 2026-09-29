@@ -2477,6 +2477,19 @@ limits + input caps + per-user quotas + monitoring together.
   without passing Cloudflare can write `cf-connecting-ip` himself. Firewall rule on the VPS:
   accept 443 only from Cloudflare's published ranges. Infra, Peter + Hostinger panel.
 
+**WAITING ON PETER (recorded 2026-09-29 at his request; each is a dashboard walk, one action
+at a time; mark "Peter confirmed <date>" when done):**
+
+| # | Action | Where | What it unlocks | Status |
+|---|---|---|---|---|
+| A | Create a Turnstile widget (mode: invisible) for stemfra.com + `*.stemfra.com` + tenant domains; hand over the site key and the secret | Cloudflare dashboard → Turnstile | Build item 3: the server check + the two chat widgets. Secret goes to `.env` + the Actions secrets + `deploy.yml` | ⏳ not started |
+| B | Set a hard monthly budget on the OpenAI organisation, then create one project key per agent (front desk, concierge, Stacy, Mark, back office) | platform.openai.com → Settings → Limits, and Projects → API keys | Build item 4: one drained agent cannot stop the others; per-agent spend becomes visible. Code change is env only | ⏳ not started |
+| C | One rate limiting rule: path starts with `/api/site-chat/` or `/api/concierge/`, per IP, block for 1 minute past the threshold | Cloudflare dashboard → stemfra.com zone → Security → WAF → Rate limiting rules | Build item 5: abuse is stopped at the edge before it reaches the VPS | ⏳ not started |
+| D | Firewall on the VPS: accept 443 (and 80) only from Cloudflare's published IP ranges; keep SSH as it is | Hostinger panel → VPS → Firewall (ranges: cloudflare.com/ips) | Build item 9: nobody can reach the origin directly and write `cf-connecting-ip` himself | ⏳ not started |
+| E | Decide the front desk model after a side by side on real transcripts (the AI session's bake-off of 2026-09-18 is the starting evidence) | Discussion, then `FRONTDESK_MODEL` in `deploy.yml` | Build item 6: the cost of every message, abused or not, drops several times | ⏳ not started |
+
+Order suggested: B first (it caps the worst case today, five minutes), then C, D, A, E.
+
 Sources: OWASP LLM10 (genai.owasp.org/llmrisk/llm102025-unbounded-consumption/, verified),
 Cloudflare "Stop malicious bots" (developers.cloudflare.com, verified), Turnstile pricing
 (prosopo.io, third-party).
