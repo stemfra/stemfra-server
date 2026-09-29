@@ -2456,6 +2456,21 @@ come from the seeded demo data and are labelled as a demo where a figure could r
 3. **The Front desk chat** on a tenant site: a question answered, a booking card.
 4. Optional: the setup wizard's listing preview, the Bookings calendar, the Reports page.
 
+**Products menu images, AGREED by Peter 2026-09-29 (not built).** The Products drawer
+(`stemfra_client` `BrowseDrawer.jsx`) keeps its design; its three entries (P48) each get one
+real screenshot in a device frame, demo data only (Argyle & Sons), same dark warm backdrop:
+- **Websites and booking**: a tenant site on a tablet with a phone beside it showing the booking
+  step. The tablet mockup exists; the phone frame is to capture.
+- **AI Front desk**: the chat widget open on a tenant site, mid-conversation, with the time-slot
+  chips and the booking confirmation card.
+- **AI Leads**: the leads table of the Stemfra AI dashboard with scored leads and one drafted
+  message open. Depends on the Stemfra AI session having that screen; no stand-in from the CRM.
+- Solutions menu: unchanged photos; Custom (the seventh entry) gets a collage of three
+  different screens.
+First raw captures (not framed, not final): `docs/research/shots-2026-09-29/menu-candidates/`.
+A first-visit promotion popup on the demo site covers the chat launcher: close it before
+capturing.
+
 How: the CRM's Marketing Mockups studio already renders device-framed WebP from a live page
 (`stemfra-ops/docs/MARKETING_MOCKUPS.md`), and the tutorial recorder already signs in to the CMS
 headlessly (`scripts/tutorials/`). Store the results as `marketing_assets` slots so the page
