@@ -2404,6 +2404,17 @@ publish only rings the in-app bell, and no account-security event emails an owne
 
 ## P48 — Product menu (what we make vs who it is for) + AI products priced by subscription (Peter, 2026-09-29; menu, Custom and the Stemfra AI button DECIDED the same day; NOT built)
 
+**RELEASE GATE (Peter, 2026-09-30): everything about Stemfra AI on stemfra.com (the two AI
+entries in Products, the "Stemfra AI" navbar button, AI pricing, the AI menu images of P47) is
+HELD until CARD PAYMENT is live.** Reason: Stemfra AI sells subscriptions and balance top-ups,
+which need a card; bank transfer cannot carry them. The items stay documented here and ship
+together on that day. NOT held (no dependency on the AI product): the Products / Solutions
+split for the websites product, Custom as the seventh Solutions entry, the Custom switch on the
+pricing card, the "Websites and booking" menu image. Card options and what is open:
+`docs/STEMFRA_AI_BILLING_INPUT_2026-09.md` section D (Airwallex Payments unapproved, no date;
+a dormant Stripe subscription checkout on Stemfra's own account exists in code; the state of
+the Stripe account is unverified, Peter to read).
+
 **DECIDED by Peter 2026-09-29 (build list, stemfra_client, nothing started):**
 
 1. **Menu**: Products = what Stemfra makes (Websites and booking, AI Front desk, AI Leads);

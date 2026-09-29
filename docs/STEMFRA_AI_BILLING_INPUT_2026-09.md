@@ -5,6 +5,17 @@ object, email or deploy was changed; no secret is printed. The Airwallex API and
 NOT called: every live fact below comes from our own database and from unauthenticated probes
 of api.stemfra.com._
 
+> **ADDENDUM 2026-09-30 (Peter's direction, after reading this paper).** Stemfra AI needs CARD
+> payment: subscriptions and balance top-ups are small, frequent and self-serve, and bank
+> transfer does not carry that. Therefore: (1) the public launch of Stemfra AI on stemfra.com
+> (Products entries, the "Stemfra AI" navbar button, pricing) WAITS for card payment to go
+> live; everything stays documented in ROADMAP P48; (2) the bank-transfer integration in
+> section C is no longer the launch path. It remains valid as the fallback for customers who
+> ask for an invoice (larger plans, companies that pay by transfer) and its defects list still
+> stands for the websites product; (3) the design question moves from "how do we reconcile
+> transfers" to "which card processor, and who is the merchant of record": see section D.
+> Build nothing from section C for the AI launch until that is answered.
+
 Tags: **[code]** code-verified (file:line in `stemfra_server/`) · **[live]** live-verified,
 read-only (database or production probe) · **[docs]** from docs, not re-verified.
 
@@ -244,6 +255,37 @@ resolve a $29 deposit.
   from one hurts the other. A separate subdomain for Stemfra AI mail is cheap insurance.
 - Docker: a new env var goes in `deploy.yml`; the server's compose file reads `.env` and lists
   nothing explicitly (unlike stemfra_ai's).
+
+## D. Card payment: what exists and what is open (added 2026-09-30)
+
+What the code holds today **[code]**:
+- **Airwallex Payments**: not approved (section A3). No consent, mandate or card call in our
+  code. No date.
+- **Stripe, Stemfra as the merchant ("System A")**: `controllers/platformBillingController.js`
+  + `lib/platformBilling.js` create a Stripe Checkout session in subscription mode on Stemfra's
+  OWN Stripe account (monthly fee + a one-time fee on the first invoice), with a customer
+  portal route. `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` and `STRIPE_WEBHOOK_SECRET` are in
+  deploy.yml:159-161. It was written for the old subscription model and is dormant.
+- **What was suspended on 2026-08-05** (COMMISSION_MODEL §2b) was tenant-side online payment in
+  the BOOKING flow and Stripe Connect. That decision says nothing about Stemfra charging its
+  own customers by card.
+
+NOT verified, and only Peter can read it: whether Stemfra's Stripe account is live, verified
+and able to take card payments today; its payout country and bank; any restriction on it.
+
+What a card launch needs, whichever processor:
+1. Card on file at trial start, charged on day 15 without the owner acting (Stripe: a
+   subscription with `trial_period_days`; Airwallex: a payment consent, after approval).
+2. One-click top-up against the saved card, plus opt-in automatic top-up with a monthly
+   ceiling.
+3. Failed-payment handling: retries, a grace period, then pause the agent.
+4. Webhooks as the source of truth for "paid" (with Stripe: `invoice.paid`,
+   `invoice.payment_failed`, `customer.subscription.*`), feeding the AI's existing
+   status-to-paid trigger. No bank reconciliation is involved for card payments.
+5. Tax: Stripe Tax or the Compliance Engine; same LLC either way (section B9).
+6. Refund and dispute handling, and the wording of the automatic renewal at signup.
+
+Open decision for Peter: Stripe now (if the account is healthy) or wait for Airwallex.
 
 ## Docs now out of date
 
