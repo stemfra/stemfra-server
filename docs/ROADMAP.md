@@ -2402,6 +2402,41 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
+## P48 — Product menu (what we make vs who it is for) + AI products priced by subscription (Peter, 2026-09-29; UNDER DISCUSSION, nothing decided)
+
+Peter's direction: Stemfra should be seen as more than websites for six verticals. Products
+would hold Websites and AI; the AI agents (Front desk / AI receptionist first, Leads second: the
+two products the Stemfra AI session is building) get a price each on the pricing page, as
+subscriptions, not commission; Custom builds become a visible door. Research and the six open
+decisions: `docs/research/PRODUCT_MENU_AND_AI_PRICING_2026-09-29.md`. Headline findings: every
+competitor separates features from business types in its menu; every AI agent in the category is
+a subscription with a usage allowance (GlossGenius Reception $50/month for 100 minutes + 200
+texts, Goodcall $79 to $249 per agent, Intercom $0.99 per outcome), none a commission; the
+website price (5%, cap $400, decided 2026-09-17) is a separate question and is NOT reopened by
+this item unless Peter says so. Depends on: feature pages that do not exist yet, P47
+(screenshots), the unit cost of a voice minute (unmeasured).
+
+## P47 — Show the product on stemfra.com: real screenshots of the CMS, the booking flow and the Front desk (Peter, 2026-09-29; recorded, not started)
+
+Peter: "We also need to show CMS demo screenshots like Vagaro did… the booking page and dashboard
+and Front desk." The competitor survey found the same gap: GlossGenius, Booksy, Mindbody and Vagaro
+all show the product within the first two screens of their home page; ours shows none. The new
+hero line promises online booking and an AI receptionist, and nothing on the page shows either.
+
+What to show (real screens of a demo site, never a drawn mock; the numbers on a dashboard shot
+come from the seeded demo data and are labelled as a demo where a figure could read as a claim):
+1. **The booking flow** on a phone: service, person, time, confirmation.
+2. **The CMS dashboard**: bookings today, the 30-day chart, upcoming bookings.
+3. **The Front desk chat** on a tenant site: a question answered, a booking card.
+4. Optional: the setup wizard's listing preview, the Bookings calendar, the Reports page.
+
+How: the CRM's Marketing Mockups studio already renders device-framed WebP from a live page
+(`stemfra-ops/docs/MARKETING_MOCKUPS.md`), and the tutorial recorder already signs in to the CMS
+headlessly (`scripts/tutorials/`). Store the results as `marketing_assets` slots so the page
+hides a surface whose slot is empty. Where: a product band on the home page between the
+"marketplace" paragraph and the catalogue, and on each future product page (P48).
+Context: `docs/research/COMPETITOR_SITES_2026-09-29.md`.
+
 ## P46 — Cookie consent on stemfra.com and the tenant sites (Peter, 2026-09-29; recorded, not started)
 
 Peter noticed that every competitor site opens with a cookie permission banner and asked that it

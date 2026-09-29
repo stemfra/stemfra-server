@@ -93,6 +93,41 @@ Three patterns, all cheaper than a restructure:
   becomes necessary the day a Meta or TikTok pixel or any analytics cookie goes live, which is
   planned. Recorded as ROADMAP P46.
 
+## Card buttons in template catalogues (second pass, 2026-09-29, Peter's question)
+
+Peter asked whether two or three catalogues share a wording for the two card actions, before
+changing our "Preview" and "Start". Verified on each vendor's own page:
+
+| Catalogue | Look at it | Take it | Where the buttons sit |
+|---|---|---|---|
+| Squarespace | "View demo site" | "Start with this design" | On the template's detail page; the card itself shows only the name and is one link |
+| Shopify | "View theme" (card), "View demo" (detail) | "Try theme" | Card + detail |
+| WordPress.com | "Preview demo" | "Get started" | Card |
+| Wix | "View" | "Edit" | Card |
+| **Stemfra** | "Preview" | "Start" | Card |
+
+Not captured: Webflow (the fetch failed), Framer (button text not in the page text).
+
+Reading: for the first action, "demo" appears in three of four and "view" in three of four;
+"preview" in one. For the second action there is NO shared wording: four catalogues, four
+phrases, two of them built on "start". One-word buttons are normal (Wix). So "Preview" and
+"Start" sit inside the range the category uses; the earlier suggestion to rename them was a
+preference, not a finding. Two points stand whatever the wording: the card says "Preview" twice
+(over the image and in the bar), and the ↗ arrow promises a new tab while desktop opens a modal.
+
+## Decisions taken from this survey (Peter, 2026-09-29)
+
+1. Section heading "Ready-made websites for your business."; group headings "<Vertical> websites".
+2. Card title = the theme's name alone. Correction to the table above: Squarespace's names are
+   NOT abstract, they derive from the demo brand (template "Altaloma" shows "Alta Loma", "Laurie"
+   shows "Laurie Payton"); what stops it reading as a directory is the heading above the grid
+   and the short one-word name.
+3. Buttons stay "Preview" and "Start". Device frames: no change.
+4. Words: "website" for what the owner gets, "theme" for the style (CMS), "templates" only where
+   search needs it. There is no statistic comparing how the two words feel; the indirect evidence
+   (agency writing against "template", a 51% give-up rate among people building their own site,
+   All About Cookies survey) supports leading with the finished website.
+
 ## What this does and does not show
 
 It shows how the category presents itself and where Stemfra's offer is distinct. It does not show
