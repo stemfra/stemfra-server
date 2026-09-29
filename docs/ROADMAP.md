@@ -2408,9 +2408,15 @@ publish only rings the in-app bell, and no account-security event emails an owne
 entries in Products, the "Stemfra AI" navbar button, AI pricing, the AI menu images of P47) is
 HELD until CARD PAYMENT is live.** Reason: Stemfra AI sells subscriptions and balance top-ups,
 which need a card; bank transfer cannot carry them. The items stay documented here and ship
-together on that day. NOT held (no dependency on the AI product): the Products / Solutions
-split for the websites product, Custom as the seventh Solutions entry, the Custom switch on the
-pricing card, the "Websites and booking" menu image. Card options and what is open:
+together on that day. **Corrected by Peter the same day: the WHOLE menu change is held too**
+(Products / Solutions split, Custom as the seventh Solutions entry, the menu images): a
+Products menu with only "Websites and booking" in it is not worth shipping alone. **The one
+piece cleared to ship now: the Custom switch on the pricing card.** **Card = Airwallex**
+(Peter, 2026-09-30): Stemfra's Airwallex account manager is working on the Payments approval
+and an update is expected within the week; Stripe is not being pursued. Also OPEN, not
+decided: whether the WEBSITES price stays commission (5%, cap $400) or moves to a
+subscription; discussion in `docs/research/PRODUCT_MENU_AND_AI_PRICING_2026-09-29.md` §6.
+Card options and what is open:
 `docs/STEMFRA_AI_BILLING_INPUT_2026-09.md` section D (Airwallex Payments unapproved, no date;
 a dormant Stripe subscription checkout on Stemfra's own account exists in code; the state of
 the Stripe account is unverified, Peter to read).

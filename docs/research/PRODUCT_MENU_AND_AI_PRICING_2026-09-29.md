@@ -139,6 +139,45 @@ common length among the companies above; none of them offers thirty.
 5. Trial design: length, and card or no card.
 6. Whether the website price is part of this review or stays as decided.
 
+## 6. Websites: commission or subscription? (Peter's open question, 2026-09-30; NOT decided)
+
+Decided since this paper was written: menu = Products / Solutions; Stemfra AI has its own
+subscription pricing (owned by the AI session); everything about Stemfra AI on stemfra.com and
+the whole menu change wait for card payment (Airwallex, update expected within the week); the
+Custom switch on the pricing card may ship now.
+
+What the research says about the WEBSITES product (full table: `PRICING_COMPETITORS.md`):
+
+| For a subscription | For the commission |
+|---|---|
+| Every direct competitor charges one ($20 to $99 entry; Vagaro $30 to $90 by team size) | Nobody else is free to start and free in a dead month; it is our one line no competitor can copy |
+| Revenue is known in advance; profit is "deterministic" (Peter) | Owners never see the mainstream's $250 all-in as a reason to switch; a lower fixed price is not a reason either |
+| No metering, no pre-invoice review, no dispute over which booking counts | A subscription at competitor prices ($30 to $90) earns far less than 5% of a busy shop (cap $400) |
+| Collects by card automatically once card is live | The 2026-09-24 paper found no owner on a call refusing a percentage |
+| A shop with few online bookings still pays | A shop with few online bookings pays almost nothing: revenue depends on adoption we do not control |
+
+Facts that weigh on it:
+- We have no paying customer on either model (all charges in the database are demo or test),
+  so neither model is proven FOR US. The commission has never been collected once.
+- The commission is collected by invoice and bank transfer after the month, from owners who
+  were paid in cash or on their own terminal. Collection risk is the model's weak point, and
+  nothing in code enforces payment (`STEMFRA_AI_BILLING_INPUT_2026-09.md` B5).
+- Card payment changes the balance: a subscription is what a saved card is good at; a
+  variable commission can also be charged to a saved card, which would remove most of the
+  collection risk without changing the model.
+
+Options:
+1. **Keep 5% capped at $400** (decided 2026-09-17) and charge it to a saved card once card is
+   live.
+2. **Two plans** (the 2026-09-24 proposal): Pay as you go (5%, cap $400) beside Flat rate
+   ($399 or $449, 0%).
+3. **Subscription only**, Vagaro-style by team size, with a free trial.
+4. **Hybrid**: a small base fee plus a lower percentage (Owner.com: $249 + 5%).
+
+Recommendation recorded for the discussion: do not decide before card is live and before the
+first ten paying shops; keep option 1 as the default, prepare option 2 as the fallback line on
+calls, and count how often a flat price is asked for.
+
 ## Sources
 
 Verified on the vendor's own page, 2026-09-29:
