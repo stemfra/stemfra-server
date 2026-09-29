@@ -2402,7 +2402,33 @@ publish only rings the in-app bell, and no account-security event emails an owne
 4. Later: billing details changed, domain connected/bought, site unpublished/deleted, team member
    removed. Email verification at signup stays OFF on purpose (free flow, short).
 
-## P48 — Product menu (what we make vs who it is for) + AI products priced by subscription (Peter, 2026-09-29; UNDER DISCUSSION, nothing decided)
+## P48 — Product menu (what we make vs who it is for) + AI products priced by subscription (Peter, 2026-09-29; menu, Custom and the Stemfra AI button DECIDED the same day; NOT built)
+
+**DECIDED by Peter 2026-09-29 (build list, stemfra_client, nothing started):**
+
+1. **Menu**: Products = what Stemfra makes (Websites and booking, AI Front desk, AI Leads);
+   Solutions = who it is for (the six business types + Custom as the seventh). Header today:
+   Home, Pricing, About, FAQ, Contact, Login.
+2. **"Stemfra AI" button in the navbar** (label decided: "Stemfra AI"), set apart on the right
+   the way Vagaro sets "For Business" apart; links to ai.stemfra.com in a NEW TAB so the
+   free-website funnel stays open. The two AI entries in Products link to the same site.
+   NOT "For Business": Vagaro's label switches audience (clients vs owners), ours names a
+   second product for the same audience. No top banner for now.
+   **Gate before it ships**: the Stemfra AI session confirms ai.stemfra.com is ready for cold
+   visitors (what it is, pricing, a sign-up path) and carries a link back to stemfra.com.
+   Checked 2026-09-29: the page is public, title "Stemfra AI: hire the workflow"; its content
+   was not read (browser-rendered).
+3. **Custom** is introduced the way Vagaro introduces multi-location: a two-way switch on the
+   pricing card, the second side replaces the price with a line about custom builds and a
+   contact action (`/contact?interest=custom`, the existing `CustomCard` target).
+4. The websites offer is unchanged, Front desk included. Stemfra AI's embeddable Front desk and
+   Leads carry their OWN pricing, owned by the Stemfra AI session (no 5% there).
+5. Items 1 to 3 ship together as one header + pricing change.
+
+Still open: support bot and internal copilot as products (not until each has a page, a price
+and a way to buy); how the $400 cap applies to an owner with several sites.
+
+Background (as first recorded):
 
 Peter's direction: Stemfra should be seen as more than websites for six verticals. Products
 would hold Websites and AI; the AI agents (Front desk / AI receptionist first, Leads second: the
