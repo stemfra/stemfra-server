@@ -1,5 +1,47 @@
 # Stemfra — Roadmap & Pending Tasks (prioritized)
 
+2026-10-12 local checkpoint: marketing preview committed as d56953ae. Final client build passed with 96 prerendered routes; committed diff whitespace check passed. P48.3 visual refinements saved locally; production release holds unchanged. No push.
+
+2026-10-12 P48.3 homepage refinement DONE locally: Hero CTA shortened to Explore, still linking to #products; browser verified. amber abstract hero installed with separate frosted admin-dashboard backdrop; white trial reverted at Peter request. Previous dark workspace image reused for closing CTA. Homepage requirements wording changed to needs. Browser confirms copy; build passed 96 routes before closing-image/copy edits; final diff check passed. No push.
+
+2026-10-12 P48.3 cinematic hero trial: generated dark workspace background saved as dark-workspace-hero-v1.png, installed as default homepage hero with lower-left copy and no heavy blur. Desktop browser reviewed; build passed 96 routes, diff check passed. User may choose white next. Nothing pushed.
+
+2026-10-12 P48.3 deeper frost preview: homepage background switched to Front Desk v2; glass image blur increased from 25px to 55px with reduced brightness and saturation. Text and outer backdrop treatment preserved. Browser reviewed; diff check passed. Local only, nothing pushed.
+
+2026-10-12 P48.3 darker glass preview: replaced the bright glass sheen with a 42-55% chocolate overlay, retaining the same static image and strong blur. Browser visually checked; diff check passed. Local only, nothing pushed.
+
+2026-10-12 P48.3 hero finish: Peter selected strong frosted glass after reviewing three local options. Homepage defaults to glass; outer frosted backdrop remains, text stays sharp. Alternate local review URLs use ?hero=soft or ?hero=motion. Browser reviewed. No push or release changes.
+
+2026-10-12 P48.3 static homepage hero DONE locally: one office/dashboard background replaces the three-slide rotation; headline Build, subtitle Websites, AI and custom software, single Explore products CTA. Shared hero hides controls and timer for one slide; Websites carousel defaults preserved. Browser reviewed; client build passed with 96 prerendered routes; diff check passed. Nothing pushed.
+
+2026-10-12 P48.3 image fill fix DONE locally: all three homepage collection images use full-panel cover cropping, with a 3:2 stacked mobile frame. Desktop browser verified image and panel heights match at 610px for all three. Homepage wording remains unchanged pending copy review. Nothing pushed.
+
+2026-10-12 P48.3 local homepage refinement DONE: reused Websites carousel and essence components with three-product imagery/copy; removed collection prices and last-panel border. Browser verified carousel control, price-free collection and zero-pixel gap/border before closing CTA. Build passed 96 routes before pointer-event control refinement; diff check passed. Tree concept rejected and remains unused. Nothing pushed.
+
+> **P48.3 homepage simplification ✅ DONE locally 2026-10-12:** Our approach removed; browser verified. Wave/tree brand artwork generated for discussion only. No push.
+
+> **P48.3 image corrections ✅ DONE locally 2026-10-12:** fictional Willow brand, physically supported office iMac with navy/teal dashboard, yoga website visual, no visible concept captions. Browser load and diff checks passed; no push.
+
+> **P48.3 generated homepage imagery ✅ DONE locally 2026-10-12:** Front Desk and admin dashboard concept assets saved with prompts and integrated, labelled illustrative. Browser reviewed; no push.
+
+> **P48.3 homepage collection ✅ DONE locally 2026-10-12 for review:** three equal visual panels replace repeated introductions; short hero and photographic CTA preserved. Software/AI illustrations labelled. Build and desktop checks passed; no push.
+
+> **P48.3 homepage closing styling ✅ DONE locally 2026-10-12:** shared photographic CTA, browser and diff checked. Broader product presentation is proposal only; no release changes.
+
+> **P48.3 footer alignment ✅ DONE locally 2026-10-12:** three current product links replace industry row in local preview; browser destinations and diff check verified. Production gate unchanged.
+
+> **P48.3 Pricing closing CTA ✅ DONE locally 2026-10-12:** reused Websites photographic section with Explore products opening the existing selector. Build (96 routes) and browser checks passed. No push or billing changes.
+
+> **P48.3 combined Pricing refinement ✅ DONE locally 2026-10-12:** three complete production-style white offer cards with translucent chocolate borders, ordered AI → Websites → Custom software with Fixed/Starting qualifiers and heading-only Pricing introduction, with proposed AI starting at $199/month, awaiting review and AI scope/cross-page reconciliation. No billing/release changes.
+
+> **P48.3 marketing preview ✅ DONE locally 2026-10-12 for review:** homepage moved to Websites; FAQ and non-submitting signup copy updated. CMS, legal policies and actual trial/subscription lifecycle remain pending. Company homepage and three-offer Products menu ✅ DONE locally for review; Websites order is Pricing → Solutions → Getting started → shared FAQ. Inline Solutions and removal from local navigation ✅ DONE 2026-10-12. Chocolate pricing surface with white card and full-width section dividers ✅ DONE locally 2026-10-12.
+
+> **P48.2 homepage/card refinement ✅ DONE locally 2026-10-12; P48.3 copy reconciliation in progress.** Approved homepage preview preserves layout and short hero; shared website card expands via View full plan; missing management heading added. Build and browser checks passed, awaiting Peter review. Production/release gates unchanged.
+
+> **P48.2 heading refinement: ✅ DONE locally 2026-10-12, pending Peter review.** Page-name headings, no decorative eyebrows or trailing full stops, separate pricing cards. Build passed (96 routes); browser headings checked.
+
+> **Current priority, Peter confirmed 2026-10-12: P48 revised managed-service plan.** P48.1 copy and $299 approved; P48.2 local page/navigation preview built, awaiting Peter visual review. Preserve the existing design and self-service onboarding. See the dated P48 plan below. Agreement on direction does not activate subscription billing or lift the Airwallex/AI/menu release hold.
+
 > **Local development readiness: ✅ DONE 2026-10-12.** Business identity selected and onboarding committed locally; platform aggregate typecheck passes all seven apps; local API can disable background jobs for marketing preview. No release gate lifted.
 
 > **Codex documentation transition: ✅ DONE 2026-10-12.** See [CODEX_ONBOARDING.md](CODEX_ONBOARDING.md) for local checks and entry points. No product item or release gate changed.
@@ -135,6 +177,8 @@ confirmed, build ⏸ ON HOLD by Peter); no more Apify runs for now, the current 
 called. 🔜 NEXT: P37 custom-build verticals (scope the offer + first scrape), then P32 phase 2
 (needs the P30 service account). Peter began US sales calls 2026-09-11 (Neil's Barbershop call =
 the source of P36, P37 and the transcripts).
+
+**Current order 2026-10-12:** Peter approved the journey-review recommendations and requested a roadmap plan. P48.1 service scope/copy → P48.2 additive local previews → P48.3 journey reconciliation → P48.4 billing/entitlements → P48.5 validation and gated release → P48.6 first-cohort measurement. This takes immediate priority over the older NEXT list; P37/P32 and other unfinished work remain pending. P47 product evidence is integrated into P48.2; no scraping or outreach is authorized by this plan.
 
 ### 🚀 ACTIVE ARC (2026-08-18): LAUNCH — phased, barbershop first → **[`LAUNCH_PLAN.md`](LAUNCH_PLAN.md)**
 Peter's 10 launch tasks (VSL video · 3-contact prospecting sequence · Stacy+routes refresh ·
@@ -2408,6 +2452,45 @@ publish only rings the in-app bell, and no account-security event emails an owne
 
 ## P48 — Product menu (what we make vs who it is for) + AI products priced by subscription (Peter, 2026-09-29; menu, Custom and the Stemfra AI button DECIDED the same day; NOT built)
 
+### Revised plan: managed websites, Custom Software and AI (2026-10-12)
+
+**✅ Peter confirmed 2026-10-12:** agrees with the browser/source journey-review recommendations; requested this phased plan before continuing. The older September design decisions below are historical where they conflict with this plan. Their release hold remains active.
+
+**Outcome:** clearly position a $299/month managed website offer alongside custom software and the separate Stemfra AI product, using the existing premium design, working website catalogue and self-service CMS. Do not rebuild the marketing site or turn onboarding into a required sales meeting.
+
+**✅ Peter confirmed 2026-10-12, commercial baseline:** same existing website offer at $299/month instead of 5% commission; 14 days free; no card required; bank-transfer invoices using the existing Stemfra/Airwallex hybrid. Existing Front Desk, Stacy, routine setup assistance and ongoing content updates stay included. No new arbitrary assisted-edit quota or feature removal. $299 is the working price Peter asked to record; he requested a comparison with $200 before final public copy approval, so willingness to pay remains unvalidated.
+
+Trial starts when the workspace is successfully created, with the end date visible. Before expiry, invite explicit continuation at $299/month; issue the first invoice after that choice, with the paid period beginning on payment confirmation. No automatic card charge or unexpected debt on trial expiry. Recommend a short transfer-processing grace period and 30-day recovery retention; exact durations/operational handling need definition. Renewals invoice in advance. Cancellation stops future renewals and service continues through the paid period; no cancellation fee or required call. Document supported exports, domain ownership/transfer and retention, without promising platform source-code export. Coming-soon features remain labeled as such.
+
+Reuse billing_charges, Airwallex OUT_OF_BAND mirror, branded invoice/reminder/receipt emails, provider PDF with Stemfra PDF fallback, and deposit reconciliation. Verify current reconciliation gates and an authorized payment lifecycle before launch; dated audit findings are not fresh production checks. Preserve invoice-specific payment references because multiple $299 invoices cannot be uniquely matched by amount alone. AI/card/menu release holds remain; website bank-transfer terms do not lift them.
+
+**Preserve:** short hero; Products sidebar; Solutions selector; existing ready-made website previews and starter selection; Contact/Login; CMS setup, editing and Remix; AI homepage design and role-led journey. Customer copy calls the catalogue websites, not empty templates. No new claims of customers, results or integrations without evidence.
+
+| Phase | Status | Deliverable and completion gate |
+|---|---|---|
+| P48.0 Existing journey review | ✅ DONE 2026-10-12 (browser/source review; no implementation commit) | Principal marketing paths, two signup routes, demo-owner CMS setup/editor/Remix/import/billing/support, AI home/role/signup/pricing reviewed. No completed account, booking, payment or AI execution claimed. |
+| P48.1 Define offer and copy | ✅ DONE 2026-10-12: copy and $299 approved; operational billing details tracked in P48.4 | Same offer, $299/month, 14-day trial and bank-transfer invoices recorded. Draft Websites, Custom Software and AI copy for Peter before coding. Final price, scope units and operational details below remain to confirm. Reuse existing FAQ topics. Gate: reviewed scope and copy; no application edits in this phase. |
+| P48.2 Additive local previews | 🔜 NEXT: Peter visual review; local preview built 2026-10-12, uncommitted | Add Websites, Custom Software and AI introduction routes in marketing; reuse existing components and AI presentation. Preview concise navigation labels Websites / Custom Software / AI while retaining access to Products/Solutions, Contact/Login and the current homepage. Incorporate selected real, clearly labeled demo screenshots from P47. Add pricing-summary treatment with accurate units and readiness. Gate: Peter's desktop/mobile browser review of reversible local changes before replacing existing surfaces. No production release. |
+| P48.3 Reconcile the full journey | Pending preview review | Converge homepage and catalogue signup on the chosen CMS journey, preserving starter/claim/attribution context. Align homepage, About, pricing, FAQ, help, signup and CMS wording with self-service plus optional support. Preserve custom enquiry intent through Contact. Resolve coexistence/replacement and domain wording, replace misleading customer/two-tap claims, update stale setup instructions. Investigate the demo calendar observation before diagnosing or fixing availability. Gate: reviewed route/content matrix and browser walkthrough; tests for changed signup/context behavior. |
+| P48.4 Billing and entitlements | Pending final commercial terms and scoped billing design | Audit reusable subscription/cancellation code first. Implement the agreed website subscription, billing start, invoices, payment failures, cancellation/service end, export/retention and optional add-on entitlements across server/CMS. Keep website billing separate from AI credits. Reconcile CRM/business-plan/sales materials with the final offer. Specify transition rules before replacing commission; do not assume demo rows are customers. Gate: lifecycle tests, provider readiness and agreed customer terms; shared-service/schema changes scoped with Peter. |
+| P48.5 Validate and release | Held for existing release gates | Validate approved signup→setup→publish→booking and subscribe→cancel paths using designated test data; check responsive pages, links, route prerendering, pricing consistency and relevant builds/typechecks. Keep external-effect tests separately authorized. Confirm AI is ready for cold visitors and links back. Release only after applicable Airwallex/card gates and explicit push/deployment authorization. Record deployed evidence separately from local checks. |
+| P48.6 Measure first cohort | Pending release | Track website-preview→signup→setup→publish→paid conversion, support minutes per business, assisted-edit demand, gross margin, cancellation reasons and add-on uptake. Use the first paying cohort to adjust packaging; no invented traction or volume targets. |
+
+**P48.1 decision sheet, to make the offer concrete:**
+- Price basis: $299/month is the agreed direction. Define currency, per-site/location coverage, taxes, extra locations and whether a setup fee exists. Use a fixed price rather than “from” if the stated scope is fully covered.
+- Setup: selected working website, business/services/team/branding wizard and existing included assistance. No setup fee. Trial/payment timing follows the confirmed baseline above; clarify supported migration work without quietly reducing the existing offer.
+- Ongoing service: preserve existing included features, owner edits, routine assisted content changes, hosting/SSL, maintenance and product updates. Bound requests by nature and turnaround, not a new arbitrary monthly quota. Bespoke redesign, new functionality and custom integrations are separately scoped; do not promise unlimited staff work.
+- Support: channels, hours/time zone and response target. Distinguish first response from resolution. Keep calls optional and ensure commitments can scale.
+- Cancellation: notice method, end-of-paid-period behavior, refunds, exports, retention/deletion, domain ownership/transfer and hosted-site/code rights. Do not promise portability beyond what can be delivered.
+- Add-ons: existing customer-facing Front Desk remains included, as does Stacy owner assistance. Standalone AI and additional automation can be separate offers; no automatic move of current features behind an add-on. No ElevenLabs implementation, configuration or calls until Peter confirms.
+- Other offers: Peter approved a $10,000 custom-software starting price on 2026-10-12. Local offer and Pricing previews now display it, with final scope and price agreed before development; hosting/maintenance are separately quoted where required. AI pricing sections also added locally. Marketing build passed (96 routes); browser validation pending automatic permission-check recovery. AI remains its own $29/$79/$199 credit product as recorded in its canonical pricing source; a $299 managed automation service would be a separate explicitly scoped offer, not an automatic price replacement.
+
+**Review findings to retain:** CMS provides four-stage setup and live listing preview, page editing and Remix; FAQ already covers setup/changes/support/cancellation. Marketing `/start` differs from CMS starter signup. Pricing coexistence language conflicts with FAQ replacement language. Custom pricing passes `interest=custom` but Contact reads `vertical`. Public demo booking reached the calendar with all October dates disabled for the selected barber; cause and completion were not verified. Screenshots in `/tmp/stemfra-journey-review/` are review evidence, not final production assets.
+
+**Boundaries:** all implementation starts locally; no push, deployment, remote migrations, outreach or charge activation implied. API background jobs remain disabled for local previews. Twilio remains production-only; ElevenLabs remains on hold. AI and Platform stay independent products/repositories; preserve AI milestone and card-payment gates. Root workspace docs remain unversioned.
+
+### September decisions and standing release gate
+
 **RELEASE GATE (Peter, 2026-09-30): everything about Stemfra AI on stemfra.com (the two AI
 entries in Products, the "Stemfra AI" navbar button, AI pricing, the AI menu images of P47) is
 HELD until CARD PAYMENT is live.** Reason: Stemfra AI sells subscriptions and balance top-ups,
@@ -2464,6 +2547,8 @@ this item unless Peter says so. Depends on: feature pages that do not exist yet,
 (screenshots), the unit cost of a voice minute (unmeasured).
 
 ## P47 — Show the product on stemfra.com: real screenshots of the CMS, the booking flow and the Front desk (Peter, 2026-09-29; recorded, not started)
+
+**🔜 NEXT within P48.2 (2026-10-12):** reuse the journey-review captures as references, then prepare selected labeled demo screenshots for the approved page previews. Final assets and insertion are not done. The older menu arrangement below is subject to P48's October preview review; AI release restrictions remain.
 
 Peter: "We also need to show CMS demo screenshots like Vagaro did… the booking page and dashboard
 and Front desk." The competitor survey found the same gap: GlossGenius, Booksy, Mindbody and Vagaro

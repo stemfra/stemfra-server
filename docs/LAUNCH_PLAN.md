@@ -1,5 +1,7 @@
 # Stemfra Launch Plan (phased, barbershop first)
 
+> **2026-10-12 planning update:** the immediate work is the revised [ROADMAP P48 plan](ROADMAP.md#revised-plan-managed-websites-custom-software-and-ai-2026-10-12): $299 service scope/copy, additive local previews, journey reconciliation, billing, then gated validation/release. Historical commission-era launch steps below are evidence from their dates and must be reconciled in P48.4/P48.5 before reuse. No launch switches, outreach, payment activation or release holds changed today. ElevenLabs work remains on hold until Peter confirms.
+
 _Created 2026-08-18 from Peter's launch plan. This is the ACTIVE launch arc. Phase 1
 = barbershops (100-lead test run this week), then vertical by vertical. Status marks
 are updated as items ship. Companion docs: ROADMAP.md (backlog), OUTREACH.md
