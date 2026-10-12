@@ -40,6 +40,8 @@ Loads `.env` via `require('dotenv').config()` at the top of `index.js`. If you r
 
 Peter previews the customer CMS in his own browser; this server backs that preview. When Peter has the CMS open, he often runs `stemfra_server` in his own terminal. **If port 4000 is already in use, don't start a second instance.** Edit files in place and let nodemon reload, then `curl` against the running instance.
 
+For local UI work against shared data, start with `BACKGROUND_JOBS_ENABLED=false npm run dev`. This skips all jobs scheduled by the listen callback, including lead-gen batch resume; HTTP endpoints remain active. The default startup behavior is unchanged. Never exercise Twilio from the local API.
+
 ## Environment variables
 
 Full list lives in `.env.example` (committed as documentation only — never put real secrets there). Grouped by purpose:

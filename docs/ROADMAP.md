@@ -1,5 +1,7 @@
 # Stemfra — Roadmap & Pending Tasks (prioritized)
 
+> **Local development readiness: ✅ DONE 2026-10-12.** Business identity selected and onboarding committed locally; platform aggregate typecheck passes all seven apps; local API can disable background jobs for marketing preview. No release gate lifted.
+
 > **Codex documentation transition: ✅ DONE 2026-10-12.** See [CODEX_ONBOARDING.md](CODEX_ONBOARDING.md) for local checks and entry points. No product item or release gate changed.
 
 _Updated 2026-07-29 (full-project audit pass). Single cross-repo source of truth.

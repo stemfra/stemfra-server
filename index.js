@@ -243,6 +243,11 @@ const server = http.createServer(app);
 attachVoiceRelay(server);
 server.listen(PORT, () => {
   console.log(`✓ STEMfra server running on http://localhost:${PORT}`);
+  // Local UI work can use the API without scheduling jobs against shared data.
+  if (process.env.BACKGROUND_JOBS_ENABLED === 'false') {
+    console.log('• Background jobs disabled (BACKGROUND_JOBS_ENABLED=false)');
+    return;
+  }
   // Flip stale user_presence rows to offline once a minute. Browsers don't
   // reliably fire the offline beacon on tab close, so this is the fallback.
   startStalePresenceSweeper();

@@ -10,7 +10,7 @@ The workspace root is not a Git repository. Inspected the shared handoff, docs h
 - **stemfra_platform**: npm workspaces, React/TypeScript CMS and six active vertical template families; shared `site-data` and `archetypes`, theme tokens and variant registry; tenant-router Worker and edge rendering code. `primitives` and `integrations` remain stubs; gyms has only a package manifest. Browser Supabase access is part of this project's architecture, unlike an API-only browser architecture used in some other projects.
 - **stemfra-ops**: React JSX staff CRM with an OS shell, leads, calls, billing and platform administration. Existing lint is a missing-symbol crash guard. Preserve active-staff checks and server role boundaries.
 - **stemfra_client**: React/Vite marketing, Claim funnel, templates gallery and Help Center. Build produces client assets, SSR and prerendered public routes.
-- **stemfra_business**: React/TypeScript business plans, versioned content, pitch decks and export tools. The Master Plan and Envest routes exist despite older placeholder claims. Identity is unresolved; its prepared AGENTS.md is not committed.
+- **stemfra_business**: React/TypeScript business plans, versioned content, pitch decks and export tools. The Master Plan and Envest routes exist despite older placeholder claims. Identity resolved by Peter on 2026-10-12: same as server; onboarding committed locally as df6a76b.
 - **stemfra_ai**: separate product/session, intentionally not edited or executed. Its runtime needs its own scoped onboarding. Reference repositories, inference, test_agent, assets and n8n exports were not audited or transitioned.
 
 ## Git evidence before transition commits
@@ -27,9 +27,9 @@ All five application repositories are on main. Four established repositories use
 
 Read-only SSH greetings verified both accounts. `git ls-remote` checked all advertised heads and pull refs on the four origins; main is the only advertised branch in each. Client advertises pull ref 1 at e0605d3. A pull ref does not establish open/closed PR status. GitHub CLI is unauthenticated, so PR state/review details were not checked. Remote main hashes match cached origin/main; recent local history and unpublished commits were inspected. No fetch, push or deploy was performed.
 
-Business has no explicit user.name/user.email and past commits use a machine-local email. Ask Peter for its intended commit identity and repository owner before configuring/committing. Do not initialize the workspace root without a repository decision.
+Business initially had no explicit user.name/user.email. Peter selected the server identity on 2026-10-12: repository-local Peter Okeme <peter.space.io@gmail.com>, GitHub stemfra-admin. No remote created. Workspace documents remain unversioned by explicit decision.
 
-Existing work preserved: platform `docs/CMS_TUTORIAL_VIDEOS.md` (22 changed lines), plus all pre-existing local commits. Root AGENTS.md, handoff and docs hub are outside Git. Only explicit onboarding paths are staged in the four established repositories.
+Existing work preserved: platform `docs/CMS_TUTORIAL_VIDEOS.md` (22 changed lines), plus all pre-existing local commits. Root AGENTS.md, handoff and docs hub remain outside Git by Peter's decision. Only explicit onboarding paths are staged in the four established repositories.
 
 ## Fresh verification
 
@@ -46,7 +46,7 @@ Credential presence only was inspected in server `.env`: Supabase URL, secret ke
 
 1. Root `.claude/settings.json` names COMMISSION_MODEL as the active arc; the later handoff/roadmap names LAUNCH_PLAN. Codex instructions follow the later documented order and task-specific roadmap item.
 2. Platform guidance opens with four templates and setup/monthly pricing, while the workspace contains six active families and later commission/pricing decisions. Use the dated roadmap for product decisions; P48 holds the whole menu and AI promotion until Airwallex card payment is live. Only the Custom pricing switch is separately cleared. This transition does not lift any hold.
-3. Root platform `npm run typecheck` invokes `tsc --build`, but no root tsconfig.json exists. CMS's own typecheck passes. A working aggregate verification command is a good first development task; verify all intended workspaces before changing its contract.
+3. **Fixed 2026-10-12:** platform `npm run typecheck` now delegates to workspace typecheck scripts with `--workspaces --if-present`. CMS and all six active templates passed. The standalone tenant-router Worker is outside npm workspaces and retains its own check; placeholders without scripts are skipped.
 4. The hub describes reconciliation as not built, but index.js mounts recon endpoints/webhooks and lib/reconSweeper.js implements gated scheduling. Code existence does not establish production enablement. Older launch rows similarly conflict with later dated completion entries.
 5. Business guidance simultaneously describes DB persistence and says no persistence, and lists Master Plan as unbuilt despite its implemented route. The current onboarding assessment flags these rather than rewriting unrelated historical records.
 6. Platform guidance records pending booking write-side validation/rate-limit work; CRM guidance records role-scoped RLS hardening. These are investigation candidates, not freshly verified security findings or authorization to change production. A migration filename alone does not prove application.
@@ -61,3 +61,7 @@ Existing CLAUDE.md files stay compatible and remain shared references. New per-r
 - **Memory**: Claude private conversations and automatic memory were not imported. Do not write personal memory as a side effect of onboarding.
 
 Next: fix the aggregate platform check and reconcile the status headings relevant to the next chosen arc, then perform a visible local UI baseline with background jobs controlled. Keep P48 and all external-service changes gated by the existing user decisions.
+
+## Follow-up: local marketing development (2026-10-12)
+
+Business onboarding committed as `df6a76b` with the authorized server identity. Workspace documents stay unversioned. Platform aggregate typecheck passed all seven apps. API `index.js` now supports `BACKGROUND_JOBS_ENABLED=false` to skip the entire listen-callback job startup, including lead-gen resume; default behavior is unchanged. Launched API on :4000 with that flag and marketing Vite on :5173 with `VITE_API_URL=http://localhost:4000`. Marketing homepage visually verified in the in-app browser. Nothing pushed. Existing business export type errors remain outside this repair.
