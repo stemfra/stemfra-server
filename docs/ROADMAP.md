@@ -1,5 +1,7 @@
 # Stemfra — Roadmap & Pending Tasks (prioritized)
 
+> **Codex documentation transition: ✅ DONE 2026-10-12.** See [CODEX_ONBOARDING.md](CODEX_ONBOARDING.md) for local checks and entry points. No product item or release gate changed.
+
 _Updated 2026-07-29 (full-project audit pass). Single cross-repo source of truth.
 The order below IS the recommended build sequence. Per-feature detail lives in the
 linked docs; this is "what's next and why."_
