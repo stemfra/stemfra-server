@@ -17,7 +17,7 @@ try { ({ fireSpeedToLead } = require('../routes/speedToLead')); } catch { /* opt
 
 const CONCIERGE_N8N_URL = process.env.CONCIERGE_N8N_URL;
 const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;
-const CONCIERGE_MODEL = process.env.CONCIERGE_MODEL || 'gpt-4o';
+const CONCIERGE_MODEL = process.env.CONCIERGE_MODEL || 'gpt-6-luna';
 // Transport flag (2026-09-02, the Stacy native pattern): 'native' calls OpenAI
 // directly via lib/conciergeBrain.js; anything else keeps the n8n webhook.
 const CONCIERGE_MODE = process.env.CONCIERGE_MODE === 'native' ? 'native' : 'n8n';

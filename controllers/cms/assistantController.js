@@ -34,7 +34,7 @@ function stacyRateLimited(key, limit = 20, windowMs = 60_000) {
 
 const STACY_N8N_URL = process.env.STACY_N8N_URL;          // public n8n Stacy webhook
 const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;        // sent as x-leadgen-secret (server→n8n convention)
-const STACY_MODEL = process.env.STACY_MODEL || 'gpt-4o';  // per-conversation default; provider-switchable in n8n
+const STACY_MODEL = process.env.STACY_MODEL || 'gpt-6-luna';  // per-conversation default; provider-switchable in n8n
 // Transport flag (2026-09-02): 'native' calls OpenAI directly via
 // lib/stacyBrain.js (API-enforced JSON, no Parse-node drift); anything else
 // keeps the n8n webhook. Default stays n8n until Peter blesses native.

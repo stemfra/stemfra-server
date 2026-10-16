@@ -27,7 +27,7 @@ const ALLOWED_CHAT = ['live', 'previewing'];
 
 const FRONTDESK_N8N_URL = process.env.FRONTDESK_N8N_URL;
 const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;
-const FRONTDESK_MODEL = process.env.FRONTDESK_MODEL || 'gpt-4o';
+const FRONTDESK_MODEL = process.env.FRONTDESK_MODEL || 'gpt-6-luna';
 // Transport flag (2026-09-02, the Stacy native pattern): 'native' calls OpenAI
 // directly via lib/frontdeskBrain.js; anything else keeps the n8n webhook.
 const FRONTDESK_MODE = process.env.FRONTDESK_MODE === 'native' ? 'native' : 'n8n';

@@ -340,9 +340,9 @@ async function classify(siteId, rawRows) {
 // (Plan of record: stemfra_platform/docs/ANALYTICS_AND_IMPORTS_PLAN.md.)
 // The LLM only ever makes the MAPPING DECISION — it sees headers plus a few
 // MASKED sample values, never the dataset; plain code transforms every row.
-const OpenAI = require('openai');
+const OpenAI = require('../../lib/openaiClient');
 const importAi = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
-const IMPORT_MAP_MODEL = process.env.IMPORT_MAP_MODEL || 'gpt-4o-mini';
+const IMPORT_MAP_MODEL = process.env.IMPORT_MAP_MODEL || 'gpt-6-luna';
 
 const IMPORT_FIELD_KEYS = ['firstName', 'lastName', 'fullName', 'email', 'phone', 'birthdate', 'tags', 'notes', 'smsOptIn', 'emailOptOut', 'emailOptIn', 'blocked'];
 

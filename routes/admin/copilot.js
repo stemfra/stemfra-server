@@ -4,13 +4,13 @@
 // click, persisted per-staff conversations with rename/delete/rewind.
 // OpenAI direct per the back-office drafting standard.
 const express = require('express');
-const OpenAI = require('openai');
+const OpenAI = require('../../lib/openaiClient');
 const supabase = require('../../config/supabase');
 const { requireStaffAuth } = require('../../middleware/staffAuth');
 const { buildCrmCopilotContext } = require('../../lib/crmCopilotContext');
 
 const router = express.Router();
-const MODEL = process.env.COPILOT_MODEL || process.env.LEADGEN_MODEL || 'gpt-4o';
+const MODEL = process.env.COPILOT_MODEL || process.env.LEADGEN_MODEL || 'gpt-6-luna';
 const client = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 const MAX_STORED = 60;
 

@@ -1,0 +1,33 @@
+{
+  "product_name": "{{agreed_project_name}}",
+  "description": "{{agreed_phase_label}}",
+  "customer": {
+    "legal_name": "{{customer_legal_name}}",
+    "email": "{{confirmed_billing_email_if_required}}",
+    "address": "{{billing_address_with_department_on_separate_line}}"
+  },
+  "procurement_notes": {
+    "purchase_order": null,
+    "fund": null,
+    "department": null,
+    "project_code": null
+  },
+  "currency": "{{invoice_currency}}",
+  "amount": "{{agreed_invoice_amount}}",
+  "collection_method": "OUT_OF_BAND",
+  "bank_details": "Resolve and validate the receiving account for the invoice currency. Never fall back to another currency.",
+  "tax": "Determine for the actual transaction before issuing; the sample is not a tax determination.",
+  "payment_memo": "Use the approved currency-specific bank block in the invoice standard. Do not reuse another currency account.",
+  "footer": "Please reference the invoice number when making payment.\nBilling enquiries: billing@stemfra.com",
+  "review_workflow": "Keep review invoices DRAFT. API preview is subscription-oriented; if no draft PDF is available, provide a clearly identified local layout preview. Do not finalize without explicit approval.",
+  "amount_breakdown": [
+    "Amount (excl. tax), when tax applies",
+    "Tax (applicable rate), when tax applies",
+    "Total (incl. tax), or Total for untaxed invoices"
+  ],
+  "standard": "../../../docs/INVOICE_STANDARDS.md",
+  "custom_pdf_due_date_visible": false,
+  "underlying_due_date": "Use agreed payment terms; hide display only in custom PDF.",
+  "layout_reference": "../../../invoices/mcMaster/INV-CS-20261013-04-CAD-tax-branded-sample-v1.pdf",
+  "status": "Approved content/layout specification; not a production renderer"
+}

@@ -66,7 +66,7 @@ const parse = (raw) => { if (!raw) return null; if (typeof raw === 'object') ret
   }
   // 2. judge the rest again (no draft), 4 at a time
   const system = native.systemPrompt();
-  const OpenAI = require('openai'); const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const OpenAI = require('../lib/openaiClient'); const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const REJECTS = ['chain', 'wrong_vertical', 'outside_market', 'closed', 'not_end_client'];
   let next = 0;
   await Promise.all(Array.from({ length: 4 }, async () => {
@@ -76,7 +76,7 @@ const parse = (raw) => { if (!raw) return null; if (typeof raw === 'object') ret
         const user = ['signal_source: google_maps', 'raw_signal:', x.c.raw_signal, '', `business_name: ${x.c.business_name}`, `phone: ${x.c.phone}`, `email: ${x.c.email}`, `website: ${x.c.website}`, `city: ${x.c.city}`,
           `digital_readiness: ${x.c.readiness}`, `review_count: ${x.c.review_count}`, `rating: ${x.c.rating}`, `trait_volume: ${x.c.trait_volume} (computed, copy it)`,
           `booking_platform: ${x.c.booking_platform || 'none'}`, `run_country: ${x.l.phone_country || 'US'}`].join('\n');
-        const r = await openai.chat.completions.create({ model: process.env.LEADGEN_QUALIFY_MODEL || 'gpt-4o-mini', temperature: 0.2, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] });
+        const r = await openai.chat.completions.create({ model: process.env.LEADGEN_QUALIFY_MODEL || 'gpt-6-luna', temperature: 0.2, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] });
         const ai = JSON.parse(r.choices[0].message.content || '{}');
         const reason = REJECTS.includes(ai.reject_reason) ? ai.reject_reason : null;
         const score = Math.min(Number(ai.lead_score) || 0, x.c.trait_volume + 1);

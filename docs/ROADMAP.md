@@ -1,4 +1,262 @@
+## 2026-10-16: Concise McMaster proposal and two-attachment email
+
+Created McMaster-Nnerve-proposal-review-v4.docx as a one-page commercial proposal referring to unchanged Nnerve-project-scope-and-pricing.xlsx for detailed scope and exclusions. Exact Development/Delivery milestone headings and CAD 5,000 commencement/final acceptance retained. Key acceptance, commercial and pending ownership/support/tax/procurement terms retained. Email review-email-v4.txt introduces proposal and spreadsheet only, invites feedback before commercial invoice; removed earlier invoice-attachment claim. One-page DOCX rendered and visually checked. No send or invoice action.
+
+## 2026-10-16: Nnerve scope workbook and exact milestone headings
+
+Created outputs/mcmaster-nnerve/Nnerve-project-scope-and-pricing.xlsx by importing FreshAir Sampler SOP_Helmsley.xlsx and retaining single-sheet arrangement, widths, merges, row heights and visual formatting. Replaced content with Nnerve review scope, exclusions, verified repository technology and CAD 10,000 with two 5,000 milestones. Timeline and ongoing services remain unagreed. Rendered all populated sections and verified cached totals, merges, widths and no formula errors. Proposal review v3 and email v3 use exact requested headings 1st Milestone: Development and 2nd Milestone: Delivery; DOCX all three pages visually checked. Nothing sent or issued; previous drafts retained.
+
+## 2026-10-16: McMaster proposal Development and Delivery revision
+
+Created proposals/mcmaster/McMaster-Nnerve-proposal-review-v2.docx and review-email-v2.txt. Replaces Design-only phase with Development, then Delivery; interface design remains included within development. Explicit working-platform and acceptance/handover deliverables, eight-row included-features table and separate future-additions section. CAD 10,000 unchanged: CAD 5,000 at commencement and CAD 5,000 on final acceptance, not on entering phase 2. Removed instalment wording from new deliverables. Three-page render visually checked; text/table/payment checks passed. Prior drafts preserved. No invoice created/changed or email sent. Future review invoice must say Phase 1: Development; old voided/tax samples are not payable attachments. Email attachment wording requires a matching review invoice before use. Schedule, ownership, ongoing services, tax and procurement details remain for agreement. Paid activation holds unchanged.
+
+## 2026-10-16: Nnerve McMaster proposal review draft
+
+Peter clarified this is Nnerve itself, already under unpaid development, now proposed for a paid engagement to complete delivery. Confirmed CAD 10,000 total: CAD 5,000 at commencement and CAD 5,000 on final acceptance. Created proposals/mcmaster/McMaster-Nnerve-proposal-review-v1.docx and review-email-v1.txt. Client draft presents complete procurement scope without claiming no earlier work exists. Two phases Design and Development/testing/handover; core scope and future additions separated. Included/excluded details remain review proposals, not client acceptance. Dates, ownership, operating costs, support, tax and PO pending agreement. Three-page Word document rendered and all pages inspected after removing inherited title border. Email remains unsent with contact placeholder; attachment wording anticipates a separately prepared review invoice. Existing voided/tax-layout samples must not be sent as payable invoices. No new invoice or provider action.
+
+## 2026-10-16: McMaster phases reviewed before proposal
+
+Read Nnerve SESSION_HANDOFF, REQUIREMENTS and ROADMAP as reference, not fresh runtime verification. Existing scope covers candidate/professor/admin, ATS/intake/CCV, scoring, interviews/assessment/video and messaging, with advanced features and hardening still documented as unfinished. Existing invoice history records two 5,000 instalments; CAD and USD are comparison variants, not proof of signed currency or payment triggers. Recommended discussion structure: two commercial phases, Design and Development/testing/handover, with delivery checkpoints underneath. No proposal drafted or scope exclusions agreed. Added possible McMaster PO field and explicitly unverified supplied tax/procurement claims to invoice docs; PDFs/provider untouched.
+
+## 2026-10-16: Invoice standards register approved
+
+Peter approved the custom software layout, separate from CMS style. Added docs/INVOICE_STANDARDS.md mapping CMS, CRM Billing, separate CRM Accounting records, AI printable invoices, tenant/provider invoices, supplier documents and other charge triggers. Source inspection only, no runtime or live changes. Updated stale custom-software JSON wording/footer to approved project/phase format. CAD test void is user-reported, not re-verified. Paid activation holds unchanged.
+
+## 2026-10-16: Local CAD tax sample
+
+Peter reports CAD INV-CS-20261016-02 voided manually; not API-verified, and no API calls authorized for this task. Created invoices/mcMaster/INV-CS-20261013-04-CAD-tax-branded-sample-v1.pdf from approved layout using source invoices/INV-CS-20261013-04_plus_tax.pdf: source number/date and exact hyperlink, CAD 5,000 excl tax, 13% / CAD 650, total CAD 5,650. Current approved two-line product and department address retained, customer email omitted. Logo moved left 1.5pt (2 CSS px) from prior v3. Tax columns and subtotal/tax/total replace former untaxed table. Render inspected, one page, text/tax/link checks passed, no due display. Local presentation sample only, no invoice issued/sent, no tax applicability determination or live link verification. Source old description/address differ by intentional approved presentation updates. Paid activation holds unchanged.
+
+## 2026-10-16: CAD logo spacing review v3
+
+Created invoices/mcMaster/INV-CS-20261016-02-CAD-branded-review-v3.pdf. Moved logo 12.375 points right so visible mark-to-text gap is approximately 4.73 points, matching Stemfra/LLC word spacing. Render inspected; one-page/content/link checks passed. All other approved layout preserved. Legal name remains McMaster University; department remains address, separate lines on custom PDF. User screenshot of existing Airwallex invoice still displays customer email despite reported customer-record removal; no provider update inferred or performed. Nothing sent; activation hold unchanged.
+
+## 2026-10-16: CAD logo review v2
+
+Created invoices/mcMaster/INV-CS-20261016-02-CAD-branded-review-v2.pdf from approved v1. Added exact stemfra_client/public/stemfra_logo.png referenced by marketing index.html beside top-right Stemfra LLC. Removed McMaster email per Peter's reported customer update; retained separate department/street lines and all other layout. One-page render inspected; amount, hidden due date, billing contact and hosted hyperlink verified. Original files preserved. Local PDF only, no Airwallex mutation/send; prior CAD finalized/unpaid state not re-queried. Paid activation remains held.
+
+## 2026-10-16: USD voided, CAD comparison finalized and custom template preserved
+
+At Peter's explicit request, USD INV-CS-20261016-01 / inv_sgpdnj9f9hn9h2sxi3h voided via API and retrieved VOIDED/UNPAID. Created CAD INV-CS-20261016-02 / inv_sgpdd4sszhn9hq0qmq2, CAD 5,000, tax 0, finalized with due_at 2026-11-16T23:59:59+0000. CAD remains FINALIZED/UNPAID; no send/payment call. Automatic emails OFF confirmed by Peter earlier in session. CAD uses existing McMaster customer and project product, separate Phase 1: Design line description, CAD bank and Interac instructions. Recovery: output/invoices/custom-software-cad-20261016-state.json (private, signed links).
+
+Official PDF invoices/mcMaster/INV-CS-20261016-02-CAD-airwallex.pdf downloaded/rendered/checked. Custom invoices/mcMaster/INV-CS-20261016-02-CAD-branded-review-v1.pdf was made by cloning supplied CAD final-review-v3 PDF resources/content, replacing ONLY three invoice/reference strings, invoice date and exact matching hosted hyperlink. Source layout/fonts/positions preserved, no due display, separate department line, table before bank, bordered footer. One page text/link checks and rendered inspection passed. User screenshots show provider output; present custom PDF prominently to avoid confusion. Originals untouched. CAD not voided yet; tax/proposal future work and AI activation holds remain.
+
+## 2026-10-16: USD comparison finalized, custom PDF hides due date
+
+Peter approved one calendar month after current date as Airwallex due date, hidden only on custom PDF. Updated existing INV-CS-20261016-01 / inv_sgpdnj9f9hn9h2sxi3h to due_at 2026-11-16T23:59:59+0000 and finalized through API. GET confirmed FINALIZED, USD 5,000. Automatic invoice emails OFF confirmed by Peter; no send/payment/void endpoint called. Invoice remains outstanding for later requested void. Do not treat it as voided or paid.
+
+Downloaded official invoices/mcMaster/INV-CS-20261016-01-USD-airwallex.pdf. Official one-page PDF visibly shows Chemistry Department flattened alongside street, and the separate line description Phase 1: Design correctly below Academic recruitment platform. This corrects historical inference that no description renders: line_items.description works; price.description was the wrong field. Custom invoices/mcMaster/INV-CS-20261016-01-USD-branded-review-v1.pdf preserves approved v3 layout, updates date/number/reference and exact current hosted link, puts department on own line, omits due-date display. Both rendered and visually checked; custom text checks verify one page and no due-date/due-on wording, matching hyperlink. Original PDFs preserved. Invoice date now 16 Oct 2026. Recovery state output/invoices/custom-software-usd-no-due-20261016-state.json contains provider response and signed URLs, private. CAD/tax/proposal follow-ups pending. AI paid activation unchanged/held.
+
+## 2026-10-16: Airwallex rejects finalization without due date
+
+Peter confirmed automatic invoice emails OFF and authorized completing the USD comparison via API. Finalization of INV-CS-20261016-01 / inv_sgpdnj9f9hn9h2sxi3h returned HTTP 400: either due_at or days_until_due must be provided. Subsequent GET verified DRAFT / UNPAID, USD 5,000, no due fields and no PDF. No date substituted, email/send/payment/void call made. Draft creation supports omission but finalization does not in this live account/API. Customer Chemistry Department and separate Phase 1: Design line description remain saved. User decision needed on an actual due date/payment term before generating the provider PDF; a locally branded PDF can omit display but cannot remove underlying Airwallex terms. Do not retry finalization with invented terms. Void later remains requested, but currently draft lifecycle applies. Recovery state: output/invoices/custom-software-usd-no-due-20261016-state.json. AI paid activation unchanged/held.
+
+## 2026-10-16: USD comparison draft populated after explicit approval
+
+Peter explicitly approved the shared McMaster address update and new product. API verified Chemistry Department in customer street address, new product Academic recruitment platform (prd_sgpdwnkzthn9hdf0fjj), separate invoice-line description Phase 1: Design, quantity 1, USD 5,000, tax 0. INV-CS-20261016-01 / inv_sgpdnj9f9hn9h2sxi3h remains DRAFT; due_at and days_until_due absent; no PDF yet. No send, finalize, payment or void call. Prior approval-review blocker resolved by explicit user authorization. Separate line_items.description is supported and was used, unlike historical price.description; final PDF rendering still unverified. Pending confirmation that Airwallex automatic invoice emails remain OFF before finalization. User asked to void later, not now. Recovery state remains output/invoices/custom-software-usd-no-due-20261016-state.json. CAD/tax/proposal and AI activation holds unchanged.
+
+## 2026-10-16: USD no-due-date API comparison draft, incomplete
+
+Peter authorized creating a USD 5,000 comparison invoice through the existing Airwallex API, no customer send, void later. Retrieved previous inv_sgpdtxfmqhn6eply66d as VOIDED. Created INV-CS-20261016-01 / inv_sgpdnj9f9hn9h2sxi3h as DRAFT with both due_at and days_until_due omitted; neither field returned. No lines added yet, so current draft total is zero, not a completed USD 5,000 invoice. No finalization, send, payment or void performed. Recovery request/payload/response saved in output/invoices/custom-software-usd-no-due-20261016-state.json (private operational artifact).
+
+Completion script was rejected by automatic approval review before execution because it also updated the shared customer's Chemistry Department address and created a new two-line product; those side effects need explicit approval. Existing product has superseded instalment wording. Do not retry that script without authorization. Provider email settings were OFF historically but not freshly verified; verify suppression before finalization. A draft with omitted due fields does not establish final PDF behavior. Latest invoice presentation guide is invoices/codex-invoice-instructions.txt with supplied v3 PDFs. CAD/tax/proposal work remains pending. AI paid activation remains held.
+
+## 2026-10-15: Marketing SEO alignment started alongside AI email reuse
+
+Peter authorized existing-page SEO updates without an additional copy-review gate, alongside ongoing AI work. No blog work, push or deployment. Marketing shared metadata now describes Websites, Custom Software and AI; Organization description follows that same source. Added distinct metadata for the three existing product preview routes and broadened About/Contact descriptions. Company homepage now uses the shared registry instead of a divergent runtime override. Existing product preview sitemap exclusion and release restrictions remain. Full marketing build passed: 96 prerendered routes, zero head-only fallbacks, existing chunk-size warning. Inspected generated Home/About/Contact titles/descriptions. Full visible content reconciliation, product OG images, release-time route registration and production indexing verification remain open.
+
+Email reference inspection: CRM ReplyBox has Tiptap, AI suggestion/refinement, signature, attachments and Gmail-thread reply; Helen EmailComposerModal explicitly ports CRM's editor to SMTP with replyToMessageId. AI ProspectEmail already has drafting/refinement, saved drafts, selected mailbox, review and idempotent send, so do not rebuild those. Its current body remains plain text; rich formatting/attachment contracts and mailbox-aware ingestion need further dependency review before adapting reference components. CMS reference paths identified: stemfra_cms/src/lib/useSiteEmail.ts and useEmailConnector.ts. No new mail operation or transport test. Live email verification remains paused.
+
+## Contact intake and CRM product alignment (2026-10-14)
+
+**Status: planned; begin after marketing website updates are finished, per Peter.** Current findings are from scoped local source inspection; no remote records queried, test enquiries submitted, emails/Twilio sent or deployed behaviour verified. No application fixes applied yet.
+
+### Agreed contact-form direction
+
+Primary selector: General enquiry, Websites, Custom software, AI. Selecting Websites reveals a separate website-type selector using existing verticals, with labels such as Barbershop, Salon, CrossFit, Yoga, Massage studio and Day spa; omit the redundant website suffix. Preserve existing vertical deep links and support interest=custom/ai preselection. Hide website-specific fields for other products. Switching product must not leave a website vertical attached to a software or AI enquiry.
+
+Display labels and stored values must be decoupled. Update frontend and server validation together, retain legacy subjects for older clients, and map product/vertical consistently into CRM records. Peter proposed this hierarchy on 2026-10-14; exact field/storage design remains to be reviewed before implementation.
+
+### Findings to resolve
+
+1. Contact.jsx only reads vertical query; custom/AI interest links open General. Subject options currently General plus website verticals; server has a fixed allowlist with legacy Software Development and AI Automation names.
+2. Contact API writes leads directly. Its 30-day email-only dedup updates service on an existing open lead and can retain a previous website vertical. Preserve individual enquiry product/message/source history while linking to shared contact identity; define repeat-enquiry semantics first.
+3. CRM taxonomy differs across API, lead editor (website/custom_build), and deals (software_development/ai_automation). Establish mappings without discarding legacy records.
+4. Lead-to-deal conversion hardcodes a website title, service_type=other and annualValue; preserve product, currency and appropriate revenue model.
+5. Lead valuation and editor retain website commission assumptions rather than current managed subscription, custom project fees and standalone AI recurring/usage terms. Reconcile forecasts, cards, filters, quotes and reporting with approved commercial terms.
+6. Existing projects/tasks/milestones, quotes/proposals and accounting are reusable. Verify and fill enquiry-to-deal-to-delivery links for custom software. A CRM-to-standalone-AI workspace/subscription lifecycle was not established in inspected paths; historical AI-local leads are not proof of an ops CRM bridge. Keep separate project/database boundaries.
+7. Contact submissions still invoke the n8n speed-to-lead hook, independently of native Front Desk. Inspect current deployed configuration and product-specific routing before modifying follow-up; do not exercise Twilio locally.
+8. Notification failure can return500 after persistence; mailer false results can still be marked sent. Separate accepted enquiry from notification delivery, correct flags/retry behaviour and avoid misleading retry UX.
+9. Security priority: GET /api/contact has no staff guard in inspected route/mount and selects website-source leads using the server Supabase client. Deployed exposure unverified; protect listing with existing staff/auth policy. Review payload logging and public-submit abuse controls alongside it.
+
+### Implementation order and validation
+
+After marketing is complete: confirm classification/data contract, address listing access and delivery reliability, update category/vertical form + API compatibility, then conversion/revenue/reporting and product lifecycle links. Reuse existing staff roles, quotes, projects and accounting. Coordinate shared schema/API/CRM changes with Peter; do not change AI tenant credentials or services implicitly.
+
+Verify General, each website vertical, Custom software and AI; query preselection; product switching; server validation; repeated email across products; conversion with currency/value preservation; notification failure; authorized versus unauthorized listing. Use isolated/mocked side effects for local tests. Production validation/deployment requires its own authorization. Preserve release holds.
+
+Evidence: client/src/app/pages/Contact.jsx; server/controllers/contactController.js; server/routes/contact.js; server/routes/speedToLead.js; server/lib/mailer.js; ops/src/hooks/useLeads.js; ops/src/lib/leadValue.js; ops/src/components/leads/LeadModal.jsx; ops/src/components/sales/DealModal.jsx; ops/src/hooks/useProjects.js; ops/docs/WORK_REPORT.md. Paths refer to their independent Stemfra repositories.
+
+2026-10-14 Custom software dividers: top of How we work and bottom of Pricing now stretch full viewport width; centered content/side borders retained. Desktop visually verified, no horizontal overflow at 1440px. CSS-only change; build not rerun. Pricing discussion: Peter considering USD5,000 or USD7,000; recommended USD7,000 for current project scope, USD5,000 only for smaller defined tier. No price change authorized or applied; page still $10,000. Invoice docs confirm CAD5,000 first instalment against sample CAD10,000 project. No push.
+
+2026-10-14 Custom software pricing/process redesigned: numbered three-step How we work section with fine rules and white framed spacing, plus two-column rounded pricing card inspired by marketing /ai. Existing $10,000 starting price, scope agreement and separately quoted hosting/support retained. Desktop/mobile browser verified; SPA build passed. Roadmap vibe-coding skill now explicitly draws on AI/platform/marketing/CRM architectures. No push or deployment.
+
+## Planned: reusable vibe-coding skill (2026-10-14)
+
+**Status: backlog, research and design later.** Peter requested a reusable skill inspired by prompt-driven builders. No skill implementation, framework migration, installation or deployment authorized by this entry.
+
+Assessment of Gemini's supplied response:
+- Useful principles: clarify requirements before generation, constrain architecture deliberately, reuse established components and integrate build/browser verification with targeted repair loops.
+- Reject guarantees of zero errors. Constrained stacks and try/catch cannot prove correct business logic, security, responsive design, data ownership or successful deployment.
+- Official [v0 documentation](https://v0.app/docs/full-stack-apps) says Next.js is the default, while other frameworks are supported. The claim that v0 is strictly Next.js is inaccurate.
+- [Figma Make troubleshooting](https://help.figma.com/hc/en-us/articles/31304610458647-Troubleshoot-in-Figma-Make) documents generation failures; [plan mode](https://help.figma.com/hc/en-us/articles/40830441709719-Use-plan-mode-in-Figma-Make) supports structured planning. Design references inform generation; a deterministic absolute-coordinate compiler was not established by the checked documentation.
+- [HighLevel AI Studio code editor](https://help.gohighlevel.com/support/solutions/articles/155000007652-code-editor-in-the-ai-studio) documents build/preview errors and AI-assisted repair, rather than guaranteed invisible recovery.
+- [Base44 SDK client documentation](https://docs.base44.com/sdk-getting-started/client) shows preconfigured SDK/auth infrastructure in generated apps. Gemini's universal pre-generation Specification Matrix requirement was not verified. Proprietary system prompts and internal architecture remain unverified.
+
+Architecture reference basis: draw from the existing Stemfra AI, websites platform, marketing and CRM architectures, including their different runtime/data/deployment boundaries. Inspect each current implementation before extracting reusable patterns; do not force them into one stack. Peter confirmed this direction on 2026-10-14.
+
+Proposed skill scope when resumed:
+1. Inspect existing repository instructions, journeys, architecture, components, dependencies, deployment target and known failures before proposing changes. Reuse working project decisions.
+2. Turn the brief into routes, user roles, data ownership, integrations, key journeys, visual references and concrete acceptance criteria. Clarify consequential unknowns without slowing routine work.
+3. Choose the simplest suitable architecture for new work; preserve the existing stack for changes. Provide explicit profiles for static sites, interactive apps and authenticated/data-backed systems. Single-file HTML is an option for bounded prototypes, not the default for Stemfra SaaS.
+4. Use established design tokens/components and starter conventions. Build complete vertical journeys in small reviewable steps, distinguishing illustrative UI from live integrations.
+5. Run relevant build/type/lint checks and browser checks at desktop/mobile sizes. Exercise important flows, permissions and failure states where relevant. Repair based on observed evidence and rerun affected checks with a bounded retry strategy.
+6. Separate local completion, deployment and verified production behavior. Preserve secrets, rollback paths and existing release approval gates.
+7. Evaluate the skill on representative tasks: a marketing site, an authenticated dashboard and a booking/integration flow. Record requirements met, visual fidelity, meaningful failures, repair cycles and deployment checks; do not use zero-errors marketing claims as success criteria.
+
+Deliverable later: a portable SKILL.md with workflow, architecture decision guide, starter/reference templates and validation checklist. A skill coordinates tools and checks; it does not itself supply a hosted database, compiler or deployment infrastructure. Build and compare a first version before expanding it.
+
+2026-10-14 Custom software copy refined at Peter request: hero description now lists websites, platforms, applications, automations and integrations for work/business/everyday needs using supplied wording; hero CTA Contact us; removed Software for your business requirements band; categories heading We build. Copy-only updates, no build rerun or push.
+
+2026-10-14 Custom software marketing hero updated: full-width white section, existing heading/copy/project CTA on left, isolated iMac light dashboard mockup on right, full-width divider. Existing lower page content/pricing retained. Desktop and mobile browser visually checked; SPA build passed. No push or deployment.
+
+2026-10-14 marketing /ai hero redesigned locally: full-width white hero with Your AI employee for everyday work, existing description and CTAs on left, generated tablet/phone on right. Full-width bottom divider transitions into original centered Front Desk/Leads task panel and remaining sections. Separate introductory banner removed per Peter refinement. Standalone stemfra_ai unchanged. SPA build passed before final divider CSS; desktop hero/divider visually verified and Leads tab changes tasks. No push; P48 release hold remains.
+
+2026-10-14 AI product-section mockup: replaced floating browser frame with a realistic black landscape tablet body; added willowai.com in its address field at Peter request. Uses front-desk-tablet-v4.png; phone and Front Desk illustration retained. Desktop localhost browser visually checked. Asset/reference-only change; build not rerun, no push.
+
+## Google Workspace agentic OAuth classification follow-up (2026-10-14)
+
+**Status: pending inventory and review; no OAuth settings or credentials changed.** Project named in Peter's email: `stemfra-ops-494310`.
+
+Findings checked:
+- Google's [Managing OAuth clients documentation](https://support.google.com/cloud/answer/15549257?hl=en) describes the AI-powered agent classification and separate OAuth client IDs for mixed human and agent workflows. Classification grants no additional scopes or privileges; consent and verification still apply.
+- [Workspace MCP setup documentation](https://developers.google.com/workspace/guides/configure-mcp-servers) describes Developer Preview access and API/MCP service enablement. Adopting MCP is a separate integration decision, not a required replacement for existing REST calls.
+- Inspected server paths use REST: `lib/gmailOutreach.js` calls Gmail messages/send and thread/message endpoints; `lib/googleCalendar.js` calls Calendar v3 using service-account authentication. This was a scoped source inspection, not an exhaustive OAuth client inventory or verification of production configuration. REST usage alone does not establish whether a workflow is agentic.
+- The email says classification opened October 12, MCP enforcement starts November 11, and existing-client classification becomes permanent November 12, 2026. These exact dates are email-supplied, not independently confirmed in the documentation reviewed. Pasted email authenticity and live client configuration remain unverified.
+
+Recommended next review, before November 11 per the email:
+1. Inventory clients in [Google Auth Platform](https://console.cloud.google.com/auth/clients?project=stemfra-ops-494310), map each to its deployed application, owner, scopes, and human/deterministic versus AI-initiated workflows. Include REST-only AI workflows and distinguish service-account paths from OAuth clients.
+2. Keep ordinary sign-in and non-agent integrations separate. For mixed traffic, prepare dedicated agent client IDs; classify only verified AI clients after reviewing administrator access controls and potential consent/reconnection effects. Do not blindly toggle all clients or rotate working credentials.
+3. Confirm the email deadlines in the console or with Google support. After the stated November 12 lock, changing classification requires a new client ID, so plan any migration and reconnection deliberately.
+4. Evaluate Workspace MCP later against existing REST integrations and preview availability. No API migration, deployment, external configuration change or credential rotation is authorized by this roadmap entry.
+
+2026-10-14 hero polish applied: transparent navy/mint phone v2 removes top Mira AI title, uses Mira AI assistant subtitle and Message... input. Confirmed alpha background; CSS drop-shadow on phone, softened tablet shadows with same offset/blur/opacity. Natural image proportions and side buttons preserved. Desktop visually verified. No push; CSS/asset change, build not rerun.
+
+2026-10-14 phone edge refinement: removed independent height stretching and extra CSS shadow; widened crop to preserve original frame and side buttons, using natural image aspect ratio. Desktop browser visually checked. CSS-only change, no build rerun or push.
+
+2026-10-14 hero AI phone theme updated to dark navy with mint accents at Peter request. Versioned asset mira-ai-navy-mint-phone-v1.png replaces blue/light variant; layout, subtitle and white outer background preserved. Browser visual check passed; image-only replacement, build not rerun. No push.
+
+2026-10-14 approved blue Mira AI illustration installed in homepage hero: uses mira-ai-blue-phone-v1.png with subtitle Your AI assistant, replacing the real Front Desk screenshot experiment. Phone position and tablets preserved; blue distinguishes AI from purple dashboard. Desktop browser checked; SPA build passed. No push.
+
+2026-10-14 hero Front Desk screenshot: replaced generated Mira AI phone crop with Peter-supplied actual Forge & Bell Front Desk conversation screenshot in an independent CSS phone frame. Existing device placement retained. Desktop browser visually checked and SPA build passed. Front Desk runtime unchanged; no push or deployment.
+
+2026-10-14 Front Desk investigation paused at Peter request: Peter tested Forge & Bell locally at localhost:5176/?site=forge-and-bell and reports expected behavior. Supplied screenshots show free-intro availability, time selection and customer-details form; completed booking and general AI Q&A were not independently verified. No Front Desk code/configuration fix made. Native mode confirmed in local env; production cause remains unconfirmed. Recheck after next explicitly authorized production deployment, comparing deployed server/frontend versions and native-mode configuration if failure persists. No push authorized by this discussion. CrossFit dev server running on localhost:5176.
+
+2026-10-14 hero artifact repair: removed duplicated tablet image and white masking workaround. Independent CSS tablet frames and isolated phone crop eliminate stale shadows and phone-edge overlap. Dashboard remains light and shifted up 8px. Desktop browser visually verified.
+
+2026-10-14 hero position refinement: moved custom software tablet/dashboard down 2px from previous position, now 8px above original.
+
+2026-10-14 hero adjustment: custom software tablet and dashboard lifted 10 CSS pixels using positioned image layers; phone remains foreground. Search label shortened to Search. Desktop preview checked; no Front Desk work.
+
+2026-10-14 hero dashboard switched to light mode at Peter request: white cards/sidebar, pale grey workspace, dark text, purple/teal charts and green status accents. Layout and sample data preserved. Desktop browser visually verified.
+
+2026-10-14 custom software hero: added native HTML/SVG dark navy admin dashboard overlay with summary metrics, revenue/expense chart, monthly orders and transaction table. Sample data is decorative, not live customer metrics. Preserved tablet/phone composition and ArcLight browser overlay. Desktop visually checked; SPA build passed. Front Desk remains deferred.
+
+2026-10-14 Chrome reference refinement: reduced browser chrome from 13% to 7% of tablet screen height, scaled typography and controls to screen width, matched warm grey tab strip / white toolbar / grey omnibox. Display address remains forge-and-bell.com. Desktop browser screenshot verified. Front Desk investigation deferred at Peter request.
+
+2026-10-14 hero browser polish: ArcLight screen bleed adjusted to hide edge gaps; added macOS traffic lights, Chrome-style tab and address bar displaying forge-and-bell.com at Peter request. Desktop browser visually checked. Live Forge & Bell Front Desk opens but informational quick reply reproduces Failed to fetch; cause not yet isolated. No deployment or external configuration changes.
+
+2026-10-14 hero website screen now reuses original ArcLight / Forge & Bell hero-fold through useMockupMap, the same catalogue image source; API source verified. CSS screen layer clipped to exposed back-tablet area preserves foreground device placement and original raster. Copy 2 unchanged. Browser visual verification pending.
+
+2026-10-14 hero refinement: image v4 restores approved website wording Move with confidence / Brighter days and lowers phone approximately 30 source pixels (about 20px at desktop display scale). DevicesHeroPreview uses v4; v3 and cards copy 2 preserved. Generated image visually checked; no layout code changes.
+
+2026-10-13 approved overlapping-device hero implemented locally: new default homepage hero uses the selected two-tablet/lower-left Mira AI phone image on white. Explicit preview /?hero=devices; previous cards hero retained unchanged as copy 2 at /?hero=cards. Existing navbar, headline, Explore anchor and other hero variants preserved. npm run build passed including SSR and 96 prerendered routes; diff check passed. Browser automation timed out, so visual browser verification remains pending. No push or deployment.
+
+## 2026-10-13: Billing follow-ups for later discussion
+
+- **OPEN, deferred: billing contact on other invoice templates.** Peter approved carrying `For billing enquiries, contact billing@stemfra.com.` into the other invoice templates in future, including website maintenance/platform commission and custom domain purchase. The custom-software template already includes it. Review the existing generation paths and verify their rendered PDFs when implementing; no other templates or existing invoices changed in this documentation pass.
+- **OPEN, consideration: Airwallex usage metering for Stemfra AI.** Peter supplied screenshots of Billing > Usage metering at `https://www.airwallex.com/app/billing/usage/meters`. They show Meters and Usage events tabs, aggregation fields, and sandbox/production setup choices; the displayed meter list is empty. The introductory UI mentions tokens, GB, API calls and usage tiers. This is screenshot evidence of the UI, not verification of API behavior, pricing, account eligibility or an existing Stemfra integration.
+- Discuss whether AI needs usage-based billing at all, suitable billable units and allowances, event collection/reconciliation, limits and customer visibility, provider costs, and sandbox validation before implementation. Compare with the existing Paddle reapplication consideration. No provider selected by this note; the single starting-at-$199 offer remains unchanged.
+- Documentation only: no meters, usage events, subscriptions, billing settings or external services created or changed.
+
+2026-10-13 billing contact footer completed: reusable custom-software template now includes "For billing enquiries, contact billing@stemfra.com." Replacement official PDFs INV-CS-20261013-07 (CAD 5,000, Canadian bank) and INV-CS-20261013-08 (USD 5,000, US bank) downloaded before voiding; both retrieved VOIDED/UNPAID. Both one-page PDFs text/visually checked, no added tax, approved department separator and instalment description retained. Files: output/invoices/INV-CS-20261013-07.pdf and INV-CS-20261013-08.pdf. No email or payment API called. These are pre-void feedback copies.
+
+2026-10-13 final feedback copies completed: INV-CS-20261013-05 CAD 5,000 (inv_sgpd7rc4zhn6eeiagcn) and INV-CS-20261013-06 USD 5,000 (inv_sgpdqls2zhn6eekrspk), no added tax at Peter request. Both official PDFs downloaded, text/visual checks passed, immediately voided and retrieved VOIDED/UNPAID. Department separator and Academic recruitment platform (Instalment 1 of 2) confirmed. PDFs output/invoices/INV-CS-20261013-05.pdf and -06.pdf are pre-void feedback copies. No email/payment API called. Peter reports no Canadian clients and revenue below CAD30k; this is user-reported, not independent determination of registration obligations.
+
+2026-10-13 13-percent comparison completed: INV-CS-20261013-04 / inv_sgpd7rc4zhn6e3j79ez finalized, official PDF downloaded, immediately voided and retrieved VOIDED/UNPAID. CAD subtotal 5,000, tax 650, total 5,650; PDF visibly renders tax breakdown. Department moved to memo with hyphen separator; revised academic recruitment description applied. No send/payment call. McMaster Financial Affairs FAQ publishes HST 119035988RT0001 and AP self-assessment policy. CRA simplified-regime exclusion for registered customers verified, but Stemfra normal registration/business-in-Canada status not established; actual invoice tax decision remains conditional. Sources: https://financial-affairs.mcmaster.ca/resources/financial-affairs-faqs/accounting-faqs/ and https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/digital-economy-gsthst/charge-collect/cross-border.html
+
+2026-10-13 official comparison PDFs completed at Peter explicit authorization: INV-CS-20261013-02 (CAD) and INV-CS-20261013-03 (USD) finalized, official PDFs downloaded, immediately voided, then both retrieved as VOIDED/UNPAID. Files output/invoices/INV-CS-20261013-02.pdf and -03.pdf are pre-void official snapshots. One page each verified. Airwallex suppresses subtotal/zero-tax row despite explicit zero tax; department and street render on the same line. These provider limitations differ from local previews. No send or payment API called.
+
+2026-10-13 USD comparison prepared: INV-CS-20261013-03 / inv_sgpdqls2zhn6d5xd6dn verified DRAFT, USD 5,000 total, tax 0. Reuses McMaster University/Department 10297 and Peter billing email; saved USD bank retrieved with ACH/Fedwire details. Local layout PDF output/pdf/custom-software-usd-layout-preview.pdf visually verified. CAD draft unchanged; both remain DRAFT, neither finalized or sent. PDFs are local comparison layouts, not provider-generated PDFs; actual contract/tax treatment still unconfirmed.
+
+2026-10-13 tax-layout draft: INV-CS-20261013-02 / inv_sgpd7rc4zhn6czg49xw remains DRAFT, CAD 5,000 total, explicit default_tax_percent=0, total_tax_amount=0, automatic tax disabled for this sample only. Customer updated at Peter request to McMaster University, Department: 10297, 1280 Main Street West, Hamilton, Ontario L8S 4L8, Canada (official registrar address verified); Peter email retained. No finalize/send/payment call. No draft pdf_url returned; documented API preview is subscription-oriented, so earlier generic draft-PDF suggestion was incorrect. Locally authored layout preview at output/pdf/custom-software-tax-layout-preview.pdf visually verified; it is not an Airwallex-generated PDF and does not prove provider zero-tax-row rendering. Prior two invoices remain voided. Actual tax treatment remains unverified.
+
+2026-10-13 invoice correction: replacement INV-CS-20261013-01 (inv_sgpd7rc4zhn6coicat2) uses original bank-label layout, CAD account, standard payment footer and no visible test wording. PDF visually verified. Original TEST-CS-CAD-20261013-01 and replacement are both VOIDED; replacement retrieved as VOIDED/UNPAID after Peter requested immediate cancellation. No payment recorded. Future review invoices must stay draft and use Airwallex preview; do not finalize without explicit approval. Saved replacement PDF is a pre-void layout snapshot, not a payable invoice.
+
+2026-10-13 P31 invoice extension: custom software content template and Airwallex product created. CAD 5,000 sample TEST-CS-CAD-20261013-01 finalized/downloaded/visually checked; pending review then void. No automated CRM custom-software charge type added. See [runbook](CUSTOM_SOFTWARE_INVOICES.md).
+
 # Stemfra — Roadmap & Pending Tasks (prioritized)
+
+2026-10-13 academic hiring invoice proposal: read Nnerve handoff/requirements and both supplied Airwallex sample PDFs. Peter specifies two $5,000 instalments and requests proposed sample data before creation. P31 docs record CAD EFT/Interac details in commission_bank.by_currency.CAD (2026-09-10); exact live bank fields not queried or verified this turn. Airwallex current docs confirm Canadian Global Accounts receive CAD via EFT/Interac; currency choice/conversion remains unresolved. CRA guidance checked: threshold is aggregate applicable revenue, customer registration evidence matters, no-tax-collected is not automatically zero-rated. No invoice/customer/product API calls, emails, DB writes or tax settings changes. Next: confirm USD versus CAD and proposed instalment descriptions, then verify receiving account before API test creation.
+
+
+2026-10-13 AI page polish DONE locally: security section precedes integrations on both homepages; workflow heading is Your workflow automation. Browser heading/order verification passed on both localhost pages; diff checks passed. Invoice discovery only: existing Airwallex mirror finalizes and normal markRequested emails client; custom software uses generic Stemfra services fallback. Academic hiring platform test invoice awaits agreed description, customer/amount/currency/milestone and sandbox versus live-test details. No Airwallex API call, invoice creation or email performed.
+
+
+2026-10-13 AI homepage alignment and Connections icons DONE locally: standalone homepage now reuses the approved focused marketing content, animated workflow, cropped workspace illustration, integration assets, single starting-$199 offer and Get started signup CTA. Previous homepage is available at /?version=original. Product account-aware header and light footer remain local to AI; removed separate purple emblem and corrected section links. Connections uses Cal.com/Notion marks and full-colour PostgreSQL/Supabase assets; generic email/key icons retained. Connection availability and operations unchanged.
+
+Security section retained on both homepages with bounded claims verified against vault crypto, dispatcher permissions/tool-call logging and review routes. Removed blanket model-training/audio-retention/every-action/digest claims from this section; no vendor policy audit or production security certification implied. No DB writes, seeding, provider calls, billing configuration or pushes. Legacy AI plan/onboarding/billing reconciliation with starting-$199 offer remains OPEN; Paddle remains a consideration only.
+
+Validation: AI web typecheck passed; AI production build passed (12 workflow pages plus pricing prerender); marketing build passed (96 routes); diff checks passed. Desktop Connections icons, homepage workflow switch, asset loading and security layout checked. Browser viewport override stayed at 1280px, so fresh mobile verification remains unconfirmed. Preview: http://localhost:5184/#control. Screenshots /tmp/stemfra-ai-security-updated.png and /tmp/stemfra-ai-connections-updated.png.
+
+
+2026-10-13 P48.3 integration grid polish: heading now Your tools and information are connected. Added local full-colour logo assets for Gmail, Zoho, Supabase, PostgreSQL and Google Maps; Cal.com uses its Simple Icons wordmark instead of calendar substitute, Notion enlarged. Generic source/file icons retained. Asset provenance in public/images/integrations/SOURCES.md. Browser checked all five assets loaded; build passed 96 routes and diff check passed. Local only, no push.
+
+2026-10-13 P48.3 workflow polish: centre card now says AI with no separate AI logo. Right-side SVG endpoints stop at the 74% card boundary; alternative cards use opaque backgrounds. Browser visually verified, diff check passed. Local only.
+
+2026-10-13 P48.3 connected workflow canvas implemented locally: central Stemfra AI hub, input/knowledge/tool cards, review/handoff/set-aside branches, animated path and floating request/result panel. Reuses task selector, pause/replay and reduced-motion support. Browser checked desktop, Leads result interaction and 390px layout (no horizontal overflow). Client build passed 96 routes and diff check passed. No runtime workflows or external services changed; no push.
+
+2026-10-13 AI pricing CTA updated locally to Get started on /ai and main /pricing, linking to the existing AI /signup entry at localhost:5184. Source review confirms signup -> workspace creation and existing Setup surface; no account was created or onboarding submitted. Follow-up OPEN: reconcile the single starting-$199 offer with legacy AI plan/trial defaults, onboarding scope/usage confirmation and eventual billing provider before release. Existing onboarding is present; the revised commercial journey is not yet verified end to end. Client build passed (96 routes), diff checks passed, and /ai pricing label and signup destination were browser-verified.
+
+2026-10-13 P48.3 AI visual refinement DONE locally: animated Front Desk/Leads workflow with step selection, pause/replay and reduced-motion handling; populated, cropped HTML workspace replaces raw screenshot without illustrative captions. AI employee positioning and reusable light footer applied to /ai. Peter chose a single AI offer starting at $199/month; /ai and main /pricing share aiOffer.js. Original AI app billing plans remain unchanged pending separate commercial/billing reconciliation, including Paddle consideration. No database seeding, worker runs, provider changes or push. Build passed 96 routes; desktop workflow/product switch/footer and 390px overflow checked.
+
+
+2026-10-13 billing consideration from Peter: consider reapplying to Paddle and using it for **Stemfra AI** billing instead of Airwallex. This is an evaluation item, not a provider selection or authorization to apply, migrate, activate payments or change external services. Check approval eligibility, subscription/usage billing fit, tax/invoice handling and migration impact before a decision. Existing release/payment holds remain unchanged; Websites billing is outside this consideration.
+
+2026-10-13 P48.3 restored three AI illustrations locally: reused original flow diagram and tools grid with focused Front Desk/Leads wording and source/setup clarification; original variant defaults preserved. Lavender CtaPanel replaces plain closing plans block with Get started. Desktop visual review, 390px overflow and build (96 routes) passed; no live integration tests or release changes.
+
+2026-10-13 P48.3 AI focus and single navigation DONE locally: focused Front Desk/Leads homepage, shared-workspace illustration, consolidated controls and product FAQ; original preserved at /ai?version=original. Removed secondary navbar from focused page, retaining hero Get started. Main Login now uses AI on /ai, CMS on Websites/templates/solutions, and a two-product chooser on shared routes in DEV only. Build passed 96 routes; desktop/mobile chooser, Escape dismissal, route targets, AI tabs/FAQ and 390px overflow checked. Release hold unchanged; no push.
+
+2026-10-13 P48.3 two-level AI navigation DONE locally: main Stemfra Header above original AI header; fixed offsets 80/145px and section scroll margin 165px. Main Login retains CMS; AI Sign in retains AI app. AI mobile menu label distinguished and sheet starts below both bars. Build passed 96 routes; desktop visual and mobile menu/390px overflow verified. No push.
+
+2026-10-13 P48.3 original AI homepage copied locally at Peter request: /ai uses standalone HomePage, ui, chrome, sections, icons and vignettes plus public catalogue snapshot. Text, sections and animations retained. Product link adapter targets localhost:5184; home anchors target /ai. Separate auth remains in AI app (Sign in label). Scoped original fonts/radius tokens; global concierge hidden on this DEV route. Prior versions retained as ?version=adapted and ?version=previous. Build passed 96 routes; tabs, FAQ interaction, link targets and 390px overflow verified. Direct original-app browser comparison blocked by automatic review; source comparison performed. No push or release changes.
+
+2026-10-13 P48.3 AI product homepage DONE locally for review: /ai now adapts standalone AI task tabs, role cards, workflows and review queue to the marketing site. Previous page retained at /ai?version=previous. AI page header login and product actions target localhost:5184 login/signup/pricing; other headers retain CMS default. Pricing amounts deferred to AI plans due existing combined-page inconsistency. All review URLs use localhost per Peter CORS instruction. Build passed 96 routes; diff check, role switching, previous variant and 390px overflow checked in browser. Illustrations are not live runtime activity; no AI API/workers tested, no push or release-gate changes.
+
+2026-10-13 P48.3 illustrative card copy DONE locally: fitness footer now A FITNESS STUDIO / FOR YOU; assistant renamed Mira AI with M avatars. Browser text and diff checks passed. No push.
+
+2026-10-13 P48.3 second-section CTA DONE locally: Explore products is the only action in homepage essence section; removed Contact us and down-arrow via optional nextHref, shared Websites defaults preserved. Current cards hero retained. Browser text and diff checks passed. No push.
+
+2026-10-13 P48.3 hero simplification DONE locally: removed bottom service list/down arrow, single Explore CTA without arrow; assistant illustrative brand renamed Rivel AI with R avatars. Prior variants retained. Simplification browser-verified; assistant rename source-verified, browser recheck timed out in automatic approval. Diff check passed. No push.
+
+2026-10-13 P48.3 Rivel copy DONE locally: replaced Stronger people with Move with confidence; retained Brighter days. Browser text verification and diff check passed. No push.
+
+2026-10-13 P48.3 minor hero refinement DONE locally: desktop card height reduced from 62svh to 57svh (bounds 520-720px); redirect arrows removed from all three service captions, links preserved. Browser visual and diff checks passed. No push.
+
+2026-10-13 P48.3 hero scale/portrait refinement DONE locally: larger viewport-relative desktop cards, wider layout and two-line heading; generated local monochrome Rivel fitness portrait replaces gym photo. Prompt provenance stored alongside image. Desktop/mobile visual review and 390px overflow check passed; build passed 96 routes and diff check passed. No push.
+
+2026-10-13 P48.3 upright-card hero DONE locally for review: approved three-panel concept implemented as JSX/CSS, default homepage and ?hero=cards. Website, illustrative AI conversation and custom dashboard panels link to their offer pages; mobile cards scroll horizontally. Existing marketing fitness photo reused. Network and cinematic variants preserved. Build passed 96 routes; diff check passed; desktop/mobile browser review, image load, 390px overflow and Explore scroll destination (80px top) verified. Awaiting Peter feedback. No push or release changes.
+
+2026-10-13 P48.3 alternate hero DONE locally for review: light editorial hero with animated three-branch SVG and clear offer copy is now the local default (?hero=network). Original retained at ?hero=cinematic; other finishes retained. Header accepts an explicit light-hero theme. Desktop visual checked, mobile layout/390px overflow checked, Explore hash navigation and original variant verified. Build passed 96 prerendered routes; diff check passed. Reduced-motion preference supported. No push or release-gate changes.
 
 2026-10-12 local checkpoint: marketing preview committed as d56953ae. Final client build passed with 96 prerendered routes; committed diff whitespace check passed. P48.3 visual refinements saved locally; production release holds unchanged. No push.
 
@@ -3091,3 +3349,13 @@ Not done on purpose: skippable required fields.
 - ~~Supademo pilot step-order fix~~ ❌ DROPPED 2026-09-07 (Supademo no longer used).
 - ELEVENLABS_API_KEY into deploy.yml env block + GitHub secret AT PROD PUSH
   (deploys wipe unlisted vars).
+
+## 2026-10-15: Broader Luna migration, email verification suspended
+
+Peter authorized the broader Stemfra model migration after AI validation and explicitly suspended live email verification. No more SMTP probes or sends until resumed. Earlier authorized Gmail test failed before authentication (unreachable/refused SMTP connections); password validity and delivery remain unverified. No email was sent.
+
+Local shared API chat defaults and controller defaults now use gpt-6-luna, including Stacy, Front Desk, Concierge, business/email assistance, lead qualification/drafting, website copy/quality, import mapping, transcript summarization and the text-only voice brain. Shared OpenAI client translates max_tokens to max_completion_tokens and forces reasoning_effort=none for exact Luna; streaming/tool/JSON contracts remain intact. Deployment workflow pins and existing local model overrides updated; no push or deployment. Transcription, embeddings, specialist audio/image models and archived n8n workflows unchanged. No Twilio/ElevenLabs or operational rescore executed.
+
+Helen migration applied separately with the same request adapter, defaults, deployment pin and standard-token estimated rate (10/50 cents per million input/output; existing meter does not separately price caching or long-context tiers). AI runtime default changed to Luna; explicit DeepInfra background and tenant provider overrides remain authoritative.
+
+Checks: 3 adapter regression tests per shared API/Helen (6), 8 AI adapter/fallback tests, AI runtime build, syntax checks for 25 shared API/Helen runtime files plus rescore script, whitespace checks. Synthetic live JSON and tool-call validation succeeded with each repository's own existing OpenAI key (combined two-request elapsed times 7.020s shared API, 14.482s Helen; not benchmarks). No tool execution or customer prompts. These checks do not certify every workflow or production rollout. Six-step AI engineering remains open; next owner-history pagination and unified server-side prospect pagination, then mailbox engineering with mocks while live verification is suspended.
