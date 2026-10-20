@@ -118,7 +118,6 @@ jobs:
             STACY_N8N_URL=https://n8n.srv1555257.hstgr.cloud/webhook/stacy
             STACY_MODEL=gpt-6-luna
             STACY_MODE=native
-            FRONTDESK_N8N_URL=https://n8n.srv1555257.hstgr.cloud/webhook/frontdesk
             FRONTDESK_MODEL=gpt-6-luna
             CONCIERGE_N8N_URL=https://n8n.srv1555257.hstgr.cloud/webhook/concierge
             CONCIERGE_MODEL=gpt-6-luna

@@ -1,7 +1,7 @@
 // Front Desk (Agent 2), F1 = answer. The customer-facing chat widget on a
 // client's template site. PUBLIC (no owner auth) — the tenant is the siteId the
 // widget passes. Reuses Stacy's F1 context-builder (lib/stacyContext.js) and the
-// same server→n8n proxy + x-leadgen-secret trust. Anonymous visitors: conversations
+// native OpenAI implementation. Anonymous visitors: conversations
 // are stored in agent_conversations with agent='frontdesk', created_by=null; the
 // widget holds the conversationId as the session key.
 //
@@ -25,12 +25,7 @@ const agentBudget = require('../lib/agentBudget');
 
 const ALLOWED_CHAT = ['live', 'previewing'];
 
-const FRONTDESK_N8N_URL = process.env.FRONTDESK_N8N_URL;
-const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;
 const FRONTDESK_MODEL = process.env.FRONTDESK_MODEL || 'gpt-6-luna';
-// Transport flag (2026-09-02, the Stacy native pattern): 'native' calls OpenAI
-// directly via lib/frontdeskBrain.js; anything else keeps the n8n webhook.
-const FRONTDESK_MODE = process.env.FRONTDESK_MODE === 'native' ? 'native' : 'n8n';
 
 // Lightweight in-memory rate limiter (per IP+site) — protects the PUBLIC endpoint
 // and the LLM cost from abuse. Per-instance; fine for a single VPS container.
@@ -292,28 +287,9 @@ async function notifyOwnerOfLead(site, lead) {
   });
 }
 
-// One agent round-trip (native OpenAI or the n8n workflow, per FRONTDESK_MODE).
-// Returns the parsed agent output; `context` already includes the live site
-// context + today + any system note for this call. Both transports normalize
-// through the same return block below.
-async function callFrontdesk({ convId, siteId, business, message, history, context }) {
-  let data;
-  if (FRONTDESK_MODE === 'native') {
-    data = await frontdeskBrain.runFrontdesk({ business, message, history, context, model: FRONTDESK_MODEL });
-  } else {
-    const headers = { 'Content-Type': 'application/json' };
-    if (N8N_SECRET) headers['x-leadgen-secret'] = N8N_SECRET;
-    const r = await fetch(FRONTDESK_N8N_URL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        conversationId: convId, siteId, agent: 'frontdesk',
-        business, model: FRONTDESK_MODEL, message, history, context,
-      }),
-    });
-    data = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(data.error || `Front desk workflow error (${r.status})`);
-  }
+// One native agent round-trip; normalize its structured output for the widget.
+async function callFrontdesk({ business, message, history, context }) {
+  const data = await frontdeskBrain.runFrontdesk({ business, message, history, context, model: FRONTDESK_MODEL });
   return {
     reply: data.reply ?? data.output ?? '',
     handoff: !!data.handoff,
@@ -347,7 +323,7 @@ async function send(req, res) {
       return res.status(403).json({ error: 'Chat is not enabled for this site.' });
     }
 
-    if (FRONTDESK_MODE === 'native' ? !frontdeskBrain.isConfigured() : !FRONTDESK_N8N_URL) {
+    if (!frontdeskBrain.isConfigured()) {
       return res.status(503).json({ error: 'The assistant is not configured yet.' });
     }
 
@@ -394,7 +370,7 @@ async function send(req, res) {
     // DEV-only: "/list services" renders a list card straight from real data,
     // bypassing the agent. Mirrors Stacy's "/demo" escape hatch — it lets the card
     // be iterated on without a workflow round-trip, and lets a fresh session confirm
-    // the renderer works before the n8n prompt has been pasted. Never in production.
+    // the renderer works without calling the model. Never in production.
     const devList = process.env.NODE_ENV !== 'production' && /^\/list\s+(\w+)$/i.exec(String(message).trim());
     if (devList) {
       const demo = await buildListCard(devList[1], baseContext, siteId);
@@ -521,7 +497,7 @@ async function send(req, res) {
       // Server-injected booking chips (exact times) win; else use the agent's chips.
       if (!quickReplies.length) quickReplies = out.quickReplies || [];
     } catch (e) {
-      console.error(`[site-chat.send] ${FRONTDESK_MODE} error:`, e.message);
+      console.error(`[site-chat.send] native error:`, e.message);
       return res.status(502).json({ error: 'The assistant could not respond right now. Please try again.' });
     }
 
