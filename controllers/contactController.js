@@ -1,3 +1,4 @@
+const productPricing = require('../config/productPricing.json');
 const supabase = require('../config/supabase');
 const { sendMail } = require('../lib/mailer');
 const buildNotificationEmail = require('../templates/notificationEmail');
@@ -12,6 +13,9 @@ const { normalise: normaliseVertical } = require('../lib/leadVertical');
 // "Invalid subject selected." for every vertical (found 2026-09-11). Each maps
 // to service 'website' + the lead's vertical (leads.vertical).
 const SUBJECT_TO_SERVICE = {
+  'Managed websites': 'website',
+  'Custom software': 'custom_build',
+  'Stemfra AI': 'ai_automation',
   'General':                   'general',
   'Barbershops website':       'website',
   'Beauty Salons website':     'website',
@@ -21,7 +25,7 @@ const SUBJECT_TO_SERVICE = {
   'Day Spas website':          'website',
   // legacy subjects (older clients / bookmarks)
   'AI Automation':         'ai_automation',
-  'Software Development':  'software_development',
+  'Software Development':  'custom_build',
   'Consultancy':           'consultancy',
   'Support':               'support',
 };
@@ -42,10 +46,10 @@ const KNOWN_TEMPLATE_SLUGS = new Set([
 
 // ─── POST /api/contact ────────────────────────────────────────────────────────
 const submitContact = async (req, res) => {
-  const { firstName, lastName, email, company, subject, message, template } = req.body;
-  console.log({ doc: req.body });
+  const { firstName, lastName, email, company, subject, message, template, aiPlan } = req.body;
 
-  if (!firstName || !lastName || !email || !subject || !message) {
+
+  if (![firstName, lastName, email, subject, message].every(v => typeof v === 'string' && v.trim()) || (company != null && typeof company !== 'string')) {
     return res.status(400).json({
       success: false,
       message: 'Please fill in all required fields.',
@@ -66,12 +70,16 @@ const submitContact = async (req, res) => {
     });
   }
 
+  if (aiPlan != null && aiPlan !== '' && (SUBJECT_TO_SERVICE[subject] !== 'ai_automation' || !productPricing.aiPlans.some(plan => plan.id === aiPlan))) {
+    return res.status(400).json({ success: false, message: 'Invalid subscription plan selected.' });
+  }
+
   try {
     // 1. Persist to Supabase `leads`
     const contactName = `${firstName.trim()} ${lastName.trim()}`.trim();
     const cleanEmail  = email.trim().toLowerCase();
     const cleanCompany = company ? company.trim() : null;
-    const cleanMessage = message.trim();
+    const cleanMessage = message.trim() + (aiPlan ? `\nSubscription plan: ${aiPlan}` : '');
     const service     = SUBJECT_TO_SERVICE[subject];
     // Validate template against the known set. Unknown / missing → null.
     const cleanTemplate = template && KNOWN_TEMPLATE_SLUGS.has(template) ? template : null;
@@ -83,18 +91,20 @@ const submitContact = async (req, res) => {
     const baseRow = {
       contact_name: contactName, first_name: firstName.trim(), last_name: lastName.trim(),
       email: cleanEmail, service, template_slug: cleanTemplate, last_activity_at: new Date().toISOString(),
-      ...(vertical ? { vertical } : {}),
+      vertical: service === 'website' ? vertical : null,
     };
     if (cleanCompany) baseRow.company_name = cleanCompany;  // don't null an existing company on re-submit
 
     // Dedup: reuse a recent, still-open lead with the same email instead of
     // creating a duplicate on re-submit; append the new message to its notes.
     const since = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
-    const { data: existing } = await supabase
-      .from('leads').select('id, notes').eq('email', cleanEmail)
+    const { data: existing, error: lookupError } = await supabase
+      .from('leads').select('id, notes, qualification').eq('email', cleanEmail).eq('service', service)
       .not('stage', 'in', '("won","lost")').gte('created_at', since)
       .order('created_at', { ascending: false }).limit(1).maybeSingle();
 
+    if (lookupError) throw lookupError;
+    baseRow.qualification = { ...(existing?.qualification || {}), ai_plan: service === 'ai_automation' ? aiPlan || existing?.qualification?.ai_plan || null : null };
     let lead;
     if (existing) {
       const notes = [existing.notes, `— Re-submitted ${new Date().toISOString().slice(0, 10)}:\n${cleanMessage}`].filter(Boolean).join('\n\n');
@@ -128,21 +138,13 @@ const submitContact = async (req, res) => {
       createdAt: lead.created_at,
     });
 
-    const toStemfra = await sendMail({
-      fromName: 'STEMfra',
-      to:       process.env.NOTIFY_EMAIL,
-      subject:  notification.subject,
-      html:     notification.html,
-      text:     notification.text,
-    });
-
-    console.log({ toStemfra });
-    console.log('updating lead');
-
-    await supabase
-      .from('leads')
-      .update({ notification_sent: true })
-      .eq('id', lead.id);
+    try {
+      const delivered = await sendMail({ fromName: 'STEMfra', to: process.env.NOTIFY_EMAIL,
+        subject: notification.subject, html: notification.html, text: notification.text });
+      if (delivered?.ok) await supabase.from('leads').update({ notification_sent: true }).eq('id', lead.id);
+    } catch (error) {
+      console.error('[contactController] Notification failed after lead saved:', error.message);
+    }
 
     // 3. Confirmation email → client
     try {
@@ -160,9 +162,7 @@ const submitContact = async (req, res) => {
         text:     confirmation.text,
       });
 
-      console.log({ toUser });
-
-      await supabase
+      if (toUser?.ok) await supabase
         .from('leads')
         .update({ confirmation_sent: true })
         .eq('id', lead.id);
@@ -171,7 +171,6 @@ const submitContact = async (req, res) => {
       console.error('[contactController] Confirmation email failed:', confirmErr.message);
     }
 
-    console.log('success');
 
     return res.status(201).json({
       success: true,

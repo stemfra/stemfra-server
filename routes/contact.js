@@ -1,5 +1,6 @@
 const express = require('express');
 const router  = express.Router();
+const { requireStaffAuth } = require('../middleware/staffAuth');
 
 const { submitContact, getContacts } = require('../controllers/contactController');
 
@@ -7,6 +8,6 @@ const { submitContact, getContacts } = require('../controllers/contactController
 router.post('/', submitContact);
 
 // GET  /api/contact  — list all submissions (internal/admin)
-router.get('/', getContacts);
+router.get('/', requireStaffAuth, getContacts);
 
 module.exports = router;

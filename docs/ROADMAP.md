@@ -1,3 +1,33 @@
+## 2026-10-20 pending: Align agent knowledge with three products and approved pricing
+
+Peter requested a pending audit of Mark calling context, marketing assistant/Concierge, Stacy and related copilots after the product/pricing changes. Confirmed initial evidence: lib/voiceBrain.js still instructs free website + 5% commission and no monthly plans; lib/conciergeBrain.js also states no monthly fee + 5%. Full context sources, CRM Copilot and Stacy not yet audited. Trace injected knowledge, prompts, product routing, CTA destinations and call summaries; use the maintained product/pricing catalogue and preserve tenant-specific business information. Verify Websites USD299/month, AI Starter/Growth/Business USD100/200/300, and custom software agreed quote handling against current approved sources. Cover trial limits and release/payment status without inventing policy. Add mocked representative pricing/product checks; no Twilio calls, email tests or payment activation. No prompt changes yet. Keep native-transport retirement and unused speed-to-lead cleanup tracked separately; retain enquiry arrival history and only mark engagement after an actual action.
+
+## 2026-10-20: Front Desk native-only approved and implemented locally
+
+Peter confirmed n8n Front Desk retirement. Removed webhook transport, mode fallback and webhook URL from deployment workflow. Native brain is unconditional and checks OpenAI configuration. Mocked native dispatch/output/error propagation and syntax checks passed; no live provider call, push or deployment. Historical n8n files retained as references, no external workflow deletion. Concierge unchanged. Argyle custom-domain CORS remains a separate unresolved issue.
+
+2026-10-20 Front Desk production audit: confirmed custom-domain CORS gap and production n8n fallback versus local native transport. No fix or deployment performed. See [audit](FRONTDESK_PRODUCTION_AUDIT_2026-10-20.md).
+
+## 20 October 2026: contact intake alignment, local implementation
+
+Product forms, AI plan persistence, product-scoped duplicate matching and subscription forecasts implemented locally and checked. See [PRODUCT_LEAD_PRICING.md](PRODUCT_LEAD_PRICING.md). No deployment/live submission. Broader deal conversion, calculator and catalogue consolidation remain open.
+
+## 2026-10-20: CRM Product dropdown local preview
+
+Lead form now displays Websites, Custom Software and Stemfra AI. Website shows US$299/month, AI shows agreed plan prices with preferences recorded in Notes; custom fee/quote handling preserved. Browser dropdown inspected. No lead saved, no remote changes or push. Forecast logic and end-to-end product mapping remain unfinished; this is a presentation preview, not completed pricing integration.
+
+## 2026-10-20: On-site AI subscription comparison
+
+Marketing /ai#plans now presents Starter/Growth/Business with seven features plus four expandable items, unchanged prices/credits and coming-soon notice. Pricing overview Compare AI plans stays on marketing. Active FocusedAIHome and previous preview reuse the same comparison component. Desktop navigation/anchor and layout verified; production build passed before final heading-only CSS adjustment. No push or activation.
+
+## 2026-10-20: Marketing AI offer links to subscription comparison
+
+Kept one card per product. AI offer now starts at the agreed US$100 rather than historical $199, names Starter/Growth/Business and shared tools with differing credit allowances, and states coming soon. Pricing CTAs link to AI /pricing rather than signup, including the reused AI price section. Production build and desktop layout/link-target inspection passed. Local only, not pushed.
+
+## 2026-10-20: Marketing About page updated locally
+
+Applied the approved three-offering copy to stemfra_client/src/app/pages/About.jsx, including the documented Business Assistant scope. Preserved existing layout and refreshed STEM principles and contact CTA. Production build passed with 99 routes prerendered; desktop browser review passed. Mobile-specific visual review not performed. SEO description already covers all three offerings. No push, deployment, payment change or email test.
+
 ## 2026-10-16: Concise McMaster proposal and two-attachment email
 
 Created McMaster-Nnerve-proposal-review-v4.docx as a one-page commercial proposal referring to unchanged Nnerve-project-scope-and-pricing.xlsx for detailed scope and exclusions. Exact Development/Delivery milestone headings and CAD 5,000 commencement/final acceptance retained. Key acceptance, commercial and pending ownership/support/tax/procurement terms retained. Email review-email-v4.txt introduces proposal and spreadsheet only, invites feedback before commercial invoice; removed earlier invoice-attachment claim. One-page DOCX rendered and visually checked. No send or invoice action.
@@ -3359,3 +3389,6 @@ Local shared API chat defaults and controller defaults now use gpt-6-luna, inclu
 Helen migration applied separately with the same request adapter, defaults, deployment pin and standard-token estimated rate (10/50 cents per million input/output; existing meter does not separately price caching or long-context tiers). AI runtime default changed to Luna; explicit DeepInfra background and tenant provider overrides remain authoritative.
 
 Checks: 3 adapter regression tests per shared API/Helen (6), 8 AI adapter/fallback tests, AI runtime build, syntax checks for 25 shared API/Helen runtime files plus rescore script, whitespace checks. Synthetic live JSON and tool-call validation succeeded with each repository's own existing OpenAI key (combined two-request elapsed times 7.020s shared API, 14.482s Helen; not benchmarks). No tool execution or customer prompts. These checks do not certify every workflow or production rollout. Six-step AI engineering remains open; next owner-history pagination and unified server-side prospect pagination, then mailbox engineering with mocks while live verification is suspended.
+
+### 20 October 2026: CRM custom project linking
+McMaster lead now links to a native CAD proposal snapshot, project, two milestones and a reference to the already-issued invoice. UI local, shared database migration applied; Airwallex not changed. Payment status remains dated, not live sync. No payment/webhook release gate lifted. See ../../stemfra-ops/docs/CUSTOM_PROJECT_LINKS.md.

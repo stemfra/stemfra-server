@@ -1,0 +1,21 @@
+{
+  "version": "2026-10-20",
+  "websiteMonthlyUsd": 299,
+  "aiPlans": [
+    {
+      "id": "starter",
+      "label": "Starter",
+      "monthlyUsd": 100
+    },
+    {
+      "id": "growth",
+      "label": "Growth",
+      "monthlyUsd": 200
+    },
+    {
+      "id": "business",
+      "label": "Business",
+      "monthlyUsd": 300
+    }
+  ]
+}

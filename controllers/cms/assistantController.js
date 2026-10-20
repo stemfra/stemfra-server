@@ -32,13 +32,7 @@ function stacyRateLimited(key, limit = 20, windowMs = 60_000) {
   return arr.length > limit;
 }
 
-const STACY_N8N_URL = process.env.STACY_N8N_URL;          // public n8n Stacy webhook
-const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;        // sent as x-leadgen-secret (server→n8n convention)
-const STACY_MODEL = process.env.STACY_MODEL || 'gpt-6-luna';  // per-conversation default; provider-switchable in n8n
-// Transport flag (2026-09-02): 'native' calls OpenAI directly via
-// lib/stacyBrain.js (API-enforced JSON, no Parse-node drift); anything else
-// keeps the n8n webhook. Default stays n8n until Peter blesses native.
-const STACY_MODE = process.env.STACY_MODE === 'native' ? 'native' : 'n8n';
+const STACY_MODEL = process.env.STACY_MODEL || 'gpt-6-luna';
 
 // S3 (act) — whitelist the actions Stacy may PROPOSE. The server never executes;
 // it relays a validated proposal to the CMS, which shows a confirm card and (on
@@ -204,7 +198,7 @@ async function send(req, res) {
       .select('id, messages, model').eq('id', conversationId).eq('site_id', siteId).maybeSingle();
     if (!conv) return res.status(404).json({ error: 'Conversation not found.' });
 
-    if (STACY_MODE === 'native' ? !stacyBrain.isConfigured() : !STACY_N8N_URL) {
+    if (!stacyBrain.isConfigured()) {
       return res.status(503).json({ error: 'Stacy is not configured on the server yet.' });
     }
 
@@ -235,28 +229,9 @@ async function send(req, res) {
     let card = null;          // structured card (call_confirm) for the panel
     let quickReplies = [];    // tappable chips under the reply
     try {
-      // Both transports return the same shape: { reply, handoff, action, call }.
-      const invoke = async () => {
-        if (STACY_MODE === 'native') {
-          return stacyBrain.runStacy({
-            message: userMsg.content, history, context, model: conv.model || STACY_MODEL,
-          });
-        }
-        const headers = { 'Content-Type': 'application/json' };
-        if (N8N_SECRET) headers['x-leadgen-secret'] = N8N_SECRET;
-        const r = await fetch(STACY_N8N_URL, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            conversationId, siteId, agent: 'stacy', model: conv.model || STACY_MODEL,
-            message: userMsg.content, history, context,
-          }),
-        });
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data.error || `Stacy workflow error (${r.status})`);
-        return data;
-      };
-      const data = await invoke();
+      const data = await stacyBrain.runStacy({
+        message: userMsg.content, history, context, model: STACY_MODEL,
+      });
       reply = data.reply ?? data.output ?? '';
       // Book-a-call = the CONCIERGE pattern (Peter, 2026-09-02: reuse the
       // reviewed UX, don't re-invent): the model only signals INTENT (its
@@ -272,7 +247,7 @@ async function send(req, res) {
       toolLog = Array.isArray(data.tool_log) ? data.tool_log : [];
       action = normalizeAction(data.action);
     } catch (e) {
-      console.error(`[stacy.send] ${STACY_MODE} error:`, e.message);
+      console.error(`[stacy.send] native error:`, e.message);
       return res.status(502).json({ error: 'Stacy could not respond right now. Please try again.' });
     }
 

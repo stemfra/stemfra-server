@@ -115,11 +115,8 @@ jobs:
             PUBLIC_BASE_URL=https://api.stemfra.com
             N8N_LEADGEN_COLD_URL=https://n8n.srv1555257.hstgr.cloud/webhook/leadgen-cold
             N8N_WEBHOOK_SECRET=${{ secrets.N8N_WEBHOOK_SECRET }}
-            STACY_N8N_URL=https://n8n.srv1555257.hstgr.cloud/webhook/stacy
             STACY_MODEL=gpt-6-luna
-            STACY_MODE=native
             FRONTDESK_MODEL=gpt-6-luna
-            CONCIERGE_N8N_URL=https://n8n.srv1555257.hstgr.cloud/webhook/concierge
             CONCIERGE_MODEL=gpt-6-luna
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             ELEVENLABS_API_KEY=${{ secrets.ELEVENLABS_API_KEY }}
