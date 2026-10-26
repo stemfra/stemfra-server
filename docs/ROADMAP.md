@@ -1,3 +1,29 @@
+## 2026-10-26: Concierge plan formatting and shared guidance
+
+AI pricing follow-ups now render server-owned plan rows, with name above price, separate annual price/seats/credits and shared terms. Help Center supports the plan card too. Agent presentation intent supports contextual requests; browser verified the direct category-selection path. Marketing build (99 routes), two offer tests, plan-card assertions and syntax/diff checks passed. Mobile and Help Center visual checks remain unverified. Shared rules recorded in ../../docs/AI_CHAT_PRESENTATION.md and linked from AI AGENTS/handoff; AI runtime unchanged. Local only.
+
+## 2026-10-26: Concierge offer reconciliation, local
+
+Chat reconciled to current three-product marketing offers; tests/build/browser passed. Help Center article/support-mode reconciliation and Mark review follow-ups remain pending. See [review](CONCIERGE_REFRESH_2026-10-26.md). Billing activation and voice holds unchanged.
+
+## 2026-10-26: Signup audit follow-up pending
+
+See ../../docs/SIGNUP_FLOW_AUDIT_2026-10-26.md for email/Google signup findings, required-field and error-recovery gaps, old commission copy and verification limits. Review only; fixes and live acceptance remain pending. Existing launch/payment holds unchanged.
+
+## 2026-10-26: Public marketing noindex correction, local
+
+Removed the blanket noindex prop from OfferPreview shared Shell. Active /custom-software and /pricing were adding noindex after JavaScript rendered despite indexable prerendered HTML. Active /websites and /ai use separate components. Browser verified both corrected routes have no robots exclusion and retain their production canonical; /claim still has noindex. Production build passed (99 rendered routes); generated HTML checked for both public pages and Claim. Private Claim, NotFound and separate draft-component exclusions unchanged. Not pushed; Search Console screenshots show two noindex exclusions but do not identify their URLs, so attribution remains unconfirmed.
+
+## 2026-10-22: Hero/pricing live; footer refinement local
+
+Marketing 4156537c deployed successfully as Cloudflare b1147b2e. AI 7aee84d deployed as df91cbef. Public browser verified device hero, pricing seats and annual totals 1000/2000/3000 with mailto Contact support. Checkout unchanged/disabled. Follow-up footer: copyright moved to divider-separated bottom row with Terms/Privacy/Refunds, removing duplicate Legal column. Local build and desktop browser passed; footer not yet pushed/deployed.
+
+## 2026-10-22: AI hero and marketing pricing reused locally
+
+Copied marketing /ai split device hero, asset and responsive styles into AI homepage, preserving AI navigation and signed-in Dashboard CTA. Marketing AIPrice now reuses AI LaunchPricing cards, annual toggle, seats, comparison and FAQs. Refund link targets AI policy. scripts/sync-ai-pricing.mjs refreshes marketing component/public catalogue from sibling AI source; no runtime cross-repo dependency. Both builds passed; desktop browser checked hero and annual 1000/2000/3000 totals, seats and Contact support links. Mobile breakpoint CSS copied but not separately browser-verified. Checkout unchanged/disabled. Local only, not pushed or deployed.
+
+> 21 October 2026: AI annual pricing presentation and AI policy sections drafted locally; desktop pricing/build verified. Checkout and release remain disabled. See current session handoff; commercial policy decisions and Paddle eligibility remain open.
+
 ## 2026-10-20 pending: Align agent knowledge with three products and approved pricing
 
 Peter requested a pending audit of Mark calling context, marketing assistant/Concierge, Stacy and related copilots after the product/pricing changes. Confirmed initial evidence: lib/voiceBrain.js still instructs free website + 5% commission and no monthly plans; lib/conciergeBrain.js also states no monthly fee + 5%. Full context sources, CRM Copilot and Stacy not yet audited. Trace injected knowledge, prompts, product routing, CTA destinations and call summaries; use the maintained product/pricing catalogue and preserve tenant-specific business information. Verify Websites USD299/month, AI Starter/Growth/Business USD100/200/300, and custom software agreed quote handling against current approved sources. Cover trial limits and release/payment status without inventing policy. Add mocked representative pricing/product checks; no Twilio calls, email tests or payment activation. No prompt changes yet. Keep native-transport retirement and unused speed-to-lead cleanup tracked separately; retain enquiry arrival history and only mark engagement after an actual action.

@@ -9,6 +9,7 @@ const supabase = require('../config/supabase');
 const { DateTime } = require('luxon');
 const { buildConciergeContext } = require('../lib/conciergeContext');
 const conciergeBrain = require('../lib/conciergeBrain');
+const { buildAiPlanResponse } = require('../lib/conciergePresentation');
 const { clientIp } = require('../lib/clientIp');
 const agentBudget = require('../lib/agentBudget');
 
@@ -21,7 +22,7 @@ const EMAIL_RE = /^\S+@\S+\.\S+$/;
 // CTA buttons the agent may surface (keys → server-controlled label + internal path,
 // so the model can't inject arbitrary URLs).
 const CTA_LINKS = buildConciergeContext().links;
-const CTA_LABELS = { start_free: 'Start free', pricing: 'See pricing', examples: 'See examples', contact: 'Talk to us' };
+const CTA_LABELS = { websites: 'Explore websites', ai: 'Explore Stemfra AI', software: 'Custom software', pricing: 'See pricing', examples: 'Browse website templates', help: 'Help Center', contact: 'Talk to us' };
 
 // P16.4a: the agent may also request cta key 'book_call' — instead of a link it
 // opens the widget's inline booking card (a REAL booking on the internal
@@ -55,7 +56,7 @@ async function captureLead(lead) {
     contact_name: name || email,
     company_name: typeof lead.company === 'string' && lead.company.trim() ? lead.company.trim() : null,
     email,
-    service: 'website',          // inbound website-product inquiry (free text on `leads`)
+    service: ['website', 'ai', 'custom_software'].includes(lead.product) ? lead.product : 'general',
     stage: 'new_lead',
     source: 'website_chat',
     lead_source: 'website_chat',
@@ -105,15 +106,48 @@ async function send(req, res) {
       return res.json({
         reply: agentBudget.fallbackReply({ agent: 'concierge', reason: budget.reason }),
         quick_replies: [],
-        card: { kind: 'cta', actions: ['start_free', 'contact'].filter(k => CTA_LINKS[k]).map(k => ({ label: CTA_LABELS[k], href: CTA_LINKS[k] })) },
+        card: { kind: 'cta', actions: ['pricing', 'contact'].filter(k => CTA_LINKS[k]).map(k => ({ label: CTA_LABELS[k], href: CTA_LINKS[k] })) },
         limited: budget.reason,
       });
     }
     message = (await agentBudget.capInput('concierge', message)).text;
 
+    // The general starter question offers every product, not just website onboarding.
+    if (/^how do i get started[?.!]*$/i.test(String(message).trim())) {
+      return res.json({
+        reply: 'We offer three products: managed websites, Custom Software and AI. You can start by choosing any one of them.',
+        quick_replies: [],
+        card: { kind: 'cta', actions: [
+          { label: 'Browse websites', href: context.links.examples },
+          { label: 'Custom Software', href: context.links.software },
+          { label: 'AI', href: context.links.ai },
+        ] },
+      });
+    }
+
+    // Broad pricing questions use a structured overview, not a model-written price list.
+    if (/^(how does pricing work|what (?:are|is) (?:your |the )?(?:prices|pricing)|show (?:me )?(?:your )?(?:prices|pricing)|pricing)[?.!]*$/i.test(String(message).trim())) {
+      return res.json({
+        reply: 'We have three product categories, each with its own pricing. Select one to see the details.',
+        quick_replies: [],
+        card: { kind: 'cta', layout: 'product_pricing', actions: [
+          { label: 'Managed websites', price: `$${context.websites.price_usd_month}/month`, href: context.links.websites, question: 'Tell me about managed website pricing and the trial.' },
+          { label: 'Stemfra AI', price: `From $${context.ai.plans[0].monthly_usd}/month`, href: context.links.ai, question: 'Show me the Stemfra AI plans and pricing.' },
+          { label: 'Custom software', price: `From $${context.custom_software.starting_price_usd.toLocaleString('en-US')}/project`, href: context.links.software, question: 'Tell me about custom software pricing.' },
+        ] },
+      });
+    }
+
+    if (/^show me the stemfra ai plans and pricing[.!?]*$/i.test(String(message).trim())) {
+      return res.json(buildAiPlanResponse(context));
+    }
+
     let reply = '', lead = null, quickReplies = [], ctaKeys = [], wantsBooking = false;
     try {
       const data = await conciergeBrain.runConcierge({ message: String(message).trim(), history: hist, context, today, model: CONCIERGE_MODEL });
+      if (data.presentation === 'ai_plans' && !data.lead && !data.cta?.includes('book_call')) {
+        return res.json(buildAiPlanResponse(context));
+      }
       reply = data.reply ?? data.output ?? '';
       if (data.lead && typeof data.lead === 'object') lead = data.lead;
       if (Array.isArray(data.quick_replies)) quickReplies = data.quick_replies.filter(s => typeof s === 'string' && s.trim()).slice(0, 6);
