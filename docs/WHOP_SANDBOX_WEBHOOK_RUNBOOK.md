@@ -16,7 +16,7 @@ The retired website endpoint `tex-united-parallel-pat.trycloudflare.com` failed 
 2. Start a temporary tunnel to `http://127.0.0.1:4055`. Read the newly assigned HTTPS origin from its log. Keep the receiver and tunnel running during the test.
 3. Confirm the public `/health` route reaches the website sandbox receiver. This is a reachability check, not signed webhook acceptance.
 4. In Whop **sandbox**, open Developer → Webhooks → **Stemfra sandbox test** (`hook_g7xlBRcIKALZr`). Update only its URL to the new origin plus `/api/whop/webhook`. Keep the existing signing secret, event selection, API date `2026-10-15-1` and sub-account setting. Do not create duplicate webhooks or change the AI webhook.
-5. Save, reopen and verify the actual URL. If the API returns403, use the authorized dashboard; do not expand API permissions merely to edit this URL.
+5. Save, refresh and verify the actual URL. If the sandbox page is unavailable or stale, refresh the existing browser tab first before treating browser access as blocked (Peter, 4 November2026). If the API returns403, use the authorized dashboard; do not expand API permissions merely to edit this URL.
 6. Replay one known delivery for an existing website sandbox purchase. Do not make another payment. Confirm signature verification, a fast HTTP200 response, and successful durable inbox processing. HTTP200 queued alone does not prove downstream reconciliation completed.
 7. Confirm the replay did not add a second subscription, invoice, receipt email or site. Record the provider delivery ID, response, inbox result and date without secrets or private payment data.
 
@@ -34,3 +34,7 @@ The retired website endpoint `tex-united-parallel-pat.trycloudflare.com` failed 
 For repeated development, prefer a named, access-controlled development tunnel with a stable hostname when it is deliberately configured. Until then, check the temporary URL at the start of every session. Production must use the permanent `https://api.stemfra.com/api/whop/webhook` endpoint, never a development tunnel. Updating a webhook does not update previously created checkout return URLs.
 
 If the browser connection or required account access is unavailable, leave configuration unchanged and record the blocker. Do not describe delivery as verified until the signed provider event and database result are both checked.
+
+## 4 November 2026 verification
+
+Peter saved replacement origin `https://favor-parks-absolute-game.trycloudflare.com`; this is a dated temporary address, not a permanent recommendation. After refreshing, the exact endpoint was read back. Existing payment delivery replay first timed out at5seconds despite reaching the verified receiver; a retry returned200OK in1.19seconds and Whop showed Active. The durable inbox was already done and stayed attempt1 with no error. Sandbox charges stayed4; the main paid setup purchase retained one intent and one subscription. No payment was made. See [evidence](evidence/website-sandbox-replay-2026-11-04.png).
