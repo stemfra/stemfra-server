@@ -1,3 +1,9 @@
+## 2026-11-03: Managed website production billing activated
+
+At Peter's explicit request, activated the tested configuration without repeating production payment tests. Set the five server Actions secrets WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD to true. Existing main deployment run [41617152201](https://github.com/stemfra/stemfra-server/actions/runs/41617152201) succeeded at commit 522e00f89caea1332733f86e80b5a426d44f6f9b; public health returned HTTP 200. Read-only schema inspection confirmed the five required Whop RPC definitions exist; no migration or database mutation was run.
+
+Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
+
 ## 2026-11-03: Production catalogue compared with sandbox; deployment secrets staged
 
 Read-only provider comparison confirms production matches approved sandbox configuration: website USD299/CAD400/GBP225/KES30000 and AI Starter100/Growth200/Business300 USD, period30, initial0, no trial. Sandbox-only EUR100/NGN100 validation plans and duplicate Starter100 test plan are excluded; descriptions explicitly test-only. No approved production product needs deletion/recreation. Existing production IDs retained. AI remains held.

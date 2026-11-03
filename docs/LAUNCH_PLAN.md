@@ -1,3 +1,9 @@
+## 2026-11-03: Managed website production billing activated
+
+At Peter's explicit request, activated the tested configuration without repeating production payment tests. Set the five server Actions secrets WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD to true. Existing main deployment run [41617152201](https://github.com/stemfra/stemfra-server/actions/runs/41617152201) succeeded at commit 522e00f89caea1332733f86e80b5a426d44f6f9b; public health returned HTTP 200. Read-only schema inspection confirmed the five required Whop RPC definitions exist; no migration or database mutation was run.
+
+Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
+
 # Stemfra Launch Plan (phased, barbershop first)
 
 > **2026-10-12 planning update:** the immediate work is the revised [ROADMAP P48 plan](ROADMAP.md#revised-plan-managed-websites-custom-software-and-ai-2026-10-12): $299 service scope/copy, additive local previews, journey reconciliation, billing, then gated validation/release. Historical commission-era launch steps below are evidence from their dates and must be reconciled in P48.4/P48.5 before reuse. No launch switches, outreach, payment activation or release holds changed today. ElevenLabs work remains on hold until Peter confirms.

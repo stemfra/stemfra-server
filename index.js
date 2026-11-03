@@ -149,6 +149,7 @@ app.get('/health', (req, res) => {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/contact',  contactRoutes);
 app.use('/api/onboarding', require('./routes/onboarding'));
+app.use('/api/website-purchase', require('./routes/managedWebsitePurchase'));
 app.use('/api/claim', require('./routes/claim')); // public claim funnel (2026-08-19)
 app.use('/api/setup-call', require('./routes/setupCall'));  // public: marketing "Book a setup call" (video + Meet)
 app.use('/api/starters',   require('./routes/starters'));   // public Starter catalog (clone-to-onboard)
@@ -193,6 +194,7 @@ app.use('/api/cms/email-connector', require('./routes/cms/emailConnector'));
 app.use('/api/cms/bookings', require('./routes/cms/bookings'));
 app.use('/api/cms/leads', require('./routes/cms/leads'));
 app.use('/api/cms/email-templates', require('./routes/cms/emailTemplates'));
+app.use('/api/cms/setup-progress', require('./routes/cms/setupProgress'));
 app.use('/api/cms/google-profile', require('./routes/cms/googleProfile'));
 app.use('/api/cms/site-copy', require('./routes/cms/siteCopy')); // P39c: the wizard's finish job (AI copy from the facts)
 app.use('/api/cms/security', require('./routes/cms/security')); // P39k: account security notices (password, 2FA, new device)

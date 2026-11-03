@@ -88,6 +88,7 @@ jobs:
           environment-variables: |
             NODE_ENV=production
             WHOP_ENABLED=${{ secrets.WHOP_ENABLED_PROD || 'false' }}
+            MANAGED_WEBSITE_PURCHASE_ENABLED=${{ vars.MANAGED_WEBSITE_PURCHASE_ENABLED_PROD || 'false' }}
             WHOP_SANDBOX=false
             WHOP_ACCOUNT_ID=${{ secrets.WHOP_ACCOUNT_ID_PROD }}
             WHOP_API_KEY=${{ secrets.WHOP_API_KEY_PROD }}
