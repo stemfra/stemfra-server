@@ -13,6 +13,7 @@ const { attachSiteDomain } = require('../../lib/attachSiteDomain');
 const { softDeleteSite, restoreSite } = require('../../lib/siteDeletion');
 const { logSiteActivity } = require('../../lib/activity');
 const { isTestEmail } = require('../../lib/testData');
+const { managedWebsiteAcceptance } = require('../../lib/managedWebsiteOffer');
 const { LEGAL_DOCS, recordLegalAcceptance } = require('../../lib/legalDocs');
 
 // P19 items 2+3 (2026-09-01): stamp a newly created/cloned ADDITIONAL site the
@@ -21,12 +22,12 @@ const { LEGAL_DOCS, recordLegalAcceptance } = require('../../lib/legalDocs');
 //     every existing site of theirs is already flagged test), so a test owner's
 //     new sites never leak into invoices/sweepers/KPIs;
 //   fees_policy: recorded when the owner ticked the NewSiteModal confirm line
-//     ("Free website + 5% commission, same as your other sites") — same shape
+//     (managed website subscription terms) — same shape
 //     as lib/onboardSite.js + a legal_acceptances ledger row. Callers that
 //     never show the confirm (Stacy's clone card) simply don't send
 //     feesAccepted, and nothing is fabricated.
 // Best-effort by design: a stamp failure never fails the provision.
-async function stampNewSite({ siteId, contactId, authUserId, email, feesAccepted, source }) {
+async function stampNewSite({ siteId, contactId, authUserId, email, feesAccepted, subscriptionCurrency = 'USD', source }) {
   try {
     let isTest = isTestEmail(email);
     if (!isTest) {
@@ -37,7 +38,7 @@ async function stampNewSite({ siteId, contactId, authUserId, email, feesAccepted
     }
 
     const feesPolicy = feesAccepted === true
-      ? { accepted: true, accepted_at: new Date().toISOString(), commission_percent: 5, policy_version: LEGAL_DOCS.fees.version, source }
+      ? { accepted: true, accepted_at: new Date().toISOString(), ...managedWebsiteAcceptance(subscriptionCurrency), policy_version: LEGAL_DOCS.fees.version, source }
       : null;
 
     if (isTest || feesPolicy) {
@@ -51,7 +52,7 @@ async function stampNewSite({ siteId, contactId, authUserId, email, feesAccepted
     if (feesPolicy) {
       await recordLegalAcceptance({
         contactId, authUserId, email, siteId, docs: ['fees'], source,
-        metadata: { commission_percent: 5 },
+        metadata: managedWebsiteAcceptance(subscriptionCurrency),
       });
     }
   } catch (e) {
@@ -62,6 +63,7 @@ async function stampNewSite({ siteId, contactId, authUserId, email, feesAccepted
 // POST /api/cms/sites { businessName, vertical, city? }
 async function createSite(req, res) {
   try {
+    managedWebsiteAcceptance(req.body?.subscriptionCurrency || 'USD');
     const contactId = await resolveContactId(req.cmsUser.id);
     if (!contactId) return res.status(403).json({ error: 'No owner profile found for this account.' });
 
@@ -123,7 +125,7 @@ async function createSite(req, res) {
 
     await stampNewSite({
       siteId: site.siteId, contactId, authUserId: req.cmsUser.id, email: req.cmsUser.email,
-      feesAccepted: req.body?.feesAccepted === true, source: copySource ? 'new_site_copy' : 'new_site',
+      feesAccepted: req.body?.feesAccepted === true, subscriptionCurrency: req.body?.subscriptionCurrency || 'USD', source: copySource ? 'new_site_copy' : 'new_site',
     });
 
     // Best-effort host attach so the preview is reachable. If Cloudflare is
@@ -157,6 +159,7 @@ async function createSite(req, res) {
 // for an owner. Ownership of the source is enforced.
 async function cloneOwnSite(req, res) {
   try {
+    managedWebsiteAcceptance(req.body?.subscriptionCurrency || 'USD');
     const contactId = await resolveContactId(req.cmsUser.id);
     if (!contactId) return res.status(403).json({ error: 'No owner profile found for this account.' });
 
@@ -189,7 +192,7 @@ async function cloneOwnSite(req, res) {
 
     await stampNewSite({
       siteId: site.siteId, contactId, authUserId: req.cmsUser.id, email: req.cmsUser.email,
-      feesAccepted: req.body?.feesAccepted === true, source: 'clone',
+      feesAccepted: req.body?.feesAccepted === true, subscriptionCurrency: req.body?.subscriptionCurrency || 'USD', source: 'clone',
     });
 
     let domain = { attached: false };

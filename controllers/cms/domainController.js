@@ -18,6 +18,7 @@ const domainBalance = require('../../lib/domainBalance');
 const { purchaseAndWire } = require('../../lib/domainPurchase');
 const { logSiteActivity } = require('../../lib/activity');
 const billing = require('../../lib/billing');
+const { domainAllowance } = require('../../lib/domainAllowance');
 
 const DOMAIN_RE = /^([a-z0-9-]+\.)+[a-z]{2,}$/;
 
@@ -195,7 +196,8 @@ async function searchDomains(req, res) {
     // Which purchase mode the register button will use (drives the CMS copy).
     const purchaseMode = (await domainBalance.purchasesSuspended()) ? 'invoice_first' : 'instant';
 
-    res.json({ exact, alternates, purchaseMode });
+    const { data: subscription } = await supabase.from('subscriptions').select('provider,status,currency,monthly_amount_cents,current_period_end').eq('site_id', req.query.siteId).maybeSingle();
+    res.json({ exact, alternates, purchaseMode, includedRegistrationCapCents: domainAllowance(subscription, null).eligible ? 3000 : 0 });
   } catch (e) {
     res.status(502).json({ error: e.message });
   }
@@ -222,14 +224,15 @@ async function checkOne(req, res) {
 // `sub` is OPTIONAL: commission-era tenants have no subscriptions row
 // (subscription_id is nullable since the commission migration) — the charge
 // rides site_id alone, exactly like commission invoices.
-async function invoiceDomain({ siteId, sub, avail, orderId = null, pending }) {
+async function invoiceDomain({ siteId, sub, avail, orderId = null, pending, included = false }) {
   const { data: ch } = await supabase.from('billing_charges').insert({
     subscription_id: sub?.id ?? null, site_id: siteId, kind: 'adjustment',
-    line_items: [{ label: `Domain registration: ${avail.domain} (1 yr)`, cents: avail.retailCents }],
-    amount_cents: avail.retailCents, currency: sub?.currency || 'USD',
-    due_date: dueInDays(7), status: 'due', provider: 'airwallex',
+    line_items: [{ label: `Domain registration: ${avail.domain} (1 yr)`, cents: included ? 0 : avail.retailCents }],
+    amount_cents: included ? 0 : avail.retailCents, currency: included ? 'USD' : sub?.currency || 'USD',
+    paid_at: included ? new Date().toISOString() : null,
+    due_date: included ? null : dueInDays(7), status: included ? 'paid' : 'due', provider: included ? 'whop' : 'airwallex',
     metadata: {
-      type: 'domain_registration', domain: avail.domain, cost_cents: avail.costCents,
+      type: 'domain_registration', domain: avail.domain, cost_cents: avail.costCents, included_in_subscription: included,
       renewal_cost_cents: avail.renewalCostCents ?? null,
       registrar: process.env.DOMAIN_REGISTRAR || 'porkbun', purchased_by: 'owner',
       pending_registration: pending, ...(orderId ? { order_id: orderId } : {}),
@@ -237,7 +240,7 @@ async function invoiceDomain({ siteId, sub, avail, orderId = null, pending }) {
   }).select('id').single();
   const chargeId = ch?.id || null;
   // Email the invoice (best-effort; the insert already rang the bell).
-  if (chargeId) { try { await billing.markRequested(chargeId, { by: null }); } catch { /* email best-effort */ } }
+  if (chargeId && !included) { try { await billing.markRequested(chargeId, { by: null }); } catch { /* email best-effort */ } }
   return chargeId;
 }
 
@@ -266,7 +269,7 @@ async function registerOwn(req, res) {
     // ROADMAP task 57 gap b).
     const { data: sub } = await supabase
       .from('subscriptions')
-      .select('id, currency, provider, status')
+      .select('id, currency, provider, status, monthly_amount_cents, current_period_end')
       .eq('site_id', siteId)
       .maybeSingle();
 
@@ -274,7 +277,13 @@ async function registerOwn(req, res) {
     const avail = await reg.checkDomain(domain);
     if (!avail.available) return res.status(409).json({ error: `${avail.domain} is not available`, availability: avail });
 
+    const allowance = domainAllowance(sub, avail.retailCents);
+    if (sub?.provider === 'whop') {
+      if (!allowance.eligible) return res.status(409).json({ error: 'An active managed website subscription is required for the included domain.' });
+      if (!allowance.included) return res.status(400).json({ error: 'Choose a domain with a registration price of $30 or less.' });
+    }
     const instant = !(await domainBalance.purchasesSuspended());
+    if (allowance.included && !instant) return res.status(503).json({ error: 'Domain registration is temporarily unavailable. Please contact support to complete your included registration.' });
 
     if (!instant) {
       // Balance below threshold — never spend what we can't cover. Invoice now;
@@ -301,7 +310,7 @@ async function registerOwn(req, res) {
     });
     let chargeId = null;
     try {
-      chargeId = await invoiceDomain({ siteId, sub, avail, orderId, pending: false });
+      chargeId = await invoiceDomain({ siteId, sub, avail, orderId, pending: false, included: allowance.included });
     } catch (e) { steps.billing = e.message; }
 
     logSiteActivity({
@@ -317,7 +326,7 @@ async function registerOwn(req, res) {
     res.json({
       ok: true, mode: 'instant', domain: avail.domain, orderId,
       retailCents: avail.retailCents, renewalRetailCents: avail.renewalRetailCents ?? null,
-      steps, billed: !!chargeId,
+      steps, billed: !!chargeId, included: allowance.included,
     });
   } catch (e) {
     res.status(502).json({ error: e.message, porkbun: e.porkbun || undefined });
@@ -358,7 +367,14 @@ async function manage(req, res) {
       renewalRetailCents = p != null ? reg.retailCents(Math.round(Number(p) * 100)) : null;
     } catch { /* pricing best-effort */ }
 
+    const renewalSub = await supabase.from('subscriptions')
+      .select('provider,status,currency,monthly_amount_cents,current_period_end')
+      .eq('site_id', req.query.siteId).maybeSingle();
+    if (renewalSub.error) throw new Error('Could not verify domain renewal coverage.');
+    const renewalCoverage = domainAllowance(renewalSub.data, renewalRetailCents);
     res.json({
+      subscriptionManaged: renewalSub.data?.provider === 'whop',
+      renewalIncluded: renewalCoverage.included,
       domain: customDomain, managed: true,
       status: record?.status || null,
       expireDate: record?.expireDate || null,

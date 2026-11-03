@@ -634,6 +634,37 @@ function platformDunning({ businessName, greetingName, amountLabel, dueLabel, da
   });
 }
 
+function platformRenewalReminder({ businessName, amountLabel, renewalLabel, dashboardUrl }) {
+  return renderEmail({
+    preheader: `Your managed website subscription renews on ${renewalLabel}.`,
+    heading: 'Your subscription renews soon',
+    paragraphs: ['Your managed website subscription is scheduled to renew in three days.'],
+    rows: [
+      { label: 'Website', value: businessName },
+      { label: 'Renewal date', value: renewalLabel },
+      { label: 'Estimated amount', value: amountLabel },
+    ],
+    cta: { label: 'Manage billing', url: dashboardUrl },
+    note: 'The estimated amount excludes applicable taxes. Your saved payment method will be charged automatically. No manual payment is needed.',
+    reason: 'You are receiving this reminder about your Stemfra subscription.',
+  });
+}
+
+function platformPaidInvoice({ businessName, amountLabel, paidLabel, dashboardUrl, invoiceRef }) {
+  return renderEmail({
+    preheader: `Your paid invoice ${invoiceRef} is attached.`,
+    eyebrow: 'Invoice',
+    heading: 'Your invoice',
+    paragraphs: [`Your paid Stemfra invoice${businessName ? ` for ${businessName}` : ''} is attached. No payment is due.`],
+    rows: [{ label: 'Invoice', value: invoiceRef }, paidLabel ? { label: 'Paid', value: paidLabel } : null],
+    amount: { label: 'Invoice total', value: amountLabel },
+    cta: { label: 'View invoices', url: dashboardUrl || `${CMS_URL}/billing/invoices` },
+    note: 'Keep the attached invoice for your records.',
+    reason: 'Your Stemfra subscription invoice.',
+    footerLinks: BILLING_LINKS,
+  });
+}
+
 function platformReceipt({ businessName, amountLabel, paidLabel, dashboardUrl, invoiceRef }) {
   return renderEmail({
     preheader: `Payment received: ${amountLabel}. Thank you.`,
@@ -1071,6 +1102,8 @@ module.exports = {
   platformInvoice,
   platformDunning,
   platformReceipt,
+  platformPaidInvoice,
+  platformRenewalReminder,
   platformReceiptRequest,
   platformPaymentReturned,
   staffHandoffNotification,

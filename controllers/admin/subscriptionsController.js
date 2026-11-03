@@ -3,8 +3,8 @@
 // A1 engine (lib/platformBilling + the `subscriptions` table). NOT System B
 // (Connect, the businesses' own end-customer payments). Staff-gated.
 const supabase = require('../../config/supabase');
+const { siteKind } = require('../../lib/testData');
 const { stripe } = require('../../config/stripe');
-const { createPlatformCheckout } = require('../../lib/platformBilling');
 
 const CMS_URL = process.env.CMS_URL || 'http://localhost:5180';
 const CRM_URL = process.env.CRM_URL || 'https://crm.stemfra.com';
@@ -14,14 +14,25 @@ async function listSubscriptions(req, res) {
   try {
     const { data, error } = await supabase
       .from('sites')
-      .select('id, subdomain, status, company:companies(name), vertical:verticals(display_name, build_price_cents, monthly_price_cents, currency), subscription:subscriptions(status, monthly_amount_cents, build_amount_cents, currency, current_period_end, build_paid_at, cancel_at_period_end, stripe_customer_id)')
+      .select('id, subdomain, status, metadata, company:companies(name), vertical:verticals(display_name, build_price_cents, monthly_price_cents, currency), subscription:subscriptions(status, monthly_amount_cents, build_amount_cents, currency, current_period_end, build_paid_at, cancel_at_period_end, stripe_customer_id, provider, metadata)')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
     if (error) throw new Error(error.message);
 
+    const { data: intents, error: intentError } = await supabase.from('whop_checkout_intents')
+      .select('membership_id,sandbox').eq('state', 'paid');
+    if (intentError) throw new Error('Billing environment verification unavailable');
+    const environments = new Map((intents || []).map(i => [i.membership_id, i.sandbox === true ? 'sandbox' : i.sandbox === false ? 'production' : 'unknown']));
     const rows = (data || []).map((s) => {
-      const sub = s.subscription?.[0] || null;
+      const sub = Array.isArray(s.subscription) ? s.subscription[0] : s.subscription;
+      const environment = sub?.provider === 'whop' ? environments.get(sub.metadata?.whop_membership_id) || 'unknown' : sub ? 'legacy' : 'none';
       return {
         siteId: s.id,
+        kind: siteKind(s),
+        provider: sub?.provider || null,
+        environment,
+        planLabel: sub?.metadata?.plan_label || (sub ? 'Historical plan' : 'No subscription'),
+        managementUrl: `${CMS_URL}/billing`,
         business: s.company?.name || s.subdomain,
         subdomain: s.subdomain,
         siteStatus: s.status,
@@ -46,26 +57,8 @@ async function listSubscriptions(req, res) {
 
 // POST /api/admin/subscriptions/:siteId/checkout — staff start (or restart)
 // the client's Stemfra subscription; returns a Checkout URL to send the client.
-async function startCheckout(req, res) {
-  try {
-    const { siteId } = req.params;
-    const { data: s } = await supabase.from('sites').select('vertical_id').eq('id', siteId).single();
-    const { data: v } = await supabase.from('verticals').select('build_price_cents, monthly_price_cents, currency').eq('id', s?.vertical_id).single();
-    if (!v) return res.status(400).json({ error: 'Pricing not found for this vertical.' });
-    const result = await createPlatformCheckout({
-      siteId,
-      monthlyAmountCents: v.monthly_price_cents,
-      buildAmountCents: v.build_price_cents,
-      currency: v.currency || 'usd',
-      successUrl: `${CMS_URL}/settings?billing=success`,
-      cancelUrl: `${CMS_URL}/settings?billing=canceled`,
-    });
-    res.json({ ok: true, url: result.url });
-  } catch (err) {
-    if (err.code === 'no_email') return res.status(400).json({ error: 'The owner contact has no billing email.' });
-    if (err.code === 'no_stripe') return res.status(503).json({ error: 'Stripe is not configured.' });
-    res.status(500).json({ error: err.message });
-  }
+async function startCheckout(_req, res) {
+  return res.status(410).json({ error: 'Website subscriptions start through the owner CMS billing checkout.' });
 }
 
 // POST /api/admin/subscriptions/:siteId/portal — Stripe Customer Portal link.

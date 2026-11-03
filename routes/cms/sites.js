@@ -1,14 +1,25 @@
 const express = require('express');
 const router = express.Router();
+const catalogue = require('../../lib/managedWebsiteCatalogue');
+router.use(catalogue.middleware);
 const { requireCmsAuth } = require('../../middleware/cmsAuth');
 const { createSite, cloneOwnSite, deleteOwnSite, restoreOwnSite, updateBusinessName } = require('../../controllers/cms/sitesController');
 
 // Owner self-serve "+ New site" — provision an additional site for the
 // authenticated owner.
-router.post('/', requireCmsAuth, createSite);
+router.get('/subscription-offer', requireCmsAuth, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try {
+    res.json(await require('../../lib/ownerSubscriptionOffer').ownerSubscriptionOffer(req.cmsUser.id, req.query.siteId, req));
+  } catch (error) {
+    res.status(error.status || 503).json({ error: error.status === 403 ? error.message : 'Could not load your subscription price. Please try again.' });
+  }
+});
+
+router.post('/', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, createSite);
 // Owner self-serve "Clone this shop" — duplicate an owned site (design + catalog
 // + content) into a new one.
-router.post('/clone', requireCmsAuth, cloneOwnSite);
+router.post('/clone', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, cloneOwnSite);
 // Owner self-serve delete / restore (soft-delete, 90-day grace).
 router.post('/:siteId/delete', requireCmsAuth, deleteOwnSite);
 router.post('/:siteId/restore', requireCmsAuth, restoreOwnSite);

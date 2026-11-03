@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('./lib/whop/webhookInbox').start();
 
 const express          = require('express');
 const cors             = require('cors');
@@ -106,13 +107,14 @@ function corsOrigin(origin, callback) {
 
 app.use(cors({
   origin:         corsOrigin,
-  methods:        ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods:        ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials:    true,
 }));
 
 // Stripe webhook MUST be registered before express.json() — signature
 // verification needs the raw, unparsed request body.
+app.use('/api/whop/webhook', express.raw({ type: '*/*', limit: '256kb' }), require('./routes/whopWebhook'));
 app.use('/api/stripe/webhook', express.raw({ type: '*/*' }), require('./routes/stripeWebhook'));
 // Airwallex deposit webhook (recon) — same raw-body requirement for HMAC verify.
 app.use('/api/awx/webhook', express.raw({ type: '*/*' }), require('./routes/awxWebhook'));
@@ -262,6 +264,9 @@ server.listen(PORT, () => {
   // System A billing: open one recurring charge per active manual-provider
   // subscription per calendar month (Payoneer etc.; Stripe self-bills).
   startBillingCycleSweeper();
+  require('./lib/whop/receipts').startReceiptSweeper();
+  require('./lib/whop/renewalReminders').startRenewalReminderSweeper();
+  require('./lib/whop/accessLifecycle').startAccessLifecycleSweeper();
   require('./lib/domainActivation').startDomainActivationSweeper(); // custom domains go 'active' only once they really serve (2026-08-19)
   // An unfinished lead-gen batch survives a deploy (crm_settings.leadgen_batch, 2026-09-16).
   setTimeout(() => require('./lib/leadgenBatch').resumeOnBoot().catch(() => {}), 15_000);

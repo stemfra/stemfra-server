@@ -8,8 +8,6 @@ const { evaluateCompleteness } = require('../../lib/siteCompleteness');
 const { evaluateSampleSections } = require('../../lib/sampleContent');
 const { evaluateSiteQuality } = require('../../lib/siteQuality');
 const { publishSite, unpublishSite, getBillingStatus } = require('../../lib/sitePublish');
-const { createPlatformCheckout } = require('../../lib/platformBilling');
-const billing = require('../../lib/billing');
 
 const ZONE = 'stemfra.com';
 const CMS_URL = process.env.CMS_URL || 'http://localhost:5180';
@@ -43,7 +41,7 @@ async function publish(req, res) {
     if (!siteId) return res.status(400).json({ error: 'siteId required' });
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ error: 'Not your site.' });
-    const result = await publishSite(siteId); // owners always go through the billing gate
+    const result = await publishSite(siteId); // ownership and completeness are enforced
     res.json(result);
   } catch (err) {
     if (err.code === 'not_ready') return res.status(409).json({ error: err.message, code: err.code, completeness: err.completeness });
@@ -77,21 +75,7 @@ async function billingCheckout(req, res) {
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ error: 'Not your site.' });
 
-    const { data: s } = await supabase.from('sites').select('vertical_id').eq('id', siteId).single();
-    const { data: vertical } = await supabase
-      .from('verticals').select('build_price_cents, monthly_price_cents, currency').eq('id', s?.vertical_id).single();
-    if (!vertical) return res.status(400).json({ error: 'Pricing not found for this vertical.' });
-
-    const result = await createPlatformCheckout({
-      siteId,
-      monthlyAmountCents: vertical.monthly_price_cents,
-      buildAmountCents: vertical.build_price_cents,
-      currency: vertical.currency || 'usd',
-      // NB: must target /settings/publish directly — bare /settings redirects
-      // via <Navigate>, which drops the ?billing= query the CMS reacts to.
-      successUrl: `${CMS_URL}/settings/publish?billing=success`,
-      cancelUrl: `${CMS_URL}/settings/publish?billing=canceled`,
-    });
+    const result = await require('../../lib/whop/service').prepare(siteId, req.cmsUser.id, req.cmsUser.email);
     res.json(result);
   } catch (err) {
     if (err.code === 'no_stripe') return res.status(503).json({ error: 'Billing is not configured yet.' });
@@ -109,59 +93,7 @@ async function billingCheckout(req, res) {
 // gate. Idempotent: a second click won't duplicate the subscription/charge or
 // re-send the email.
 async function requestPublishInvoice(req, res) {
-  // Commission model (2026-07-29): publishing is free; the Payoneer/Airwallex
-  // pay-to-publish invoice is retired. Gate (SUBSCRIPTION_BILLING_ENABLED=true
-  // re-arms it) so nothing can open a $99 subscription charge by accident
-  // (found 2026-08-19: legacy demo subscriptions kept being invoiced).
-  if (process.env.SUBSCRIPTION_BILLING_ENABLED !== 'true') {
-    return res.status(410).json({ error: 'Publishing is free under the commission model; no invoice is needed. Use Publish.' , code: 'subscription_billing_retired' });
-  }
-
-  try {
-    const { siteId } = req.body;
-    if (!siteId) return res.status(400).json({ error: 'siteId required' });
-    const site = await verifySiteOwnership(req.cmsUser.id, siteId);
-    if (!site) return res.status(403).json({ error: 'Not your site.' });
-
-    // Already paid/active → nothing to invoice; the CMS can just publish.
-    const status = await getBillingStatus(siteId);
-    if (status.active) return res.json({ ok: true, alreadyActive: true });
-
-    // Ensure a subscription row for the site (pending — no auto go-live).
-    let { data: sub } = await supabase.from('subscriptions').select('*').eq('site_id', siteId).maybeSingle();
-    if (!sub) {
-      const { data: s } = await supabase.from('sites').select('vertical_id').eq('id', siteId).single();
-      const { data: vertical } = await supabase
-        .from('verticals').select('build_price_cents, monthly_price_cents, currency, display_name').eq('id', s?.vertical_id).single();
-      if (!vertical) return res.status(400).json({ error: 'Pricing not found for this vertical.' });
-      const provider = await billing.getActiveProvider();
-      const { data: created, error } = await supabase.from('subscriptions').insert({
-        site_id: siteId,
-        build_amount_cents: vertical.build_price_cents || 0,
-        monthly_amount_cents: vertical.monthly_price_cents || 0,
-        currency: vertical.currency || 'USD',
-        status: 'pending', provider, cancel_at_period_end: false,
-        metadata: { plan_label: vertical.display_name || 'Stemfra subscription', source: 'owner_publish' },
-      }).select('*').single();
-      if (error) return res.status(500).json({ error: error.message });
-      sub = created;
-    }
-
-    // Ensure the initial charge, then request it (sends the invoice email).
-    const planLabel = sub.metadata?.plan_label || 'Stemfra subscription';
-    let { data: charge } = await supabase.from('billing_charges')
-      .select('id, status').eq('subscription_id', sub.id).eq('kind', 'initial').maybeSingle();
-    if (!charge) charge = await billing.openInitialCharge(sub, { planLabel });
-
-    let invoiced = false;
-    if (charge.status === 'due' || charge.status == null) {
-      await billing.markRequested(charge.id, { by: null }); // emails the payment request + bell
-      invoiced = true;
-    }
-    return res.json({ ok: true, invoiced, alreadyRequested: !invoiced });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  return res.status(410).json({ error: 'Use Billing to subscribe securely through Whop.', code: 'subscription_billing_retired' });
 }
 
 // GET /api/cms/site-publish/sample-status/:siteId — ids of sections whose text

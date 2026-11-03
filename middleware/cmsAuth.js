@@ -73,11 +73,11 @@ async function requireCmsAuth(req, res, next) {
   }
 }
 
-async function verifySiteOwnership(authUserId, siteId) {
+async function verifySiteOwnership(authUserId, siteId, { allowSuspended = false } = {}) {
   if (!authUserId || !siteId) return null;
   const { data: site } = await supabase
     .from('sites')
-    .select('id, owner_contact_id, status, subdomain')
+    .select('id, owner_contact_id, status, subdomain, metadata')
     .eq('id', siteId)
     .single();
   if (!site) return null;
@@ -86,7 +86,10 @@ async function verifySiteOwnership(authUserId, siteId) {
     .select('id, auth_user_id')
     .eq('id', site.owner_contact_id)
     .single();
-  if (contact?.auth_user_id === authUserId) return site;
+  if (contact?.auth_user_id === authUserId) {
+    if (site.status === 'suspended' && !allowSuspended) return null;
+    return site;
+  }
 
   // Staff mode: active @stemfra.com staff can operate any site (audited).
   const staff = await getStaffInfo(authUserId);

@@ -1,6 +1,7 @@
 // Admin System-A billing — provider-agnostic collection (Payoneer first).
 // Staff-gated (PLATFORM_ADMIN). The server uses the service-role client.
 const supabase = require('../../config/supabase');
+const { siteKind } = require('../../lib/testData');
 const billing = require('../../lib/billing');
 const { meterSiteCommission, meterAllSitesForPeriod } = require('../../lib/commissionMeter');
 const { streamInvoicePdf } = require('../../lib/invoicePdf');
@@ -12,7 +13,7 @@ async function payersForSites(siteIds) {
   const ids = [...new Set((siteIds || []).filter(Boolean))];
   if (!ids.length) return {};
   const { data: sites } = await supabase.from('sites')
-    .select('id, subdomain, company_id, owner_contact_id').in('id', ids);
+    .select('id, subdomain, company_id, owner_contact_id, metadata').in('id', ids);
   const companyIds = [...new Set((sites || []).map(s => s.company_id).filter(Boolean))];
   const contactIds = [...new Set((sites || []).map(s => s.owner_contact_id).filter(Boolean))];
   const [{ data: companies }, { data: contacts }] = await Promise.all([
@@ -27,6 +28,7 @@ async function payersForSites(siteIds) {
     const co = coById[s.company_id];
     out[s.id] = {
       subdomain: s.subdomain,
+      kind: siteKind(s),
       company: co?.name || null,
       payer: {
         name: ct?.full_name || co?.name || '',
@@ -42,7 +44,7 @@ async function payersForSites(siteIds) {
 // GET /api/admin/billing/provider
 async function getProvider(_req, res) {
   const provider = await billing.getActiveProvider();
-  return res.json({ provider, available: Object.keys(billing.PROVIDERS) });
+  return res.json({ provider, available: Object.keys(billing.PROVIDERS).filter(key => billing.PROVIDERS[key].manual !== false) });
 }
 
 // POST /api/admin/billing/provider { provider }
@@ -63,7 +65,9 @@ async function listCharges(req, res) {
   const { data: charges, error } = await q;
   if (error) return res.status(500).json({ success: false, message: error.message });
   const payers = await payersForSites((charges || []).map(c => c.site_id));
-  const rows = (charges || []).map(c => ({ ...c, site: payers[c.site_id] || null }));
+  const rows = (charges || []).map(c => ({ ...c, site: payers[c.site_id] || null,
+    dataset: payers[c.site_id]?.kind || 'unknown',
+    environment: c.metadata?.sandbox === true ? 'sandbox' : c.metadata?.sandbox === false ? 'production' : c.provider === 'whop' ? 'unknown' : 'legacy' }));
   return res.json({ charges: rows });
 }
 
@@ -71,9 +75,10 @@ async function listCharges(req, res) {
 // branded invoice (same PDF the owner sees). Part of the commission compliance packet.
 async function invoicePdf(req, res) {
   const { data: charge } = await supabase.from('billing_charges')
-    .select('id, site_id, kind, line_items, amount_cents, currency, status, due_date, paid_at, created_at, provider')
+    .select('id, site_id, kind, line_items, amount_cents, currency, status, due_date, paid_at, created_at, provider, period_start, period_end, metadata')
     .eq('id', req.params.id).maybeSingle();
   if (!charge) return res.status(404).json({ error: 'Invoice not found' });
+  if (charge.provider === 'whop' && charge.metadata?.whop_payment_id) return require('../../lib/whop/documents').sendInvoicePdf(res, charge);
   const { data: site } = await supabase.from('sites').select('owner_contact_id').eq('id', charge.site_id).maybeSingle();
   let contact = null;
   if (site?.owner_contact_id) {
@@ -81,7 +86,7 @@ async function invoicePdf(req, res) {
     contact = data || null;
   }
   // Widened 2026-08-04 to every unpaid charge — keep in step with the CMS path.
-  const bank = charge.status !== 'paid' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
+  const bank = charge.status !== 'paid' && charge.provider !== 'whop' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
   // P19: bill-to = the SITE's company identity (contact fallback inside).
   const identity = await require('../../lib/billingProfile').resolveBillingIdentity(charge.site_id).catch(() => null);
   const bp = identity?.profile || contact?.billing_profile || {};

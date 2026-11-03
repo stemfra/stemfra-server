@@ -28,7 +28,7 @@ const monthOf = (iso) => (iso ? String(iso).slice(0, 7) : null); // 'YYYY-MM'
 async function loadBillableCharges({ sinceIso = null, statuses = ['requested', 'paid'], includeDemo = false } = {}) {
   let q = supabase
     .from('billing_charges')
-    .select('id, site_id, kind, line_items, amount_cents, currency, status, created_at, paid_at, metadata')
+    .select('id, site_id, kind, line_items, amount_cents, currency, status, created_at, paid_at, metadata, provider')
     .in('status', statuses)
     .limit(5000);
   if (sinceIso) q = q.gte('created_at', sinceIso);
@@ -37,7 +37,7 @@ async function loadBillableCharges({ sinceIso = null, statuses = ['requested', '
 
   // Demo exclusion (default): drop demo_seed charges + charges on starter sites.
   // includeDemo=true bypasses BOTH — a preview mode only (never for real nexus).
-  const rows = (charges || []).filter((c) => includeDemo || c.metadata?.demo_seed !== true);
+  const rows = (charges || []).filter((c) => includeDemo || (c.metadata?.demo_seed !== true && c.metadata?.sandbox !== true && (c.provider !== 'whop' || c.metadata?.sandbox === false)));
   const siteIds = [...new Set(rows.map((r) => r.site_id).filter(Boolean))];
   const { data: sites } = siteIds.length
     ? await supabase.from('sites').select('id, subdomain, owner_contact_id, metadata').in('id', siteIds)

@@ -26,7 +26,7 @@ function sellablePlans(catalog) {
 async function getBilling(req, res) {
   const siteId = req.query.siteId;
   if (!siteId) return res.status(400).json({ error: 'siteId is required' });
-  const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+  const site = await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your site' });
 
   const { data: sub } = await supabase.from('subscriptions')
@@ -71,7 +71,23 @@ async function getBilling(req, res) {
   // "about to be billed" review card (best-effort; the page renders without it).
   const preInvoice = await listReviewBookings(siteId).catch((e) => { console.error('[billing] pre-invoice list failed:', e.message); return null; });
 
-  return res.json({ subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice });
+  let pendingSavedPayment = null;
+  if (process.env.WHOP_SAVED_CARD_ENABLED === 'true') {
+    const pending = await supabase.from('whop_checkout_intents').select('saved_payment_id')
+      .eq('site_id', siteId).eq('requested_by', req.cmsUser.id).eq('state', 'pending')
+      .eq('acquisition_mode', 'saved_card').maybeSingle();
+    if (pending.error) return res.status(503).json({ error: 'Could not verify pending payment. Please try again shortly.' });
+    pendingSavedPayment = pending.data?.saved_payment_id || null;
+  }
+  let pendingSubscriptionCurrency=null;
+  const currentEnv=process.env.WHOP_SANDBOX !== 'false';
+  const pendingIntent=await supabase.from('whop_checkout_intents').select('plan_key').eq('site_id',siteId).eq('requested_by',req.cmsUser.id).eq('state','pending').eq('sandbox',currentEnv).maybeSingle();
+  if(pendingIntent.error)return res.status(503).json({error:'Could not verify pending subscription.'});
+  if(pendingIntent.data)pendingSubscriptionCurrency=pendingIntent.data.plan_key === 'managed_website' ? 'USD' : pendingIntent.data.plan_key.replace('managed_website_','').split('_')[0].toUpperCase();
+  let subscriptionOffers=[];
+  try {subscriptionOffers=require('../../lib/whop/websitePrices').offers(require('../../lib/whop/core').config());} catch {}
+  const preferredSubscriptionCurrency = site.metadata?.onboarding?.fees_policy?.currency || require('../../lib/managedWebsiteOffer').regionalOffer(req).currency;
+  return res.json({ preferredSubscriptionCurrency, pendingSubscriptionCurrency, subscriptionOffers, subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice, pendingSavedPayment });
 }
 
 // POST /api/cms/billing/change-plan { siteId, tier }
@@ -81,12 +97,13 @@ async function getBilling(req, res) {
 async function changePlan(req, res) {
   const { siteId, tier } = req.body || {};
   if (!siteId || !tier) return res.status(400).json({ error: 'siteId and tier are required' });
-  const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+  const site = await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your site' });
 
   const { data: sub } = await supabase.from('subscriptions')
-    .select('id, status, monthly_amount_cents, metadata').eq('site_id', siteId).maybeSingle();
+    .select('id, status, provider, monthly_amount_cents, metadata').eq('site_id', siteId).maybeSingle();
   if (!sub) return res.status(400).json({ error: 'No subscription to change yet.' });
+  if (sub.provider === 'whop') return res.status(409).json({ error: 'Manage this subscription through Whop.' });
   if (!['active', 'past_due'].includes(sub.status)) {
     return res.status(400).json({ error: 'Plan changes unlock once your first payment is in — reach out and we’ll sort it.' });
   }
@@ -123,7 +140,7 @@ async function updateBillingContact(req, res) {
   const b = req.body || {};
 
   if (b.siteId) {
-    const site = await verifySiteOwnership(req.cmsUser.id, b.siteId);
+    const site = await verifySiteOwnership(req.cmsUser.id, b.siteId, { allowSuspended: true });
     if (!site) return res.status(403).json({ error: 'Not your site' });
     const patch = {};
     for (const k of IDENTITY_KEYS) if (b[k] !== undefined) patch[k] = b[k] || null;
@@ -161,10 +178,18 @@ async function updateBillingContact(req, res) {
 async function cancelSubscription(req, res) {
   const { siteId, reasons, feedback } = req.body || {};
   if (!siteId) return res.status(400).json({ error: 'siteId is required' });
-  const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+  if ((reasons !== undefined && (!Array.isArray(reasons) || reasons.length > 10 || reasons.some(r => typeof r !== 'string' || r.length > 80))) || (feedback !== undefined && (typeof feedback !== 'string' || feedback.length > 2000))) return res.status(400).json({ error: 'Please check your cancellation feedback.' });
+  const site = await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your site' });
-  const { data: sub } = await supabase.from('subscriptions').select('id, status, metadata').eq('site_id', siteId).maybeSingle();
+  const { data: sub } = await supabase.from('subscriptions').select('id, status, provider, metadata').eq('site_id', siteId).maybeSingle();
   if (!sub) return res.status(400).json({ error: 'No subscription to cancel.' });
+  if (sub.provider === 'whop') {
+    try {
+      const subscription = await require('../../lib/whop/service').setCancellation(siteId, sub, true, { reasons, feedback });
+      logSiteActivity({ siteId, action: true ? 'subscription_cancel_requested' : 'subscription_reactivated', actorName: req.cmsUser.email, entityType: 'subscription', entityId: sub.id });
+      return res.json({ subscription });
+    } catch { return res.status(503).json({ error: 'We could not confirm the subscription change. Please refresh billing or manage your subscription in Whop.' }); }
+  }
   if (!['active', 'past_due'].includes(sub.status)) return res.status(400).json({ error: 'This subscription can’t be canceled from here.' });
 
   const metadata = { ...(sub.metadata || {}), cancel_reasons: reasons || null, cancel_feedback: feedback || null };
@@ -180,10 +205,17 @@ async function cancelSubscription(req, res) {
 async function reactivateSubscription(req, res) {
   const { siteId } = req.body || {};
   if (!siteId) return res.status(400).json({ error: 'siteId is required' });
-  const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+  const site = await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your site' });
-  const { data: sub } = await supabase.from('subscriptions').select('id').eq('site_id', siteId).maybeSingle();
+  const { data: sub } = await supabase.from('subscriptions').select('id, provider, metadata').eq('site_id', siteId).maybeSingle();
   if (!sub) return res.status(400).json({ error: 'No subscription.' });
+  if (sub.provider === 'whop') {
+    try {
+      const subscription = await require('../../lib/whop/service').setCancellation(siteId, sub, false);
+      logSiteActivity({ siteId, action: false ? 'subscription_cancel_requested' : 'subscription_reactivated', actorName: req.cmsUser.email, entityType: 'subscription', entityId: sub.id });
+      return res.json({ subscription });
+    } catch { return res.status(503).json({ error: 'We could not confirm the subscription change. Please refresh billing or manage your subscription in Whop.' }); }
+  }
   const { data, error } = await supabase.from('subscriptions')
     .update({ cancel_at_period_end: false, canceled_at: null }).eq('id', sub.id).select('*').single();
   if (error) return res.status(500).json({ error: error.message });
@@ -195,12 +227,13 @@ async function reactivateSubscription(req, res) {
 // Fetched with the owner's Bearer token (the CMS opens it as a blob).
 async function invoicePdf(req, res) {
   const { data: charge } = await supabase.from('billing_charges')
-    .select('id, site_id, kind, line_items, amount_cents, currency, status, due_date, paid_at, created_at, provider')
+    .select('id, site_id, kind, line_items, amount_cents, currency, status, due_date, paid_at, created_at, provider, period_start, period_end, metadata')
     .eq('id', req.params.chargeId).maybeSingle();
   if (!charge) return res.status(404).json({ error: 'Invoice not found' });
-  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id);
+  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your invoice' });
 
+  if (charge.provider === 'whop' && charge.metadata?.whop_payment_id) return require('../../lib/whop/documents').sendInvoicePdf(res, charge);
   const contactId = await resolveContactId(req.cmsUser.id);
   let contact = null;
   if (contactId) {
@@ -210,7 +243,7 @@ async function invoicePdf(req, res) {
   // EVERY unpaid invoice is paid by bank transfer (2026-08-04, was gated to
   // commission/adjustment) → include our Airwallex bank details so the tenant
   // knows exactly where to pay. Matches the emailed attachment.
-  const bank = charge.status !== 'paid' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
+  const bank = charge.status !== 'paid' && charge.provider !== 'whop' ? await getCommissionBank({ currency: charge.currency }).catch(() => null) : null;
   // P19: bill-to = the SITE's company identity (contact fallback inside).
   const identity = await resolveBillingIdentity(charge.site_id);
   const bp = identity?.profile || contact?.billing_profile || {};
@@ -227,7 +260,7 @@ async function hostedInvoice(req, res) {
   const { data: charge } = await supabase.from('billing_charges')
     .select('id, site_id, metadata').eq('id', req.params.chargeId).maybeSingle();
   if (!charge) return res.status(404).json({ error: 'Invoice not found' });
-  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id);
+  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your invoice' });
   const awxId = charge.metadata?.awx_invoice_id;
   if (!awxId) return res.status(404).json({ error: 'No hosted invoice' });
@@ -253,7 +286,7 @@ async function submitReceipt(req, res) {
   const { data: charge } = await supabase.from('billing_charges')
     .select('id, site_id, metadata, status').eq('id', req.params.chargeId).maybeSingle();
   if (!charge) return res.status(404).json({ error: 'Invoice not found' });
-  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id);
+  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your invoice' });
 
   const metadata = { ...(charge.metadata || {}), receipt_url: receiptUrl, receipt_uploaded_at: new Date().toISOString() };
@@ -277,7 +310,7 @@ async function claimPayment(req, res) {
   const { data: charge } = await supabase.from('billing_charges')
     .select('*').eq('id', req.params.chargeId).maybeSingle();
   if (!charge) return res.status(404).json({ error: 'Invoice not found' });
-  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id);
+  const site = await verifySiteOwnership(req.cmsUser.id, charge.site_id, { allowSuspended: true });
   if (!site) return res.status(403).json({ error: 'Not your invoice' });
   if (charge.status === 'paid') return res.json({ status: 'paid' });
   if (!['due', 'requested'].includes(charge.status)) return res.status(400).json({ error: 'This invoice is not payable' });
