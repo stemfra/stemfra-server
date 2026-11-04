@@ -1,3 +1,7 @@
+## 2026-11-04: Managed website signup release and hosted acceptance
+
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+
 ## Local GitHub deployment access, 4 November 2026
 
 The ignored `stemfra_server/.env` now contains `PERSONAL_ACCESS_TOKEN`, copied unchanged with Peter's explicit approval from the previously documented local source. Its value is never printed or committed. Use `node scripts/github.cjs <gh arguments>` from stemfra_server; the helper supplies GH_TOKEN only to the child command. Normal `gh auth status` may still report signed out, so check this documented token path before requesting `gh auth login`. Repository access and Actions secret operations have been verified. The token is local release tooling, not a production API environment variable or browser/client setting. See AGENTS.md.
@@ -18,7 +22,7 @@ At Peter's explicit request, activated the tested configuration without repeatin
 
 Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
 
-# Current production comparison, 4 November 2026
+# Pre-release production comparison, 4 November 2026
 
 Read-only comparison of sandbox biz_JXJPD9Q4Ta5thq and production biz_3yEQNCgp1hy3wV. No checkout creation, payment, webhook event/replay, account setting change or deployment.
 

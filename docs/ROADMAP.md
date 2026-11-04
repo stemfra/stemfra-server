@@ -1,3 +1,11 @@
+## 2026-11-04: Customer footer identity follow-up
+
+Commit4b06592 removes starter business identity from new customer footer defaults and repairs still-inherited values on Finish, preserving design and owner edits. Existing paid test repaired and browser/database verified;20 focused tests pass. No new payment, site, publishing or AI change. See [current website journey](user-journeys/managed-website-purchase-to-setup.md) and root handoff for deployment status.
+
+## 2026-11-04: Managed website signup release and hosted acceptance
+
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+
 ## 2026-11-04: Website release prepared, access steps pending
 
 Peter explicitly authorized restoring sandbox webhook delivery, production website deployment/hosted checks and reviewing stranded purchases, plus regenerating the journey image. Separate AI session is active; no AI code, project, webhook or rollout changed here. Prepared isolated website release worktrees under /tmp/stemfra-website-{server,platform,client}-release. Marketing release excludes AILaunchPricing.tsx/aiOffer.js and does not announce AI checkout. Removed two stale website free-CTA messages and an obsolete preview bank-transfer line; shared visual layout unchanged. Server workflow now maps MANAGED_WEBSITE_PURCHASE_ENABLED_PROD through a GitHub Variable, defaultfalse. No push/deployment yet.

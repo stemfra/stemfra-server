@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="2480" viewBox="0 0 2400 2480"><rect width="100%" height="100%" fill="#F8F7F4"/>
+<text x="80" y="78.66" font-family="Arial,sans-serif" font-size="31" font-weight="700" fill="#211D1A">STEMFRA</text>
+<text x="80" y="174.9" font-family="Arial,sans-serif" font-size="65" font-weight="700" fill="#211D1A">Managed website signup</text>
+<text x="80" y="232.8" font-family="Arial,sans-serif" font-size="30" font-weight="400" fill="#69655F">Implemented journey and review checkpoints · 4 November 2026</text>
+<rect x="80" y="276" width="1320" height="62" rx="12" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="105" y="315.08" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#1E6650">Hosted setup and paid recovery verified</text>
+<rect x="1470" y="276" width="850" height="62" rx="12" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="1495" y="314.22" font-family="Arial,sans-serif" font-size="27" font-weight="700" fill="#1E6650">Production paid signup enabled with approval</text>
+<rect x="80" y="380" width="1320" height="150" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="404" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="439.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">1</text>
+<text x="192" y="433.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Choose a website</text>
+<text x="192" y="480.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Select a product or template on the marketing site.</text>
+<path d="M740 534V549m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="564" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="588" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="623.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">2</text>
+<text x="192" y="617.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Review price and subscribe</text>
+<text x="192" y="664.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Regional price, subscription terms and consent.</text>
+<text x="192" y="702.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Subscribe opens Whop directly. No duplicate signup form.</text>
+<path d="M740 746V761m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="776" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="800" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="835.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">3</text>
+<text x="192" y="829.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Pay securely through Whop</text>
+<text x="192" y="876.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Whop collects payment and customer information.</text>
+<text x="192" y="914.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">The selected template and business type stay bound.</text>
+<path d="M740 958V973m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="988" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="1012" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="1047.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">4</text>
+<text x="192" y="1041.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Verify the purchase email</text>
+<text x="192" y="1088.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Return to CMS and enter the emailed OTP.</text>
+<text x="192" y="1126.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">An existing verified owner can resume the same purchase.</text>
+<path d="M740 1170V1185m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="1200" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="1224" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="1259.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">5</text>
+<text x="192" y="1253.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Finish account details</text>
+<text x="192" y="1300.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">New account: set a password. Existing account: keep it.</text>
+<text x="192" y="1338.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Enter missing business details, including the business name.</text>
+<path d="M740 1382V1397m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="1412" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="1436" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="1471.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">6</text>
+<text x="192" y="1465.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Prepare the selected website</text>
+<text x="192" y="1512.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Your own footer details; original styling and preparation screen.</text>
+<text x="192" y="1550.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Retries reuse the purchase and its existing site.</text>
+<path d="M740 1594V1609m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="1624" width="1320" height="264" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="1648" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="1683.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">7</text>
+<text x="192" y="1677.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Complete the existing four setup steps</text>
+<text x="192" y="1725.08" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#211D1A">1. Your business</text>
+<text x="485" y="1724.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#69655F">Contact, editable address and country, hours</text>
+<text x="192" y="1767.08" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#211D1A">2. Your services</text>
+<text x="485" y="1766.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#69655F">Select services, durations and prices</text>
+<text x="192" y="1809.08" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#211D1A">3. Your team</text>
+<text x="485" y="1808.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#69655F">Review the owner or add team members</text>
+<text x="192" y="1851.08" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#211D1A">4. Your look</text>
+<text x="485" y="1850.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#69655F">Review branding and finish setup</text>
+<path d="M740 1892V1907m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="1922" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="1946" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="1981.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">8</text>
+<text x="192" y="1975.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Review the preview and enter Dashboard</text>
+<text x="192" y="2022.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">The paid subscription belongs to the correct owner and site.</text>
+<text x="192" y="2060.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Setup completion does not automatically publish the website.</text>
+<path d="M740 2104V2119m-8 -2 8 12 8 -12" fill="none" stroke="#69655F" stroke-width="3"/>
+<rect x="80" y="2134" width="1320" height="178" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<rect x="108" y="2158" width="58" height="58" rx="29" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="125" y="2193.8" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#1E6650">9</text>
+<text x="192" y="2187.82" font-family="Arial,sans-serif" font-size="37" font-weight="700" fill="#211D1A">Manage the active subscription</text>
+<text x="192" y="2234.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">One subscription per website, using Whop renewal dates.</text>
+<text x="192" y="2272.08" font-family="Arial,sans-serif" font-size="28" font-weight="400" fill="#69655F">Whop supplies invoices and payment notifications.</text>
+<rect x="1470" y="380" width="850" height="290" rx="18" fill="#EAF3ED" stroke="#EAF3ED" stroke-width="2"/>
+<text x="1502" y="440.1" font-family="Arial,sans-serif" font-size="35" font-weight="700" fill="#1E6650">Matches the approved flow</text>
+<text x="1502" y="500.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#1E6650">• Payment comes before account setup.</text>
+<text x="1502" y="536.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#1E6650">• No extra signup or pricing form before Whop.</text>
+<text x="1502" y="572.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#1E6650">• The selected design survives checkout.</text>
+<text x="1502" y="608.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#1E6650">• Original setup and branded password recovery.</text>
+<text x="1502" y="644.22" font-family="Arial,sans-serif" font-size="27" font-weight="400" fill="#1E6650">• Billing address defaults remain editable.</text>
+<rect x="1470" y="705" width="850" height="485" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<text x="1502" y="767.1" font-family="Arial,sans-serif" font-size="35" font-weight="700" fill="#211D1A">Reliability improvements</text>
+<text x="1502" y="829.94" font-family="Arial,sans-serif" font-size="29" font-weight="700" fill="#1E6650">Resume across sessions</text>
+<text x="1502" y="869.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Business drafts and setup stage save to the database.</text>
+<text x="1502" y="902.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Stale windows cannot overwrite newer progress.</text>
+<text x="1502" y="947.94" font-family="Arial,sans-serif" font-size="29" font-weight="700" fill="#1E6650">Validate before continuing</text>
+<text x="1502" y="987.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Required phone, email, address, country and hours.</text>
+<text x="1502" y="1020.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Inline errors use the existing component styles.</text>
+<text x="1502" y="1065.94" font-family="Arial,sans-serif" font-size="29" font-weight="700" fill="#1E6650">Recover without duplicate sites</text>
+<text x="1502" y="1105.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Site creation and its purchase checkpoint commit together.</text>
+<text x="1502" y="1138.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">Retries return the saved site instead of cloning again.</text>
+<rect x="1470" y="1225" width="850" height="330" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<text x="1502" y="1287.1" font-family="Arial,sans-serif" font-size="35" font-weight="700" fill="#211D1A">Country and business lookup</text>
+<text x="1502" y="1347.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Whop billing country provides the initial default.</text>
+<text x="1502" y="1384.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Country remains editable with the business address.</text>
+<text x="1502" y="1421.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Search checks cached business data, then Google.</text>
+<text x="1502" y="1458.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Manual entry remains available.</text>
+<text x="1502" y="1495.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Business location and subscription currency stay separate.</text>
+<rect x="1470" y="1590" width="850" height="330" rx="18" fill="white" stroke="#DDD9D2" stroke-width="2"/>
+<text x="1502" y="1652.1" font-family="Arial,sans-serif" font-size="35" font-weight="700" fill="#211D1A">If the user leaves or something fails</text>
+<text x="1502" y="1712.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Payment incomplete: continue the existing checkout.</text>
+<text x="1502" y="1749.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Payment confirmed: resume from the verification email.</text>
+<text x="1502" y="1786.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Setup incomplete: sign in and resume saved progress.</text>
+<text x="1502" y="1823.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Preparation interrupted: retry the same paid purchase.</text>
+<text x="1502" y="1860.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#69655F">Older uncertain records: review individually.</text>
+<rect x="1470" y="1955" width="850" height="240" rx="18" fill="#FFF2D8" stroke="#FFF2D8" stroke-width="2"/>
+<text x="1502" y="2016.24" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#8C5C0E">Verified release and limits</text>
+<text x="1502" y="2073.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#8C5C0E">Existing paid test completed four hosted steps.</text>
+<text x="1502" y="2107.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#8C5C0E">No stranded paid purchase found in the audit.</text>
+<text x="1502" y="2141.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#8C5C0E">Existing sandbox webhook replay returned 200.</text>
+<text x="1502" y="2175.36" font-family="Arial,sans-serif" font-size="26" font-weight="400" fill="#8C5C0E">Hosted checks passed; no new payment made.</text>
+<text x="80" y="2431.5" font-family="Arial,sans-serif" font-size="25" font-weight="400" fill="#69655F">USD299 · CAD400 · GBP225 · KES30,000 per month   |   No trial or setup fee   |   No new payment made for these checks</text>
+</svg>
