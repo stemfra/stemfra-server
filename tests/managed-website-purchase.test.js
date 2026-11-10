@@ -102,3 +102,46 @@ test('an interruption preparing the atomic clone leaves the paid purchase retrya
  assert.equal(row.state,'paid');assert.equal(row.site_id,undefined);
  await f.service.complete(row,user,f.cfg,'Business');assert.equal(row.state,'complete');assert.equal(f.calls.reconcile,1);
 });
+
+test('production checkout selects embedded only when enabled and keeps its HTTPS return on Stemfra', async () => {
+  const names = ['WHOP_WEBSITE_CUSTOM_PRODUCTION', 'CLIENT_URL', 'CMS_URL'];
+  const original = Object.fromEntries(names.map(name => [name, process.env[name]]));
+  try {
+    process.env.CLIENT_URL = 'https://stemfra.com';
+    process.env.CMS_URL = 'https://cms.stemfra.com';
+    const f = fixture();
+    const cfg = { ...f.cfg, sandbox: false, account: 'biz_live' };
+    const selection = { planKey: 'kenya', vertical: 'barbershops' };
+
+    process.env.WHOP_WEBSITE_CUSTOM_PRODUCTION = 'false';
+    const fallback = await f.service.start(selection, cfg);
+    assert.ok(fallback.url);
+    assert.equal(fallback.embeddedCheckout, undefined);
+
+    process.env.WHOP_WEBSITE_CUSTOM_PRODUCTION = 'true';
+    const result = await f.service.start(selection, cfg);
+    assert.equal(result.url, undefined);
+    assert.deepEqual(result.embeddedCheckout.customCard, { accountId: 'biz_live', planId: 'plan_kenya' });
+    const cardReturn = new URL(result.embeddedCheckout.cardReturnUrl);
+    assert.equal(cardReturn.origin, 'https://stemfra.com');
+    assert.equal(cardReturn.pathname, '/checkout');
+    assert.equal(cardReturn.searchParams.get('purchase'), result.id);
+    assert.equal(cardReturn.searchParams.get('resume'), '1');
+    assert.equal(cardReturn.searchParams.has('key'), false);
+    assert.equal(new URL(result.embeddedCheckout.returnUrl).origin, 'https://cms.stemfra.com');
+    assert.equal(f.rows.get(result.id).selection.checkoutMode, 'custom-card');
+    assert.equal(f.rows.get(result.id).selection.cartCheckout, true);
+
+    const fromWww = await f.service.start({ ...selection, checkoutOrigin: 'https://www.stemfra.com' }, cfg);
+    assert.equal(new URL(fromWww.embeddedCheckout.cardReturnUrl).origin, 'https://www.stemfra.com');
+
+    process.env.CLIENT_URL = 'http://localhost:5173';
+    await assert.rejects(f.service.start(selection, cfg), { status: 503 });
+    assert.equal(f.rows.size, 3);
+  } finally {
+    for (const name of names) {
+      if (original[name] === undefined) delete process.env[name];
+      else process.env[name] = original[name];
+    }
+  }
+});

@@ -71,23 +71,22 @@ async function getBilling(req, res) {
   // "about to be billed" review card (best-effort; the page renders without it).
   const preInvoice = await listReviewBookings(siteId).catch((e) => { console.error('[billing] pre-invoice list failed:', e.message); return null; });
 
-  let pendingSavedPayment = null;
-  if (process.env.WHOP_SAVED_CARD_ENABLED === 'true') {
-    const pending = await supabase.from('whop_checkout_intents').select('saved_payment_id')
-      .eq('site_id', siteId).eq('requested_by', req.cmsUser.id).eq('state', 'pending')
-      .eq('acquisition_mode', 'saved_card').maybeSingle();
-    if (pending.error) return res.status(503).json({ error: 'Could not verify pending payment. Please try again shortly.' });
-    pendingSavedPayment = pending.data?.saved_payment_id || null;
-  }
   let pendingSubscriptionCurrency=null;
   const currentEnv=process.env.WHOP_SANDBOX !== 'false';
-  const pendingIntent=await supabase.from('whop_checkout_intents').select('plan_key').eq('site_id',siteId).eq('requested_by',req.cmsUser.id).eq('state','pending').eq('sandbox',currentEnv).maybeSingle();
+  const pendingIntent = await supabase.from('whop_checkout_intents').select('plan_key,acquisition_mode,checkout_id,checkout_url,saved_payment_id')
+    .eq('site_id', siteId).eq('requested_by', req.cmsUser.id).eq('product', 'website')
+    .eq('state', 'pending').eq('sandbox', currentEnv).maybeSingle();
   if(pendingIntent.error)return res.status(503).json({error:'Could not verify pending subscription.'});
+  const cardCheckout = require('../../lib/whop/cmsCardCheckout');
+  const pendingCardCheckout = cardCheckout.isCustom(pendingIntent.data);
+  const pendingHostedCheckout = pendingIntent.data?.acquisition_mode === 'checkout' && !pendingCardCheckout;
+  const customCardCheckout = cardCheckout.enabled(currentEnv);
+  const pendingSavedPayment = pendingIntent.data?.saved_payment_id || null;
   if(pendingIntent.data)pendingSubscriptionCurrency=pendingIntent.data.plan_key === 'managed_website' ? 'USD' : pendingIntent.data.plan_key.replace('managed_website_','').split('_')[0].toUpperCase();
   let subscriptionOffers=[];
   try {subscriptionOffers=require('../../lib/whop/websitePrices').offers(require('../../lib/whop/core').config());} catch {}
   const preferredSubscriptionCurrency = site.metadata?.onboarding?.fees_policy?.currency || require('../../lib/managedWebsiteOffer').regionalOffer(req).currency;
-  return res.json({ preferredSubscriptionCurrency, pendingSubscriptionCurrency, subscriptionOffers, subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice, pendingSavedPayment });
+  return res.json({ preferredSubscriptionCurrency, pendingSubscriptionCurrency, pendingHostedCheckout, pendingCardCheckout, customCardCheckout, subscriptionOffers, subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice, pendingSavedPayment });
 }
 
 // POST /api/cms/billing/change-plan { siteId, tier }
@@ -144,6 +143,14 @@ async function updateBillingContact(req, res) {
     if (!site) return res.status(403).json({ error: 'Not your site' });
     const patch = {};
     for (const k of IDENTITY_KEYS) if (b[k] !== undefined) patch[k] = b[k] || null;
+    if (b.billing_email !== undefined) {
+      const email = typeof b.billing_email === 'string' ? b.billing_email.trim() : b.billing_email;
+      if (email !== null && (typeof email !== 'string' || email.length > 254 ||
+          (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))) {
+        return res.status(400).json({ error: 'Enter a valid billing email address.' });
+      }
+      patch.billing_email = email || null;
+    }
     if (!Object.keys(patch).length) return res.status(400).json({ error: 'Nothing to update' });
     try {
       const { profile } = await saveCompanyBillingProfile(b.siteId, patch);

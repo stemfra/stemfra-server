@@ -107,6 +107,8 @@ jobs:
             WHOP_PLAN_LAUNCH_GROWTH=${{ vars.WHOP_PLAN_LAUNCH_GROWTH }}
             WHOP_PLAN_LAUNCH_BUSINESS=${{ vars.WHOP_PLAN_LAUNCH_BUSINESS }}
             WHOP_RETURN_ORIGIN=${{ secrets.WHOP_RETURN_ORIGIN_PROD || 'https://cms.stemfra.com' }}
+            WHOP_WEBSITE_CUSTOM_PRODUCTION=${{ secrets.WHOP_WEBSITE_CUSTOM_PRODUCTION || 'false' }}
+            WHOP_CMS_CARD_CHECKOUT_PRODUCTION=${{ secrets.WHOP_CMS_CARD_CHECKOUT_PRODUCTION || 'false' }}
             PORT=4000
             API_HOST=api.stemfra.com
             CLIENT_URL=https://stemfra.com
