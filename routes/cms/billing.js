@@ -13,10 +13,10 @@ router.post('/checkout', requireCmsAuth, catalogue.requestGate, catalogue.quoteG
   if (typeof siteId !== 'string' || !/^[0-9a-f-]{36}$/i.test(siteId)) return res.status(400).json({ error: 'Choose a website.' });
   const { verifySiteOwnership } = require('../../middleware/cmsAuth');
   if (!await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true })) return res.status(403).json({ error: 'Not your site' });
-  if (require('../../lib/whop/cmsCardCheckout').enabled(process.env.WHOP_SANDBOX !== 'false')) {
-    return res.status(409).json({ error: 'Open Billing to continue your checkout.' });
+  const resumeOnly = require('../../lib/whop/cmsCardCheckout').enabled(process.env.WHOP_SANDBOX !== 'false');
+  try {
+    return res.json(await require('../../lib/whop/service').prepare(siteId, req.cmsUser.id, req.cmsUser.email, req.body?.currency, { resumeOnly }));
   }
-  try { return res.json(await require('../../lib/whop/service').prepare(siteId, req.cmsUser.id, req.cmsUser.email, req.body?.currency)); }
   catch (error) {
     console.error('[whop] checkout failed:', error.message);
     return res.status(/already|pending/.test(error.message) ? 409 : 503).json({ error: /already|pending/.test(error.message) ? 'An existing subscription or checkout needs to be managed before starting another.' : 'Subscriptions are temporarily unavailable. Please contact billing@stemfra.com.' });
