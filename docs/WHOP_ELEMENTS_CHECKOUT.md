@@ -1,3 +1,14 @@
+## 2026-11-13: Public Branded price restored; real-card testing paused
+
+- Restored the production USD catalogue to US$299/month and deactivated the temporary public US$5 price. Existing subscriptions were not changed. The private test facility remains separate.
+- Fresh live Pricing displayed US$299; its Branded Subscribe link opened the normal checkout showing $299.00 USD/month and a $299.00 USD total. The price is catalogue-driven; no additional Marketing source change was needed for this restoration.
+- Marketing main `9a373531` fixes the invalid-country `Intl.DisplayNames` crash and address suggestion focus/stacking. Two country regression tests and the production build passed on that commit. Cloudflare Pages deployment `08d79ff3` completed successfully.
+- Before Peter paused testing, the live normal US$5 Pricing-to-checkout journey reached provider card fields using manual fictional billing details. No card or payment was submitted. Payment, email verification, CMS onboarding and refund acceptance remain open.
+- CMS main `622e75a` passed TypeScript checking and was pushed; CMS was not deployed in this check.
+- Google autocomplete selection remains unverified: provider permission error 7 occurred, and Peter confirmed the Google Cloud billing upgrade was not completed. Autocomplete testing is paused at his request; manual entry remains available.
+- Whop emailed that wallet methods were not configured for www.stemfra.com. Peter subsequently supplied a saved-settings screenshot showing domain sharing enabled. This does not establish domain verification or successful Apple Pay/Google Pay checkout; wallet verification remains open.
+- Complete further local acceptance before another real-card production test. No campaign management or publication was performed.
+
 # Whop Elements checkout
 
 ## Managed website checkout status
