@@ -1,3 +1,38 @@
+## 2026-11-05: Whop Elements sandbox render verified
+
+## Managed website checkout paths
+
+Both Marketing and CMS passed custom embedded card checkout in Whop Sandbox. Marketing production builds open Whop’s hosted checkout. CMS can use embedded new-card checkout in production through its separate opt-in switch. See the [checkout runbook](WHOP_ELEMENTS_CHECKOUT.md#managed-website-checkout-status) for the two production paths and the checks before a real-card test.
+
+For Stemfra AI, follow the [AI adaptation checklist](WHOP_ELEMENTS_CHECKOUT.md#reusing-the-pattern-in-stemfra-ai) with AI's own orders, plans, return URL and signed webhook reconciliation. Verify that replay and refresh produce a single subscription and credit grant.
+
+
+The isolated built preview at http://localhost:5193/ used @whop/elements and @whop/elements-react with environment sandbox and the same checkout configuration that failed in the earlier embed. The browser showed the managed website USD299 monthly offer, email, card and billing fields. Render only. No payment, webhook change or production deployment.
+
+## 2026-11-05: Whop React sandbox render check
+
+Official checkout package 0.7.0 routed to the sandbox iframe. A fresh configuration created with server SDK 2.6.0 and API date 2026-10-15-1 rendered email, card and billing fields on Whop hosted checkout. React embeds using the configuration ID, hosted session ID plus plan, and plan alone all returned “This checkout is no longer available.” Provider root cause is open. Render only, no payment or billing changes. The separate live preview was retired in marketing commit `e6dcbc49` and its removal verified.
+
+## 2026-11-05: StemfraPay research and embedded checkout trial
+
+Cal Pay is the reference for opt-in per-service online payment, holding a slot and confirming it after provider payment. Cal.com documents verification at first withdrawal. Confirm whether Whop permits this for Stemfra’s connected businesses by country, entity type and service. Test hosted onboarding and embedded verification separately. Commission is undecided.
+
+The local marketing preview at `/whop-sandbox.html?session=<checkout ID>` loaded Whop’s sandbox iframe. Both the configured plan and freshly created sandbox checkout configurations returned “This checkout is no longer available” in the embed. The fresh one-time configuration rendered its $1 test payment form on Whop’s hosted page. Embedded payment, webhook reconciliation and both onboarding paths remain unverified. No payment was submitted. Existing Subscribe flow still uses the hosted checkout.
+
+## 2026-11-04: CRM implementation status correction
+
+Source review confirms the CRM Clients read model, dataset/environment separation, currency-grouped revenue, regional catalogue administration and Whop event-review/retry/financial-case UI are implemented. Older "CRM UI pending" statements below are historical for those slices. CRM frontend changes remain local relative to HEAD21b5207; no new hosted acceptance or deployment is claimed. See the current P44 matrix in [ROADMAP](ROADMAP.md) and [CRM work report](../../stemfra-ops/docs/WORK_REPORT.md). Website billing/signup is separately deployed and verified within the sandbox-paid test scope; independent AI integration remains separate.
+
+## 2026-11-04: Managed website signup release and hosted acceptance
+
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+
+## 2026-11-03: Managed website production billing activated
+
+At Peter's explicit request, activated the tested configuration without repeating production payment tests. Set the five server Actions secrets WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD to true. Existing main deployment run [41617152201](https://github.com/stemfra/stemfra-server/actions/runs/41617152201) succeeded at commit 522e00f89caea1332733f86e80b5a426d44f6f9b; public health returned HTTP 200. Read-only schema inspection confirmed the five required Whop RPC definitions exist; no migration or database mutation was run.
+
+Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
+
 ## 2026-11-03: Production catalogue compared with sandbox; deployment secrets staged
 
 Read-only provider comparison confirms production matches approved sandbox configuration: website USD299/CAD400/GBP225/KES30000 and AI Starter100/Growth200/Business300 USD, period30, initial0, no trial. Sandbox-only EUR100/NGN100 validation plans and duplicate Starter100 test plan are excluded; descriptions explicitly test-only. No approved production product needs deletion/recreation. Existing production IDs retained. AI remains held.

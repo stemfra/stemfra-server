@@ -1,8 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const {regionalOffer, managedWebsiteAcceptance} = require('../lib/managedWebsiteOffer');
-test('regional subscription prices use UK, Canada and Kenya with USD fallback', () => {
-  for (const [country,currency,amount] of [['GB','GBP',22500],['CA','CAD',40000],['US','USD',29900],['KE','KES',3000000],['AT','USD',29900],['XX','USD',29900],['','USD',29900]]) {
+test('new subscriptions use USD in every billing country', () => {
+  for (const [country,currency,amount] of [['GB','USD',29900],['CA','USD',29900],['US','USD',29900],['KE','USD',29900],['AT','USD',29900],['XX','USD',29900],['','USD',29900]]) {
     const offer=regionalOffer({headers:{'cf-ipcountry':country}});
     assert.deepEqual(offer,{currency,monthlyCents:amount});
     const acceptance=managedWebsiteAcceptance(offer.currency);

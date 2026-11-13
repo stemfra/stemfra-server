@@ -108,16 +108,20 @@ async function find(req, res) {
     const site = await verifySiteOwnership(req.cmsUser.id, siteId);
     if (!site) return res.status(403).json({ success: false, message: 'Not your site.' });
     if (!String(name || '').trim()) return res.status(400).json({ success: false, message: 'Type your business name.' });
-    const { data: full } = await supabase.from('sites').select('country').eq('id', siteId).maybeSingle();
+    const { data: location } = await supabase.from('site_sections').select('content').eq('site_id', siteId).eq('section_type', 'location_map').limit(1).maybeSingle();
+    const identity = await require('../../lib/billingProfile').resolveBillingIdentity(siteId);
+    const country = require('../../lib/geo').countryIso(req.body?.country || location?.content?.address_parts?.country || identity?.profile?.country);
+    if (!country) return res.status(400).json({ success: false, message: 'Choose your business country.' });
     // Our own data first (2026-09-17): an owner who arrives from our outreach is usually a shop
     // lead-gen already scraped, so the answer is in leadgen_places for free. `fresh: true` (the
     // "search Google again" path) or no match goes to Apify.
     if (req.body?.fresh !== true) {
-      const rows = await placesLookup.placesByName({ name, where, country: full?.country || null });
+      const rows = await placesLookup.placesByName({ name, where, country: country });
       const usable = rows.filter(placesLookup.isFresh);
       if (usable.length) return res.json({ success: true, source: 'places', candidates: usable.map(placesLookup.candidateFromPlaceRow) });
     }
-    const candidates = await finder.findBusiness({ name, where, country: full?.country || 'US' });
+    if (req.body?.cachedOnly === true) return res.json({ success: true, source: 'places', candidates: [] });
+    const candidates = await finder.findBusiness({ name, where, country: country });
     res.json({ success: true, source: 'google', candidates });
   } catch (e) {
     console.error('[googleProfile.find]', e.message);
@@ -146,7 +150,7 @@ async function use(req, res) {
     // the shop is now a tenant, so nobody keeps calling a client.
     try {
       const row = await placesLookup.placeByKey({ placeId: c.placeId, url: c.url })
-        || (await placesLookup.placesByName({ name: c.name, where: [c.city, c.state].filter(Boolean).join(' '), phone: c.phone }))[0] || null;
+        || (await placesLookup.placesByName({ name: c.name, where: [c.city, c.state].filter(Boolean).join(' '), phone: c.phone, country: require('../../lib/geo').countryIso(c.countryCode) }))[0] || null;
       if (row) {
         const known = placesLookup.candidateFromPlaceRow(row);
         c.socials = { ...(known.socials || {}), ...Object.fromEntries(Object.entries(c.socials || {}).filter(([, v]) => v)) };

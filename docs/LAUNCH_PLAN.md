@@ -1,3 +1,45 @@
+## 2026-11-09: Billing acceptance status
+
+Use the [current billing checklist](ROADMAP.md#2026-11-09-managed-website-billing-checks) for completed Managed Websites sandbox checks. Both custom embedded flows passed in sandbox. Marketing and CMS have separate production switches for the embedded custom UI, with the previous hosted path as a fallback. The [checkout status](WHOP_ELEMENTS_CHECKOUT.md#managed-website-checkout-status) records what is needed before a real-card test. Issuer challenge, failed renewal, expiry, and refund acceptance are separate. Stemfra AI local implementation and sandbox acceptance have their own [runbook](../../stemfra_ai/docs/MANAGED_WEBSITE_BILLING_PARITY.md).
+
+## 2026-11-05: Marketplace booking boundary
+
+Marketplace customers book online and pay the business directly at the appointment. The marketplace does not collect card details, take deposits or process appointment payments on behalf of tenants. Tenant online checkout settings are excluded from marketplace profiles, and the shared booking form submits a reservation only. Package and gift purchase prompts are hidden on marketplace profiles. Business software subscriptions and standalone website settings are unchanged. Hosted reservation and notification acceptance is still required before release.
+
+## 2026-11-05: Marketplace local review milestone
+
+Local marketplace implementation is ready for Peter's review on localhost5186 with temporary Stemfra identity. Public API and staff/owner controls are implemented behind MARKETPLACE_ENABLED=false; migration tested in isolation, not applied to the shared database. No public listings, new prices or launch activation. Follow [implementation runbook](MARKETPLACE_IMPLEMENTATION_2026-11.md) for migration, eligible inventory, branded auth, owner/booking/email/mobile and hosted acceptance gates. Existing managed website and separate AI releases are unaffected.
+
+## 2026-11-04: Future marketplace launch dependency
+
+Follow the [beauty/wellness marketplace plan](BEAUTY_WELLNESS_MARKETPLACE_PLAN_2026-11.md) for the new brand, shared branded CMS, directory sourcing/claims and seven delivery gates. This is a future planning arc, not launch authorization. Existing CRM leads must not be bulk-published; provenance and pilot approval precede directory release. Existing managed-website and separate AI release gates remain in force.
+
+## 2026-11-04: Proposed website tiers are planning only
+
+See [website service tiers](WEBSITE_SERVICE_TIERS_2026-11.md) for the agreed four-offer direction and maintenance-only managed scope. Package definitions, transition rules and costs must be resolved before implementation. No launch, live pricing or provider switch changes are authorized by this discussion.
+
+## 2026-11-04: Acquisition complete; CRM alignment reconciled against source
+
+**Customer-acquisition implementation: DONE.** Peter confirmed all needed implementation is complete. This closes the implementation bucket, including the demo/VSL and acquisition funnel work; it is not a claim of real customer acquisition, campaign activation, new message/call delivery or first-cohort results. Read-only code review confirms the existing claim-email path, outreach sequencer, Claim routes, lead coverage/funnel reporting and signup conversion binding. Do not reopen these as unbuilt work based on older launch rows.
+
+**Core CRM commercial and website-billing alignment: IMPLEMENTED.** Fresh source inspection confirms product selection and subscription forecasts, actual provider-aware website subscriptions, test/environment separation, currency-safe revenue summaries, regional catalogue administration, Whop event/review/retry UI and existing custom-project quote/milestone/invoice views. Frontend Billing, RevenueWidget and OfferEditor/catalogue changes are present in the local working tree but absent from the CRM's current HEAD; implementation completion must not be described as a verified CRM production deployment. No new application code or operational actions were needed for this status correction.
+
+The September P44 recipe/build-fee/single-ledger proposal is historical, not the current implementation checklist. Current AI credits/subscriptions remain owned by the independent AI backend. Product-specific script/template filtering and the optional cross-product CRM workspace/intake bridge are not confirmed complete by this CRM review; reconcile them with the parallel AI session before calling them missing requirements or building replacements. AI production release, first real production payment and first-cohort measurement remain separate.
+
+## 2026-11-04: Customer footer identity follow-up
+
+Commit4b06592 removes starter business identity from new customer footer defaults and repairs still-inherited values on Finish, preserving design and owner edits. Existing paid test repaired and browser/database verified;20 focused tests pass. No new payment, site, publishing or AI change. See [current website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md) and root handoff for deployment status.
+
+## 2026-11-04: Managed website signup release and hosted acceptance
+
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+
+## 2026-11-03: Managed website production billing activated
+
+At Peter's explicit request, activated the tested configuration without repeating production payment tests. Set the five server Actions secrets WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD to true. Existing main deployment run [41617152201](https://github.com/stemfra/stemfra-server/actions/runs/41617152201) succeeded at commit 522e00f89caea1332733f86e80b5a426d44f6f9b; public health returned HTTP 200. Read-only schema inspection confirmed the five required Whop RPC definitions exist; no migration or database mutation was run.
+
+Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
+
 # Stemfra Launch Plan (phased, barbershop first)
 
 > **2026-10-12 planning update:** the immediate work is the revised [ROADMAP P48 plan](ROADMAP.md#revised-plan-managed-websites-custom-software-and-ai-2026-10-12): $299 service scope/copy, additive local previews, journey reconciliation, billing, then gated validation/release. Historical commission-era launch steps below are evidence from their dates and must be reconciled in P48.4/P48.5 before reuse. No launch switches, outreach, payment activation or release holds changed today. ElevenLabs work remains on hold until Peter confirms.
@@ -26,7 +68,7 @@ COMMISSION_MODEL.md. NOTHING is pushed to GitHub until Peter approves._
 
 | # | Task | Status | Notes / where it lives |
 |---|---|---|---|
-| 1 | **VSL video for email marketing** | ⬜ | Was P12 "deliberately last"; now leads the sequence. Demo = the tenant website (with the on-site guided tour, demo-only). Assets on hand: ElevenLabs voice pipeline (Jessica @0.95, GUIDED_TOURS.md), mockup/screenshot pipeline (MARKETING_MOCKUPS.md), 9 demo sites. Script + storyboard first. |
+| 1 | **VSL/demo and customer-acquisition implementation** | ✅ DONE, Peter confirmed4November2026 | All needed acquisition implementation is complete per Peter. Source review confirms existing Claim/outreach/sequence/funnel infrastructure. No new campaign, call, email or independent media render was performed in this status pass; operation and real customer results remain separate. |
 | 2 | **Prospecting sequence = max 3 contacts until decision** (1 email → 2 Mark call → 3 follow-up email; 1/week) | ✅ 2026-08-19 (deployed) | `crm_settings.leadgen_sequence` = touch 1 (day 0, branded Claim email via `send-outreach` mode `claim`) → Mark call +7 (read-gated) → Claim touch 2 +14 → stop; 21-day window. `lib/claimSend.js` (Gmail HTML + text + pixel + `List-Unsubscribe`), sequencer step kind `claim_email`. Verified: touch 1 sent to Peter's test lead; Claim page click registered in the CRM **Funnel** tab. **Measurement:** `marketing_events` (sent/open/click/engage/signup_start/signup_complete/unsubscribe) + `GET /api/leadgen/funnel` + CRM Funnel tab. Master switches stay OFF until launch (`leadgen_sequencer`, `leadgen_auto_send`, `leadgen_auto_call`). |
 | 3 | **Update Stacy + all CMS routes** | ✅ DONE (code pushed + deployed 2026-08-18; Peter pasted S5) | `lib/cmsRoutes.js` reconciled with the CURRENT IA: Payments routes → in-nav `/billing/payments`; +labels/analytics/customers/reports/subscribers/promotions/schedule/billing*/support/whatsNew/giftContent/privacy; all 53 entries verified to resolve. `siteCompleteness` now deep-links address/phone→Location, headline→Hero. **NEW `CMS_GUIDE`** (37 owner-tasks → sidebar `where` + route) → Stacy's context as `cms_map` (Stacy-only; Front Desk never gets it) so she answers "where do I change X?" from real routes. CMS `StacyPanel` ROUTE_LABEL rewritten to the current IA wording (Website →/Account → Billing …). **Peter action:** paste `n8n-workflows/stacy-build-prompt-S5.js` into the Stacy Build Prompt node (adds the CMS-map guidance clause; replaces the stale "(Content, Services, Settings)" line). |
 | 4 | **Re-walk the CMS tour** | ✅ 2026-08-18 (platform `d5e6f94`, deployed) | Main tour step 8 targeted a REMOVED anchor (bookings-calendar → bookings-grid, line kept); step 3 copy + voice updated for the Website group; Style tour top-to-bottom + a Buttons & labels step; SectionFrame `<id>-header` anchors; voice script no longer records the voiceless workflow tours. Walked live (main + Style). GUIDED_TOURS.md §5c. |

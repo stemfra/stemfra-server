@@ -1,13 +1,64 @@
-# Current production rollout status, 3 November 2026
+## 2026-11-04: Managed website signup release and hosted acceptance
 
-This section supersedes the dated preparation notes below. Managed websites only; AI activation remains on hold and custom software stays with Airwallex.
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
 
-- Production catalogue verified against approved test plans: USD299, CAD400, GBP225 and KES30000, no initial fee or trial. Test-only EUR/NGN validation plans are excluded.
-- All eight `_PROD` account, plan, return-origin and credential inputs are stored as encrypted server GitHub Actions secrets. The token cannot access repository Variables. The workflow reads these secrets; production uses `WHOP_SANDBOX=false` explicitly to prevent mixing a live key with the test endpoint.
-- Checkout remains disabled by default. Runtime feature switches use separately staged `_PROD` GitHub secrets, defaulting false: WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD. These switches have not been set. The saved production webhook is paused until the hosted receiver is deployed and verified.
-- Whop supplies original invoices, PDFs and payment/subscription notices. Stemfra sends service suspension/restoration notices. Duplicate invoice mail and advance renewal reminders stay disabled.
-- Display provider-returned subscription period dates. Peter superseded the earlier calendar-month investigation hold; do not calculate a new date from a fixed day count or describe unverified provider semantics as confirmed.
-- Pending: scoped release review, hosted deployment, feature-switch configuration, signed production webhook delivery and hosted CMS verification. No real charge or settlement has been verified.
+## Local GitHub deployment access, 4 November 2026
+
+The ignored `stemfra_server/.env` now contains `PERSONAL_ACCESS_TOKEN`, copied unchanged with Peter's explicit approval from the previously documented local source. Its value is never printed or committed. Use `node scripts/github.cjs <gh arguments>` from stemfra_server; the helper supplies GH_TOKEN only to the child command. Normal `gh auth status` may still report signed out, so check this documented token path before requesting `gh auth login`. Repository access and Actions secret operations have been verified. The token is local release tooling, not a production API environment variable or browser/client setting. See AGENTS.md.
+
+The website rollout mapping uses encrypted Actions secret `MANAGED_WEBSITE_PURCHASE_ENABLED_PROD`, defaultfalse, matching the established token's verified Secrets permissions. Existing workflow admin configuration has been moved unchanged into encrypted `STEMFRA_ADMIN_SECRET`; this is not a credential rotation. No AI settings were changed.
+
+Sandbox URL saved by Peter and refreshed/read back: `https://favor-parks-absolute-game.trycloudflare.com/api/whop/webhook`. First replay timed out at5seconds after reaching/verifying/queuing; retry succeeded200 in1.19seconds and hook became Active. Inbox original delivery stayed done/attempt1; sandbox charge count remained4, current paid test intent/subscription remain1 each. No charge or duplicate processing. Evidence [successful replay](evidence/website-sandbox-replay-2026-11-04.png). Refresh the existing sandbox browser tab first if unavailable/stale before declaring access blocked.
+
+4 November release preparation: production deployment is authorized. Isolated website release excludes parallel AI changes. New sandbox tunnel is reachable at favor-parks-absolute-game.trycloudflare.com; existing webhook URL save and signed replay remain pending because API403/browser unavailable. See [temporary sandbox webhook runbook](WHOP_SANDBOX_WEBHOOK_RUNBOOK.md). Production rollout flag mapping prepared defaultfalse; GitHub command-line sign-in pending. No push/deploy yet. No stranded provisioning purchase found; pending unpaid checkouts left unchanged.
+
+4 November follow-up: atomic recovery migration is now applied to website stemfra-ops with Peter approval; real-schema clone rollback and existing-site retry pass. Sandbox website webhook dashboard currently Failing at old tex-united-parallel-pat.trycloudflare.com destination, which fails DNS resolution. Logs include2November503 Synchronization unavailable and later3November200 queued/received successes. Restore/repoint isolated test receiver and verify controlled delivery before treating webhook acceptance as current. AI hook/settings untouched. No new payment, provider config change or application deployment.
+
+Local follow-up, 4 November: validation and atomic provisioning recovery code pass focused checks. Apply and verify `20261103211506_atomic_paid_website_provisioning.sql` as a separately authorized release prerequisite before enabling new checkout. Migration is currently unapplied; legacy stranded purchases require review. No production configuration was changed.
+
+## 2026-11-03: Managed website production billing activated
+
+At Peter's explicit request, activated the tested configuration without repeating production payment tests. Set the five server Actions secrets WHOP_ENABLED_PROD, WHOP_WEBHOOK_QUEUE_ENABLED_PROD, WHOP_SAVED_CARD_ENABLED_PROD, WHOP_ACCESS_LIFECYCLE_ENABLED_PROD and WHOP_ACCESS_EMAILS_ENABLED_PROD to true. Existing main deployment run [41617152201](https://github.com/stemfra/stemfra-server/actions/runs/41617152201) succeeded at commit 522e00f89caea1332733f86e80b5a426d44f6f9b; public health returned HTTP 200. Read-only schema inspection confirmed the five required Whop RPC definitions exist; no migration or database mutation was run.
+
+Production webhook hook_JtQVtNSnhJPQJ is now Active after saving and reloading its dashboard. Endpoint is https://api.stemfra.com/api/whop/webhook, dated API version 2026-10-15-1, all events selected, sub-account events off. Renewal reminders and duplicate invoice email remain disabled. AI remains held and Airwallex unchanged. No production charge, sample event, replay or email test was performed; first signed production delivery is unverified by request. This supersedes earlier paused-switch status, not the separate remaining marketing/CRM release review or local-only sign-in alert fix.
+
+# Pre-release production comparison, 4 November 2026
+
+Read-only comparison of sandbox biz_JXJPD9Q4Ta5thq and production biz_3yEQNCgp1hy3wV. No checkout creation, payment, webhook event/replay, account setting change or deployment.
+
+| Configuration | Sandbox | Production | Assessment |
+| --- | --- | --- | --- |
+| Website recurring prices | USD299 / CAD400 / GBP225 / KES30000 | Same | Fresh provider reads match approved regional prices and the correct accounts. Existing plan IDs retained. |
+| Initial fee / trial | 0 / none | 0 / none | Match. |
+| Plan billing period | 30 days | 30 days | Match. Display actual provider-returned period dates; this is not a claim about all calendar-boundary behavior. |
+| Product | Stemfra Managed Website, hidden | Stemfra Managed Website, hidden | Same visibility; production description correctly includes per-website billing, no setup fee/trial/commission and domain allowance up to US$30 while active. Sandbox description is explicitly test-only. |
+| Plan visibility | USD visible; CAD/GBP/KES hidden | All four visible | Intentional-looking test/production difference, not a price or metadata blocker. No visibility change made or required for the current direct checkout integration. |
+| Checkout metadata | Actual existing paid checkout contains all four keys below | New production payload uses the same shared sender | No metadata schema or product/dashboard configuration is required. No production checkout was created to test it. |
+| Return destination | Existing test checkout has a temporary HTTPS tunnel, /activate-purchase | Workflow pins CMS_URL and WHOP_RETURN_ORIGIN to https://cms.stemfra.com | Keep production origin; do not copy sandbox tunnel settings. |
+| Revised purchase endpoint | Local enabled test route | Hosted /api/website-purchase/config HTTP404 | New flow is not deployed. Existing managed-website billing activation is separate. |
+| Revised purchase rollout flag | Local MANAGED_WEBSITE_PURCHASE_ENABLED=true | No deployment workflow mapping for this flag | Before an approved release, add explicit _PROD mapping defaultfalse, then enable only after acceptance gates. Not changed in this comparison. |
+| Webhook current settings | API read403 | API read403 | Current keys cannot inspect webhook configuration. Browser attachment timed out; native app access was denied. No permissions expanded. |
+
+## Checkout metadata and production updates
+
+The shared server core.checkout creates checkout configurations with server-owned metadata:
+
+- stemfra_order_id: durable purchase ID.
+- stemfra_product: website.
+- stemfra_template_id: selected approved source/template ID when present.
+- stemfra_business_type: selected canonical business type when present.
+
+Actual sandbox checkout ch_dcR3DODdh2rYMNd has all four. Existing local purchase reconciliation checks template/type against its saved record. An isolated fixture passed through both sandbox and production branches and produced identical metadata; no provider write occurred. Whop's installed SDK CheckoutConfiguration type documents that metadata is copied to payments and memberships. It is per-checkout data, not a product field to configure manually. Static product links do not run Stemfra's anonymous-purchase creation/binding path.
+
+Required Stemfra release work: resolve setup validation and automatic pre-site crash recovery; prepare/release server, CMS and marketing together; add the explicit purchase feature flag mapping defaultfalse; verify hosted config/routes and canonical production return. Existing purchase and private progress tables are already applied to the shared Stemfra project with server-only access; do not blindly rerun migrations. Recheck prerequisites before release.
+
+There is no evidence requiring new Whop products/plans or another API key solely for the added metadata. Production plan retrieval succeeded using the existing key. Checkout-write permission and provider propagation have not been freshly exercised in production because no new checkout/payment was requested.
+
+Webhook evidence is dated, not refreshed: on3November production hook_JtQVtNSnhJPQJ was recorded active at https://api.stemfra.com/api/whop/webhook with API date2026-10-15-1 and all events. Sandbox hook_g7xlBRcIKALZr used the isolated local receiver/tunnel. Before release, recheck these through the signed-in dashboard; do not assume an API403 means the hook is disabled. No new event type is needed just because metadata gained fields. No signed production delivery was sent/verified in this comparison.
+
+Existing production billing activation recorded above remains historical evidence. Duplicate invoice mail and advance renewal reminders remain disabled by workflow; AI and Airwallex are outside this rollout. Tax-account configuration was not changed or certified in this comparison.
+
+Separate release finding: deployment workflow contains an existing hard-coded admin secret. Its value is not reproduced here; move it to encrypted configuration and rotate it before release. No credential change was attempted during this read-only comparison.
 
 ## Historical preparation notes
 
@@ -134,11 +185,12 @@ The first migration also permits Whop in the subscription provider constraint an
 - [ ] Verify future invoice immutability and persisted due date through an actual new payment, PDF, CRM and email paths.
 - [x] Replay original successful provider delivery: duplicate=true,invoice count1 and sent-email attempts1 unchanged. New-event-ID duplicate payment fixtures also pass locally.
 - [ ] Test delayed/out-of-order events and temporary receiver/database/provider failure with recovery.
-- [ ] Test failed first payment without paid activation.
-- [ ] Test failed renewal, notices, explicit grace boundary, suspension and recovery. Reconcile dated seven-day plan against the final agreed policy before enabling it.
+- [x] Test failed first payment without paid activation. The disposable sandbox site stayed Not subscribed, with no active subscription or paid invoice.
+- [x] Rehearse the seven-day sandbox grace boundary, public suspension and recovery; restore the test site. Sandbox cancellation and reactivation preserved the paid-through date.
+- [ ] Verify an actual failed renewal, notices, suspension and recovery with the agreed grace policy.
 - [ ] Verify cancellation at actual paid-period expiry across access paths. Current dialog promises website offline; full enforcement is not accepted.
 - [ ] Test refunds and disputes, credit-note/accounting/access effects; cancellation is not a refund.
-- [ ] Complete CAD/GBP/KES validation and account activation, not just provider price creation. EUR/NGN placeholders are not launch prices.
+- [x] Verify the CAD sandbox payment, signed delivery, activation and original invoice. Verify existing paid KES recovery and activation. GBP was covered by simulation in the accepted sandbox scope. EUR/NGN placeholders are not launch prices.
 - [ ] Repeat account linking, entitlements/credits, invoice, email and lifecycle acceptance in the separate AI runtime.
 - [x] Retire duplicate Stemfra Whop paid-invoice mail; provider owns original payment documents. Three-day reminder delivery and recovery notification acceptance remain open.
 - [ ] Add operational visibility for pending/failed events and controlled reconciliation retries.

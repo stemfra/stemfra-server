@@ -2,29 +2,94 @@ const express = require('express');
 const router = express.Router();
 const catalogue = require('../../lib/managedWebsiteCatalogue');
 router.use(catalogue.middleware);
+
+function subscriptionQuoteGate(req, res, next) {
+  if (req.body?.currency !== 'USD') {
+    return res.status(409).json({ error: 'Branded subscriptions use USD. Check Billing before starting another payment.' });
+  }
+  return catalogue.newQuoteGate(req, res, next);
+}
+
 const { requireCmsAuth } = require('../../middleware/cmsAuth');
 const { getBilling, updateBillingContact, changePlan, cancelSubscription, reactivateSubscription, invoicePdf, hostedInvoice, submitReceipt, claimPayment } = require('../../controllers/cms/billingController');
 
 // Owner-facing System-A billing: see your Stemfra subscription + charges, edit
 // billing details, change plan, cancel/reactivate, and download invoice PDFs.
 router.get('/', requireCmsAuth, getBilling);
-router.post('/checkout', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, async (req, res) => {
-  const siteId = req.body?.siteId;
-  if (typeof siteId !== 'string' || !/^[0-9a-f-]{36}$/i.test(siteId)) return res.status(400).json({ error: 'Choose a website.' });
-  const { verifySiteOwnership } = require('../../middleware/cmsAuth');
-  if (!await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true })) return res.status(403).json({ error: 'Not your site' });
-  try { return res.json(await require('../../lib/whop/service').prepare(siteId, req.cmsUser.id, req.cmsUser.email, req.body?.currency)); }
-  catch (error) {
-    console.error('[whop] checkout failed:', error.message);
-    return res.status(/already|pending/.test(error.message) ? 409 : 503).json({ error: /already|pending/.test(error.message) ? 'An existing subscription or checkout needs to be managed before starting another.' : 'Subscriptions are temporarily unavailable. Please contact billing@stemfra.com.' });
-  }
-});
+// Older clients receive an explicit retirement response rather than a provider URL.
+router.post('/checkout', requireCmsAuth, (_req, res) => res.status(410).json({
+  error: 'Open Billing to continue checkout. If you already tried to pay, contact billing@stemfra.com.',
+}));
+for (const action of ['quote', 'confirm']) {
+  router.post(`/card-checkout/${action}`, requireCmsAuth, catalogue.requestGate, subscriptionQuoteGate, async (req, res) => {
+    const { siteId, currency } = req.body || {};
+    const { verifySiteOwnership } = require('../../middleware/cmsAuth');
+    if (typeof siteId !== 'string' || !/^[0-9a-f-]{36}$/i.test(siteId) ||
+        !await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true })) {
+      return res.status(403).json({ error: 'Choose a website you own.' });
+    }
+    try {
+      const checkout = require('../../lib/whop/cmsCardCheckout');
+      return res.json(await checkout[action](siteId, req.cmsUser.id, req.cmsUser.email, currency, req.body));
+    } catch (error) {
+      const safe = error.status === 400 || error.status === 409 || error.status === 403;
+      return res.status(safe ? error.status : 503).json({
+        error: safe ? error.message : action === 'quote' ? 'Card checkout is temporarily unavailable.' : 'Payment could not be confirmed. Check Billing before trying again.',
+      });
+    }
+  });
+}
 router.get('/saved-cards', requireCmsAuth, async (req, res) => {
   if (process.env.WHOP_SAVED_CARD_ENABLED !== 'true') return res.json({ cards: [] });
-  try { res.json({ cards: await require('../../lib/whop/savedCards').list(req.cmsUser.id) }); }
-  catch { res.status(503).json({ error: 'Saved cards are temporarily unavailable. You can use Whop checkout.' }); }
+  const siteId = req.query.siteId;
+  if (siteId !== undefined && (typeof siteId !== 'string' || !/^[0-9a-f-]{36}$/i.test(siteId))) {
+    return res.status(400).json({ error: 'Choose a website.' });
+  }
+  try { res.json({ cards: await require('../../lib/whop/savedCards').list(req.cmsUser.id, siteId) }); }
+  catch { res.status(503).json({ error: 'Saved cards are temporarily unavailable.' }); }
 });
-router.post('/saved-card-subscription', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, async (req, res) => {
+async function ownsCardSetup(req, siteId) {
+  const { verifySiteOwnership } = require('../../middleware/cmsAuth');
+  return typeof siteId === 'string' && /^[0-9a-f-]{36}$/i.test(siteId) &&
+    await verifySiteOwnership(req.cmsUser.id, siteId);
+}
+router.get('/card-setup', requireCmsAuth, async (req, res) => {
+  const { siteId } = req.query;
+  if (!await ownsCardSetup(req, siteId)) return res.status(403).json({ error: 'Choose a website you own.' });
+  try { return res.json(await require('../../lib/whop/savedCards').setupConfig(siteId, req.cmsUser.id)); }
+  catch { return res.status(409).json({ error: 'Card setup is unavailable for this subscription.' }); }
+});
+router.post('/card-setup', requireCmsAuth, async (req, res) => {
+  const { siteId, tokenId } = req.body || {};
+  if (!await ownsCardSetup(req, siteId)) return res.status(403).json({ error: 'Choose a website you own.' });
+  if (typeof tokenId !== 'string' || !/^[A-Za-z0-9_-]{10,250}$/.test(tokenId)) {
+    return res.status(400).json({ error: 'Could not read the card details. Try again.' });
+  }
+  try { return res.json(await require('../../lib/whop/savedCards').saveCard(siteId, req.cmsUser.id, tokenId)); }
+  catch (error) {
+    const message = error.message === 'card_requires_authentication'
+      ? 'This card needs extra verification. Try another card or manage your payment method in Whop.'
+      : 'Could not confirm that your card and address were saved. Check your payment methods before trying again.';
+    return res.status(409).json({ error: message });
+  }
+});
+router.post('/renewal-card', requireCmsAuth, async (req, res) => {
+  const { siteId, methodId } = req.body || {};
+  const { verifySiteOwnership } = require('../../middleware/cmsAuth');
+  if (typeof siteId !== 'string' || typeof methodId !== 'string' || !await verifySiteOwnership(req.cmsUser.id, siteId)) {
+    return res.status(403).json({ error: 'Choose a website you own.' });
+  }
+  try {
+    await require('../../lib/whop/savedCards').changeRenewalCard(siteId, req.cmsUser.id, methodId);
+    return res.json({ updated: true });
+  } catch (error) {
+    if (error.message === 'card_updated_address_pending') {
+      return res.status(503).json({ error: 'Whop updated your renewal card. Select it again to sync the billing address.' });
+    }
+    return res.status(409).json({ error: 'Could not update your card here. Open Whop to manage your payment method.' });
+  }
+});
+router.post('/saved-card-subscription', requireCmsAuth, catalogue.requestGate, subscriptionQuoteGate, async (req, res) => {
   const { siteId, methodId } = req.body || {};
   const { verifySiteOwnership } = require('../../middleware/cmsAuth');
   if (typeof siteId !== 'string' || typeof methodId !== 'string' || !await verifySiteOwnership(req.cmsUser.id, siteId, { allowSuspended: true })) return res.status(403).json({ error: 'Not your site' });

@@ -88,6 +88,7 @@ jobs:
           environment-variables: |
             NODE_ENV=production
             WHOP_ENABLED=${{ secrets.WHOP_ENABLED_PROD || 'false' }}
+            MANAGED_WEBSITE_PURCHASE_ENABLED=${{ secrets.MANAGED_WEBSITE_PURCHASE_ENABLED_PROD || 'false' }}
             WHOP_SANDBOX=false
             WHOP_ACCOUNT_ID=${{ secrets.WHOP_ACCOUNT_ID_PROD }}
             WHOP_API_KEY=${{ secrets.WHOP_API_KEY_PROD }}
@@ -105,10 +106,14 @@ jobs:
             WHOP_PLAN_LAUNCH_STARTER=${{ vars.WHOP_PLAN_LAUNCH_STARTER }}
             WHOP_PLAN_LAUNCH_GROWTH=${{ vars.WHOP_PLAN_LAUNCH_GROWTH }}
             WHOP_PLAN_LAUNCH_BUSINESS=${{ vars.WHOP_PLAN_LAUNCH_BUSINESS }}
-            WHOP_RETURN_ORIGIN=${{ secrets.WHOP_RETURN_ORIGIN_PROD || 'https://cms.stemfra.com' }}
+            WHOP_RETURN_ORIGIN=${{ secrets.WHOP_RETURN_ORIGIN_PROD }}
+            WHOP_WEBSITE_CUSTOM_PRODUCTION=${{ secrets.WHOP_WEBSITE_CUSTOM_PRODUCTION || 'false' }}
+            WHOP_CMS_CARD_CHECKOUT_PRODUCTION=${{ secrets.WHOP_CMS_CARD_CHECKOUT_PRODUCTION || 'false' }}
             PORT=4000
             API_HOST=api.stemfra.com
             CLIENT_URL=https://stemfra.com
+            CLIENT_ALTERNATE_URL=https://www.stemfra.com
+            CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS_PROD }}
             SUPABASE_URL=https://acxepovfklgthxmteqxr.supabase.co
             SUPABASE_SECRET_KEY=${{ secrets.SUPABASE_SECRET_KEY }}
             GMAIL_USER=admin@stemfra.com
@@ -198,4 +203,4 @@ jobs:
             DOMAIN_REGISTRAR=porkbun
             PORKBUN_API_KEY=${{ secrets.PORKBUN_API_KEY }}
             PORKBUN_SECRET_API_KEY=${{ secrets.PORKBUN_SECRET_API_KEY }}
-            STEMFRA_ADMIN_SECRET=66603862aa074ad66f1562685e882c039cc862153bb9af38
+            STEMFRA_ADMIN_SECRET=${{ secrets.STEMFRA_ADMIN_SECRET }}

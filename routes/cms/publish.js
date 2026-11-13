@@ -9,7 +9,7 @@ router.get('/sample-status/:siteId', requireCmsAuth, getSampleStatus);
 router.get('/quality/:siteId', requireCmsAuth, getQuality);
 router.post('/publish', requireCmsAuth, publish);
 router.post('/unpublish', requireCmsAuth, unpublish);
-router.post('/billing-checkout', requireCmsAuth, billingCheckout); // Stripe (gated off for now)
+router.post('/billing-checkout', requireCmsAuth, billingCheckout);
 router.post('/request-invoice', requireCmsAuth, requestPublishInvoice); // Payoneer invoice-to-publish
 
 module.exports = router;

@@ -57,25 +57,11 @@ const PORT = process.env.PORT || 4000;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  // Production frontends
-  'https://stemfra.com',         // stemfra_client (apex)
-  'https://www.stemfra.com',     // stemfra_client (www)
-  'https://crm.stemfra.com',     // stemfra_ops (CRM)
-  // Local dev (kept in prod too so devs can hit api.stemfra.com from
-  // localhost:5173 — only ever exploitable from the dev's own machine).
-  'http://localhost:5173',
-  'http://localhost:5174',   // stemfra_barbers template (dev)
-  'http://localhost:5175',   // stemfra_salons template (dev)
-  'http://localhost:5176',   // stemfra_crossfit template (dev)
-  'http://localhost:5177',   // stemfra_yoga template (dev)
-  'http://localhost:5181',   // stemfra_massage template (dev)
-  'http://localhost:5182',   // stemfra_spa template (dev — built after massage)
-  'http://localhost:5180',   // stemfra_cms (dev)
-  'http://localhost:5178',   // stemfra-ops CRM (dev)
-  'http://localhost:5183',   // stemfra_business (dev — plans & pitch decks)
-  'http://localhost:5192',   // stemfra_client on its fallback port (launch.json `client_alt`, when 5173 is taken)
-];
+  process.env.CLIENT_URL,
+  process.env.CLIENT_ALTERNATE_URL,
+  process.env.CMS_URL,
+  ...(process.env.CORS_ALLOWED_ORIGINS || '').split(','),
+].map(value => value?.trim()).filter(Boolean);
 
 // Pattern-matched origins for the multi-tenant Cloudflare Pages deployments.
 // The deployed template/CMS sites live on hosts that can't be listed
@@ -149,6 +135,7 @@ app.get('/health', (req, res) => {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/contact',  contactRoutes);
 app.use('/api/onboarding', require('./routes/onboarding'));
+app.use('/api/website-purchase', require('./routes/managedWebsitePurchase'));
 app.use('/api/claim', require('./routes/claim')); // public claim funnel (2026-08-19)
 app.use('/api/setup-call', require('./routes/setupCall'));  // public: marketing "Book a setup call" (video + Meet)
 app.use('/api/starters',   require('./routes/starters'));   // public Starter catalog (clone-to-onboard)
@@ -170,6 +157,8 @@ app.use('/api/site-chat',     require('./routes/siteChat'));
 app.use('/api/concierge',     require('./routes/concierge'));
 app.use('/api/voice',         require('./routes/voice'));
 app.use('/api/site-bookings', siteBookingsRoutes);
+app.use('/api/marketplace', require('./routes/marketplace'));
+app.use('/api/admin/marketplace', require('./routes/admin/marketplace'));
 app.use('/api/site-payments', sitePaymentsRoutes);
 app.use('/api/platform-billing', platformBillingRoutes);
 app.use('/api/site-memberships', siteMembershipsRoutes);
@@ -193,6 +182,7 @@ app.use('/api/cms/email-connector', require('./routes/cms/emailConnector'));
 app.use('/api/cms/bookings', require('./routes/cms/bookings'));
 app.use('/api/cms/leads', require('./routes/cms/leads'));
 app.use('/api/cms/email-templates', require('./routes/cms/emailTemplates'));
+app.use('/api/cms/setup-progress', require('./routes/cms/setupProgress'));
 app.use('/api/cms/google-profile', require('./routes/cms/googleProfile'));
 app.use('/api/cms/site-copy', require('./routes/cms/siteCopy')); // P39c: the wizard's finish job (AI copy from the facts)
 app.use('/api/cms/security', require('./routes/cms/security')); // P39k: account security notices (password, 2FA, new device)
