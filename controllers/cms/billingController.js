@@ -78,15 +78,16 @@ async function getBilling(req, res) {
     .eq('state', 'pending').eq('sandbox', currentEnv).maybeSingle();
   if(pendingIntent.error)return res.status(503).json({error:'Could not verify pending subscription.'});
   const cardCheckout = require('../../lib/whop/cmsCardCheckout');
-  const pendingCardCheckout = cardCheckout.isCustom(pendingIntent.data);
-  const pendingHostedCheckout = pendingIntent.data?.acquisition_mode === 'checkout' && !pendingCardCheckout;
+  const legacyCurrency = pendingIntent.data && !/^managed_website(?:_usd(?:_|$)|$)/.test(pendingIntent.data.plan_key);
+  const pendingCardCheckout = !legacyCurrency && cardCheckout.isCustom(pendingIntent.data);
+  const pendingHostedCheckout = Boolean(legacyCurrency || (pendingIntent.data?.acquisition_mode === 'checkout' && !pendingCardCheckout));
   const customCardCheckout = cardCheckout.enabled(currentEnv);
   const pendingSavedPayment = pendingIntent.data?.saved_payment_id || null;
-  if(pendingIntent.data)pendingSubscriptionCurrency=pendingIntent.data.plan_key === 'managed_website' ? 'USD' : pendingIntent.data.plan_key.replace('managed_website_','').split('_')[0].toUpperCase();
+  if(pendingIntent.data && (!legacyCurrency || pendingIntent.data.checkout_url))pendingSubscriptionCurrency=pendingIntent.data.plan_key === 'managed_website' ? 'USD' : pendingIntent.data.plan_key.replace('managed_website_','').split('_')[0].toUpperCase();
   let subscriptionOffers=[];
-  try {subscriptionOffers=require('../../lib/whop/websitePrices').offers(require('../../lib/whop/core').config());} catch {}
-  const preferredSubscriptionCurrency = site.metadata?.onboarding?.fees_policy?.currency || require('../../lib/managedWebsiteOffer').regionalOffer(req).currency;
-  return res.json({ preferredSubscriptionCurrency, pendingSubscriptionCurrency, pendingHostedCheckout, pendingCardCheckout, customCardCheckout, subscriptionOffers, subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice, pendingSavedPayment });
+  try {subscriptionOffers=require('../../lib/whop/websitePrices').offers(require('../../lib/whop/core').config()).filter(offer => offer.currency === (pendingSubscriptionCurrency || 'USD'));} catch {}
+  const preferredSubscriptionCurrency = pendingSubscriptionCurrency || 'USD';
+  return res.json({ preferredSubscriptionCurrency, pendingSubscriptionCurrency, pendingHostedCheckout, canResumeHostedCheckout: Boolean(pendingHostedCheckout && pendingIntent.data?.checkout_url), pendingCardCheckout, customCardCheckout, subscriptionOffers, subscription: sub || null, charges, contact, billingIdentity, availablePlans, currentTier, canChangePlan, provider, commissionBank, preInvoice, pendingSavedPayment });
 }
 
 // POST /api/cms/billing/change-plan { siteId, tier }

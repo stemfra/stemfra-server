@@ -1,3 +1,17 @@
+**Branded checkout cutover:** USD-only checkout gates verified locally. Legacy CMS pending attempts require reconciliation before a new payment.
+
+**Branded USD pricing:** Local implementation and offer checks complete. Existing non-USD pending and renewal provider acceptance remains open. Sandbox audit found two pending KES 30,000 Marketing records with no linked Whop checkout and no pending non-USD CMS intent. The existing CAD membership is active, with a CAD 400 recurring price and a 30-day period. Whop payment history showed the original CAD 452 paid charge, including tax, and no observed renewal. No checkout was resumed to email verification.
+
+**Branded naming:** Marketing plan and checkout labels updated and checked locally. CMS and billing naming remain separate.
+
+**Websites catalogue:** Learn more links beneath the six vertical carousels are implemented and checked locally.
+
+## Whop campaign attribution
+
+This workstream implements and verifies website and checkout attribution when requested by Peter or the ads session. The ads session owns Facebook campaign creation, publication, and management.
+
+Marketing's opt-in popup was removed. The existing consent gate still applies, so visitors without prior consent do not enable the Pixel. In sandbox, the browser's stored visitor ID matched the visitor ID on a paid US$299 Whop payment. Landing-event attribution and purchase reporting remain unverified. See the [checkout runbook](WHOP_ELEMENTS_CHECKOUT.md#whop-ads-attribution).
+
 ## 2026-11-04: Customer footer identity follow-up
 
 Commit4b06592 removes starter business identity from new customer footer defaults and repairs still-inherited values on Finish, preserving design and owner edits. Existing paid test repaired and browser/database verified;20 focused tests pass. No new payment, site, publishing or AI change. See [current website journey](user-journeys/managed-website-purchase-to-setup.md) and root handoff for deployment status.
@@ -5,6 +19,191 @@ Commit4b06592 removes starter business identity from new customer footer default
 ## 2026-11-04: Managed website signup release and hosted acceptance
 
 Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+## 2026-11-10 Checkout environment configuration
+
+**Solutions pages:** Salons, CrossFit, Yoga, Massage and Spa now show the US Branded offer locally. Browser checks confirmed checkout and template link parameters on all five pages.
+
+**Barbers campaign preparation:** Local offer, SEO, FAQ and CTAs updated. Classic NYC opened the US$299 monthly cart in the browser. Signed-out paid setup, mobile acceptance, Meta consent and conversion delivery remain open.
+
+**Branded launch check (2026-11-13):** Live embedded flags confirmed; latest successful API deployment is `537917bf`. Newer site-specific Marketing and CMS handoff changes are absent from the verified frontend main tips. Signed-out sandbox acceptance and production parity of the local cart remain open before ads. See the [release and acceptance check](WHOP_ELEMENTS_CHECKOUT.md#13-november-2026-release-and-acceptance-check).
+
+**Managed website checkout handoff (2026-11-12):** Site-specific CMS setup routing is implemented. The signed-in Sorrel browser check passed without a dashboard stop. The signed-out login return remains open for verification. See the [checkout runbook](WHOP_ELEMENTS_CHECKOUT.md#marketing-checkout-to-cms-setup).
+
+
+- [x] **Completed locally:** Replace Marketing, CMS, and template API origin fallbacks and configure Managed Websites payment returns, CMS activation, and CORS in the API environment.
+- [x] **Completed locally:** Verify the Marketing and Platform builds, reject invalid production origins, and check the browser routing with local fixtures.
+- [ ] **Incomplete:** Confirm production build variables, then verify deployment and provider returns when release is authorized. See the [environment guide](../../docs/ENVIRONMENT_CONFIGURATION.md).
+
+## 2026-11-09 Managed website billing checks
+
+Mark completed checks as soon as evidence is recorded. Keep implementation, sandbox acceptance and production acceptance separate, so subsequent sessions resume only the outstanding checks.
+
+- [x] Consolidate Billing details into Subscription, preserve the old URL as a redirect, and verify both the combined screen and the existing Edit form in the local browser. See the [CMS billing guide](../../stemfra_platform/docs/BILLING_AND_PAYMENTS.md#managed-website-subscription-billing).
+- [x] Verify the custom marketing checkout again after adding card-field preloading and renaming the button to Submit Payment. Peter reached the CMS password screen after entering the real Stemfra code. The earlier run already passed first password and website setup; Peter stopped the retest at the password screen.
+- [x] Verify the first sandbox decline left the test site unsubscribed, with no paid charge. Verify in-period cancellation/reactivation, and rehearse grace, suspension and recovery. Actual recurring failure, expiry and refund acceptance remain open. See the [billing evidence register](WHOP_PRODUCTION_SETUP.md#sandbox-evidence-register).
+- [x] Verify CAD sandbox payment, signed reconciliation and the original invoice PDF. Verify existing paid KES recovery and activation. GBP activation was simulated; the prior scope did not require a new GBP sandbox charge.
+
+- [x] Verify a fresh embedded CMS payment in Whop Sandbox. The unpublished test site returned to its own Billing page and displayed Active. Provider and CMS readback confirmed one paid charge and one active subscription. See [CMS sandbox acceptance](../../stemfra_platform/docs/BILLING_AND_PAYMENTS.md#cms-sandbox-acceptance-9-november-2026).
+- [x] Implement and build the custom Marketing checkout for production. A separate API switch enables the embedded form and preserves the hosted fallback. The release was pushed to Marketing, CMS and API main branches.
+- [x] Verify the live Whop merchant and the four regional plans, deploy the HTTPS return paths and check the production webhook rejects unsigned requests.
+- [x] Enable Marketing and CMS embedded checkout in production. The public API reported both switches enabled after [the activation deployment](https://github.com/stemfra/stemfra-server/actions/runs/42837251137).
+- [x] Remove hosted checkout redirects from local Marketing, CMS and AI checkout code, with billing support for unavailable checkout and earlier pending hosted attempts.
+- [ ] Deploy the hosted checkout retirement.
+- [ ] Record signed live Whop delivery and confirm a real-card payment, issuer challenge and the resulting activation or Billing return when the first live acceptance test is scheduled. See the [checkout status](WHOP_ELEMENTS_CHECKOUT.md#managed-website-checkout-status).
+
+- [x] Verify the new marketing cart in Whop Sandbox from Pricing through real email verification and first-time CMS password setup. Readback confirmed one preview site, one active subscription and one paid charge.
+
+- [x] Build and verify a separate marketing cart and checkout design preview. Registration and payments are simulated for review. See the [design mapping](../../stemfra_client/docs/design/MANAGED_WEBSITE_CART_PREVIEW.md).
+- [x] Integrate the custom card checkout in marketing Sandbox and verify a first-time payment, signed webhook and CMS activation. Preserve the existing embedded checkout as the default when the custom flag is off. See [integration evidence](WHOP_ELEMENTS_CHECKOUT.md#marketing-integration-sandbox-acceptance).
+- [x] Verify a first-time buyer can complete the custom card payment in Whop Sandbox without a Whop email OTP. The isolated test confirmed the quote and active monthly membership. Marketing checkout integration and activation are separate. See [sandbox checkout results](WHOP_ELEMENTS_CHECKOUT.md#custom-card-checkout-sandbox-test).
+- [x] Verify local Clean Cuts Billing details, prefilled Edit dialog, masked card and Default badge, card menu, active subscription navigation and cancellation confirmation.
+- [x] Confirm the public managed-website checkout config is enabled and record current GitHub main refs. The local branches are behind main with mixed edits. This check did not deploy the local changes.
+- [x] Clean Cuts recovered without a page reload after a simulated billing request failure and a manual Try again. On the unpublished payment-failure test site, a billing address edit persisted after reload and the original value was restored and verified.
+- [x] Save a sandbox card and capture its address in CMS. On Clean Cuts, confirmed the address changed only after making the card default, verified the exact membership in Whop, and restored the original card and address. No new payment or buyer OTP redirect. See [CMS billing notes](../../stemfra_platform/docs/BILLING_AND_PAYMENTS.md#sandbox-card-setup-and-address-sync).
+- [ ] For the **original** embed fallback only, confirm return after Whop sign-in verification, signed delivery and eligible ACH/wallet behavior if that fallback is needed. The custom card path’s successful signed delivery is already checked above. See [checkout paths and acceptance](WHOP_ELEMENTS_CHECKOUT.md).
+
+## 2026-11-05: CMS handoff acceptance
+
+- [x] Embedded sandbox checkout reached CMS business-name entry in Peter’s browser test.
+- [ ] Verify signed webhook delivery, provisioning and Billing independently. See [checkout paths](WHOP_ELEMENTS_CHECKOUT.md).
+
+## 2026-11-05: Managed website embedded checkout acceptance
+
+- [x] Direct local Subscribe and branded Elements checkout. Desktop and 390px layout checked.
+- [x] Local payment verification screen with automatic CMS redirect and manual link gated on server-confirmed payment.
+- [x] Implement the approved outlined cards, circular close control and right-column payment processing state. Marketing build passed.
+- [ ] Recheck the flush navbar, separate close control and close navigation in the browser.
+- [ ] Configure and verify the sandbox HTTPS return relay after Whop email verification.
+- [ ] Complete a fresh embedded sandbox payment and verify signed webhook, activation and Billing. Verify the scoped ACH override and eligible wallets separately before considering release.
+
+## 2026-11-05: Website Whop Elements integration
+
+The local sandbox checkout now uses the marketing navbar and Back to pricing button, with the managed website summary beside the Whop form on desktop and stacked on smaller screens. Browser verification of the revised layout is pending. See the Whop Elements guide for the wallet and ACH checks.
+
+The sandbox flow now uses the regular marketing port 5173 and opens a dedicated /checkout page after subscription review. Browser verification found card fields, Buyer Terms, Privacy Policy and Powered by Whop on the page. The isolated API remains on 4056. Payment submission and return remain pending. See WHOP_ELEMENTS_CHECKOUT.md.
+
+## 2026-11-05: Whop Elements sandbox render verified
+
+The isolated built preview at http://localhost:5193/ used @whop/elements and @whop/elements-react with environment sandbox and the same checkout configuration that failed in the earlier embed. The browser showed the managed website USD299 monthly offer, email, card and billing fields. Render only. No payment, webhook change or production deployment.
+
+## 2026-11-05: Whop React sandbox render check
+
+Official checkout package 0.7.0 routed to the sandbox iframe. A fresh configuration created with server SDK 2.6.0 and API date 2026-10-15-1 rendered email, card and billing fields on Whop hosted checkout. React embeds using the configuration ID, hosted session ID plus plan, and plan alone all returned “This checkout is no longer available.” Provider root cause is open. Render only, no payment or billing changes. The separate live preview was retired in marketing commit `e6dcbc49` and its removal verified.
+
+## 2026-11-05: StemfraPay research and embedded checkout trial
+
+Marketing commit `0101beb0` published the isolated live Whop preview at `https://stemfra.com/whop-live-preview`. On production HTTPS, Whop’s live embed for the existing USD managed website plan returned “This checkout is no longer available.” Card fields did not render. No payment was submitted. The customer Subscribe route still uses hosted Whop checkout.
+
+The sandbox rendering preview was pushed to marketing main in `b8845065` and verified on HTTPS at `stemfra.com/whop-sandbox`. The same checkout configuration as localhost loaded the Whop frame and displayed “This checkout is no longer available.” No card details were entered or payment submitted. The live Subscribe flow continues to use hosted Whop checkout.
+
+Future tenant online payments require Whop verification before enablement. Pay at venue is the default and remains available alongside Pay online after verification. See the [marketplace plan](BEAUTY_WELLNESS_MARKETPLACE_PLAN_2026-11.md#future-stemfrapay-policy). The sandbox embed rendered the same unavailable message on retest. Commission and onboarding acceptance remain open.
+
+The local marketing preview at `/whop-sandbox.html?session=<checkout ID>` loaded Whop’s sandbox iframe. Both the configured plan and freshly created sandbox checkout configurations returned “This checkout is no longer available” in the embed. The fresh one-time configuration rendered its $1 test payment form on Whop’s hosted page. Embedded payment, webhook reconciliation and both onboarding paths remain unverified. No payment was submitted. Existing Subscribe flow still uses the hosted checkout.
+
+## 2026-11-05: Marketplace appointment payments and phone check
+
+- [x] Marketplace reservations use payment in person. Tenant checkout settings do not flow through to the marketplace.
+- [x] Local 390px marketplace navigation, search, profile and booking preview verified.
+- [ ] Shared database activation, eligible live inventory and hosted booking acceptance remain open.
+
+## 2026-11-05: Marketplace local build implemented; release gates open
+
+- [x] Beauty/wellness-only discovery, URL filters, saved/recent businesses and internal shared Smart Site profiles.
+- [x] Explicit unclaimed profiles, source/date disclosure and bounded claim/correction/removal intake. Requests never grant ownership.
+- [x] Gated public projection, current linked-site detail adapter, owner visibility controls, staff request review and publication/suppression API.
+- [x] Reviewed local SQL with private request RLS, publication/booking constraints and durable intake cooldown; 11 isolated server/database tests pass.
+- [x] CMS hostname branding foundation and existing main/reduced navigation integration; existing authorization retained.
+- [x] Three featured-photo hero dots and CMS selection controls; local builds and desktop fixture interactions pass.
+- [ ] Apply reviewed migration/configuration and verify actual owner visibility/photo saves, staff reviews and live booking/email end to end.
+- [ ] Finalize brand/domain, geography, limits, prices, source/claim policy and eligible directory pilot. No CRM scrape publication.
+- [ ] Complete fresh phone interaction and branded hosted/auth acceptance, approved package lifecycle and controlled release.
+
+Temporary Stemfra identity approved. No new prices, public inventory, remote schema, provider or deployment changes. See [implementation runbook](MARKETPLACE_IMPLEMENTATION_2026-11.md) and [platform acceptance](../../stemfra_platform/docs/marketplace/IMPLEMENTATION_2026-11-05.md). Earlier planning-only statements are historical; seven-phase release is not complete.
+
+## 2026-11-04: Beauty/wellness marketplace brand and shared CMS, planning only
+
+Canonical plan: [Beauty and wellness marketplace](BEAUTY_WELLNESS_MARKETPLACE_PLAN_2026-11.md). New brand and Smart Site use one CMS build across branded addresses and the existing server/platform DB; hostname branding never grants entitlements. Fitness excluded from new brand, existing Stemfra fitness products retained. Supersedes historical P38 single-brand/free-commission scope, preserves source rights and release gates. Proposed tier prices remain unactivated.
+
+- [x] Record product boundaries, brand/domain approach, managed maintenance scope, public-directory safeguards and phased delivery.
+- [ ] Approve name/domain, launch geography/categories, unit economics, final package matrix and source/claim policy.
+- [ ] Design canonical business/public projection, provenance/suppression and entitlements; review migrations before applying.
+- [ ] Implement and verify both branded CMS/auth journeys and role-controlled reduced/main views.
+- [ ] Curate eligible unclaimed directory pilot and correction/removal/claim operations. Not-won CRM leads are candidates only; Google/Apify scrape remains internal. No eligibility count verified.
+- [ ] Connect live public booking and email alerts; decide SMS scope.
+- [ ] Implement approved package lifecycle/domain purchase flow and verify hosted recovery/provider isolation.
+- [ ] Approve controlled launch with evidence, support and rollback runbook.
+
+No implementation or operational changes in this planning update. See canonical plan for dependencies and acceptance gates.
+
+## 2026-11-04: Website tier expansion, agreed direction; implementation on hold
+
+Proposed monthly USD tiers: Marketplace $20, Smart Site $50, Managed Website $199, Managed Website + AI $299. Peter agreed with this direction and confirmed software/dependency/security maintenance only; redesign, customization beyond the theme and new theme capabilities are excluded. “Custom website” meant the managed themed product. No application, pricing, catalogue, Whop or deployment changes authorized. Existing released prices remain unchanged.
+
+- [x] Record proposed structure and confirmed productized maintenance boundary.
+- [ ] Approve detailed feature/entitlement matrix, staff/location limits and support scope.
+- [ ] Define upgrade/downgrade, cancellation, data/domain continuity and proration.
+- [ ] Validate delivery/support costs and AI allowance, then finalize pricing and regional amounts.
+- [ ] Finalize marketplace inclusion/opt-out, discovery claims, domains and SMS policy.
+- [ ] After explicit implementation authorization, trace approved plans through existing checkout, billing, CMS/CRM, recovery and product release gates.
+
+Canonical decision record: [WEBSITE_SERVICE_TIERS_2026-11.md](WEBSITE_SERVICE_TIERS_2026-11.md). P38 marketplace data/release gates and independent AI release holds remain in force.
+
+## 2026-11-04: P38 local marketplace business profiles
+
+Local homepage and internal business routes implemented in platform marketplace template. Cards reuse Smart-site presentation at `/business/:id`, preserving results on return; sample-only data and preview booking, not live inventory. Build/browser/390px checks passed. Live listing/availability adapter, shared live booking acceptance and production routing/deployment remain open. See [canonical marketplace documentation](../../stemfra_platform/docs/marketplace/README.md). Earlier P38 free/commission pricing is historical and superseded by current pricing.
+
+## 2026-11-04: Booksy-led marketplace template preview
+
+Created platform npm workspace stemfra_templates/marketplace (@stemfra/marketplace), port5186, preview http://localhost:5186/. Web-clone survey inspected live Booksy homepage desktop/390px and measured typography/hero/search. Stemfra branding, six verticals, search/category/city filters, horizontal sample discovery cards, local favorites, preview dialog, paired consumer/owner panels, information rows, city browse and mobile navigation. No Booksy assets/testimonials copied, no fake ratings. Build passed; browser verified search result, modal/Escape, favorites/Saved and phone menu. No overflow at390px. Listings/prices are explicit illustrative fixtures, not live inventory or working reservations. Dedicated Smart-site remains separate. Live public inventory, availability/shared booking integration and deployment remain gates. Docs: stemfra_platform/docs/marketplace/README.md. Peter requests localhost preview addresses. No push, deployment, database or provider change.
+
+## 2026-11-04: Maison Lune review and gallery reuse
+
+Smart-site reuses Testimonials rotating-quote (manual dots, one review) with count and See all modal of saved reviews. Browser verified rotation and six-review modal. Reused Gallery instagram-grid with saved business identity/photos and optional gallery profile; no invented follower counts or live Instagram claim. Clean Cuts has one gallery image, so one tile appears. Amenities recommended as optional owner-confirmed fields under About; no dedicated CMS fields found, no implementation or invented facility claims added. Build passed; no deployment/provider sends. Supersedes three-review inline paging.
+
+## 2026-11-04: Smart-site service/widget refinement
+
+Removed service More details controls, retaining descriptions. Price and duration now share one line beside Book. Removed logos from navbar and map/profile card. Booking widget uses full-width section dividers; added Buy a package and Buy a gift presentation rows. Current Smart-site has no connected package/gift purchase flow, so Buy controls are disabled with explicit Not available yet labels. Do not describe these as functioning checkout. Local builds passed; latest browser connection repeatedly timed out, so visual verification of these final refinements remains pending. No purchase/provider call/deploy.
+
+## 2026-11-04: Smart-site approved public layout implemented locally
+
+Updated platform Smart-site: services/reviews left, map/business profile/hours/about/team right, hero gallery and tabs, floating scroll header, services More and descriptions, max-three review paging/count, horizontal four-member team list and See all selector. Selecting a professional enters the shared booking form filtered to their assigned services; existing Service → Professional → Date → Time → Details flow retained. Browser verified Clean Cuts service expansion, review page 1–3 to 4–6, six-member selector and selected Marcus entering service then professional step. Unassigned professionals cannot be selected. One saved gallery photo yields single-photo hero. No booking/payment/content write/deploy. Latest build passed. Phone layout checked at 390px with no horizontal page overflow; desktop viewport restored. Evidence in platform docs/smart-site/evidence/smart-site-updated.png.
+
+## 2026-11-04: Pending claim-page pricing alignment
+
+- [ ] **Update `/claim` to the current paid managed-website offer.** Peter flagged the live page showing legacy “Free to claim, free to publish”, $0/month, “Free subscription” and “5%, capped at $400 a month” wording. Source check confirms legacy copy in `stemfra_client/src/app/pages/Claim.jsx`; related old commission wording also remains in `FAQ.jsx` and `components/home/HowItWorks.jsx`. Audit claim-page sections, sticky banner, metadata, FAQs and linked fee/policy copy; replace obsolete free/commission promises with the current regional subscription catalogue and approved payment-first signup journey. Preserve existing design and selected business/template context. Verify claim CTAs reach the intended existing checkout/activation flow without duplicate signup or payment. Treat this as a focused follow-up to completed acquisition implementation, not reopening that entire milestone. Smart-site pricing is a separate product decision and must not be inferred from managed-website pricing. Status: planned only; no application copy, billing or deployment changed.
+
+## 2026-11-04: Smart-site visual concept and next product direction
+
+Peter requested an original Fresha-led business-page image with Booksy service-first hierarchy. Planning now includes default Stemfra subdomains and optional custom domains purchased separately at the quoted price without a price cap, with exact-price authorization before saved-card charging and registration after payment. No charge/domain purchase authorized or performed. Future exploration: web-clone Booksy homepage and combine discovery/business-page patterns for a Stemfra marketplace serving the same verticals. Dedicated Smart-sites remain separate; no marketplace implementation yet. See stemfra_platform/docs/smart-site/README.md.
+
+<!-- 2026-11-04 local Smart-site follow-up: header and both CMS view selections verified; existing Google profile page exposed. Google review-text import/sync is not implemented. Email retained, SMS undecided. No release/deployment status change. -->
+## 2026-11-04: Smart-site direct-booking scope confirmed
+
+Local implementation now omits AI Front Desk and Inbox. Existing CMS editors reused; view selector and simplified Bookings/dashboard browser verified with Clean Cuts. Settings groups Alerts/Payments/Billing; SMS decision deferred. Sixteen Fresha booking profiles surveyed plus four explicitly unaffiliated directory listings (excluded from adoption conclusions). Save/reopen on unpublished site, registration and hosted release gates remain open. No deploy/provider sends. See [Smart-site status](../../stemfra_platform/docs/smart-site/README.md).
+
+## 2026-11-04: Smart-site implementation in progress
+
+Marketing design accepted. Local platform workspace template and reduced same-CMS profile implemented; shared booking/Front Desk reused. Browser CMS editing acceptance, template catalogue registration, custom-domain provisioning and hosted release checks remain open. No deployment or paid offer activation. Curated dark accent palette deferred for discussion. See [implementation status](../../stemfra_platform/docs/smart-site/README.md). Existing product holds remain unchanged.
+
+## 2026-11-04: Smart-site design exploration
+
+Local marketing /smart-site prototype prepared for Peter’s visual feedback, following Fresha business profile layout. Existing tenant booking and Front Desk UI reused in preview-only mode. New independent repository, reduced CMS (four setup/edit steps, appointments, clients, alerts; no Stacy) and live integration remain planned after design acceptance. Not a released product. See [design scope](../../stemfra_client/docs/design/SMART_SITE.md). Existing acquisition completion and product holds remain unchanged.
+
+## 2026-11-04: Acquisition complete; CRM alignment reconciled against source
+
+**Customer-acquisition implementation: DONE.** Peter confirmed all needed implementation is complete. This closes the implementation bucket, including the demo/VSL and acquisition funnel work; it is not a claim of real customer acquisition, campaign activation, new message/call delivery or first-cohort results. Read-only code review confirms the existing claim-email path, outreach sequencer, Claim routes, lead coverage/funnel reporting and signup conversion binding. Do not reopen these as unbuilt work based on older launch rows.
+
+**Core CRM commercial and website-billing alignment: IMPLEMENTED.** Fresh source inspection confirms product selection and subscription forecasts, actual provider-aware website subscriptions, test/environment separation, currency-safe revenue summaries, regional catalogue administration, Whop event/review/retry UI and existing custom-project quote/milestone/invoice views. Frontend Billing, RevenueWidget and OfferEditor/catalogue changes are present in the local working tree but absent from the CRM's current HEAD; implementation completion must not be described as a verified CRM production deployment. No new application code or operational actions were needed for this status correction.
+
+The September P44 recipe/build-fee/single-ledger proposal is historical, not the current implementation checklist. Current AI credits/subscriptions remain owned by the independent AI backend. Product-specific script/template filtering and the optional cross-product CRM workspace/intake bridge are not confirmed complete by this CRM review; reconcile them with the parallel AI session before calling them missing requirements or building replacements. AI production release, first real production payment and first-cohort measurement remain separate.
+
+## 2026-11-04: Customer footer identity follow-up
+
+Commit4b06592 removes starter business identity from new customer footer defaults and repairs still-inherited values on Finish, preserving design and owner edits. Existing paid test repaired and browser/database verified;20 focused tests pass. No new payment, site, publishing or AI change. See [current website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md) and root handoff for deployment status.
+
+## 2026-11-04: Managed website signup release and hosted acceptance
+
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
 
 ## 2026-11-04: Website release prepared, access steps pending
 
@@ -1288,7 +1487,7 @@ make editable → build (current text = defaults so nothing changes until edited
    this is only Peter's own test-tenant opt-in (low priority).
 5. **P10 case 42 "Remix" R2/R3** (AI theme composer engine) — R1 registry done; rest pending.
 6. **P10 case 1 remainder** — task videos + a "What's new" channel (guidance polish shipped).
-7. **VSL production** (P12 "Last") — deliberately last.
+7. ✅ **VSL / customer-acquisition implementation DONE** (Peter confirmed 2026-11-04). Campaign operation and first-cohort results are separate; do not list as an unbuilt implementation task.
 8. **Memberships: Mindbody-parity items** (2026-08-10 comparison vs their
    Membership Settings screen; Peter asked what we miss). We already have what
    they lack for our model: pay-at-venue renewals collection, per-member
@@ -3244,11 +3443,11 @@ Reuse billing_charges, Airwallex OUT_OF_BAND mirror, branded invoice/reminder/re
 | Phase | Status | Deliverable and completion gate |
 |---|---|---|
 | P48.0 Existing journey review | ✅ DONE 2026-10-12 (browser/source review; no implementation commit) | Principal marketing paths, two signup routes, demo-owner CMS setup/editor/Remix/import/billing/support, AI home/role/signup/pricing reviewed. No completed account, booking, payment or AI execution claimed. |
-| P48.1 Define offer and copy | ✅ DONE 2026-10-12: copy and $299 approved; operational billing details tracked in P48.4 | Same offer, $299/month, 14-day trial and bank-transfer invoices recorded. Draft Websites, Custom Software and AI copy for Peter before coding. Final price, scope units and operational details below remain to confirm. Reuse existing FAQ topics. Gate: reviewed scope and copy; no application edits in this phase. |
+| P48.1 Define offer and copy | ✅ Website commercial terms implemented; latest decisions supersede October trial wording | Managed website subscription with no free trial, regional catalogue and Whop terms implemented/released. Earlier 14-day trial/bank-transfer website assumptions are historical. AI/custom-software scope stays separate. |
 | P48.2 Additive local previews | 🔜 NEXT: Peter visual review; local preview built 2026-10-12, uncommitted | Add Websites, Custom Software and AI introduction routes in marketing; reuse existing components and AI presentation. Preview concise navigation labels Websites / Custom Software / AI while retaining access to Products/Solutions, Contact/Login and the current homepage. Incorporate selected real, clearly labeled demo screenshots from P47. Add pricing-summary treatment with accurate units and readiness. Gate: Peter's desktop/mobile browser review of reversible local changes before replacing existing surfaces. No production release. |
-| P48.3 Reconcile the full journey | Pending preview review | Converge homepage and catalogue signup on the chosen CMS journey, preserving starter/claim/attribution context. Align homepage, About, pricing, FAQ, help, signup and CMS wording with self-service plus optional support. Preserve custom enquiry intent through Contact. Resolve coexistence/replacement and domain wording, replace misleading customer/two-tap claims, update stale setup instructions. Investigate the demo calendar observation before diagnosing or fixing availability. Gate: reviewed route/content matrix and browser walkthrough; tests for changed signup/context behavior. |
-| P48.4 Billing and entitlements | Pending final commercial terms and scoped billing design | Audit reusable subscription/cancellation code first. Implement the agreed website subscription, billing start, invoices, payment failures, cancellation/service end, export/retention and optional add-on entitlements across server/CMS. Keep website billing separate from AI credits. Reconcile CRM/business-plan/sales materials with the final offer. Specify transition rules before replacing commission; do not assume demo rows are customers. Gate: lifecycle tests, provider readiness and agreed customer terms; shared-service/schema changes scoped with Peter. |
-| P48.5 Validate and release | Held for existing release gates | Validate approved signup→setup→publish→booking and subscribe→cancel paths using designated test data; check responsive pages, links, route prerendering, pricing consistency and relevant builds/typechecks. Keep external-effect tests separately authorized. Confirm AI is ready for cold visitors and links back. Release only after applicable Airwallex/card gates and explicit push/deployment authorization. Record deployed evidence separately from local checks. |
+| P48.3 Reconcile the full journey | ✅ Managed-website signup/setup/recovery slice complete; broader AI/menu work separate | Country/starter context, payment-first signup, existing-account recovery and branded setup/password recovery implemented and hosted-checked using the existing sandbox-paid test. This does not certify every broader product-menu route or a new production payment. |
+| P48.4 Billing and entitlements | ✅ Managed-website phase implemented/released; CRM core implemented; AI handled separately | Website Whop billing/signup deployed and enabled; designated sandbox tests and hosted existing-test recovery complete. Core CRM alignment source-checked4November (P44 table), frontend release not freshly verified. No real-money customer/payment acceptance claimed. |
+| P48.5 Validate and release | ✅ Website billing/signup release; whole-menu/AI gate separate | API/CMS/marketing website changes deployed with explicit approval and hosted evidence. Current billing test scope complete. New real production payment and revised publish/booking acceptance are separate from this completed scope. Historical whole-menu/AI hold is not cleared automatically. |
 | P48.6 Measure first cohort | Pending release | Track website-preview→signup→setup→publish→paid conversion, support minutes per business, assisted-edit demand, gross margin, cancellation reasons and add-on uptake. Use the first paying cohort to adjust packaging; no invented traction or volume targets. |
 
 **P48.1 decision sheet, to make the offer concrete:**
@@ -3476,7 +3675,29 @@ Sources: OWASP LLM10 (genai.owasp.org/llmrisk/llm102025-unbounded-consumption/, 
 Cloudflare "Stop malicious bots" (developers.cloudflare.com, verified), Turnstile pricing
 (prosopo.io, third-party).
 
-## P44 — CRM serves both products: websites + Stemfra AI (Peter, 2026-09-24; recorded, not started)
+## P44 — CRM serves both products: core alignment implemented; AI bridge tracked separately
+
+### Current implementation status, source review 4 November 2026
+
+| Slice | Status | Code evidence and boundary |
+| --- | --- | --- |
+| Product selection on leads | DONE implementation | `stemfra-ops/src/components/leads/LeadModal.jsx` uses existing `service` values website/custom_build/ai_automation, preserves AI plan in qualification and website vertical. No new `leads.product` column is required merely to reproduce this existing behavior. |
+| Product-specific lead forecasts | DONE implementation | `stemfra-ops/src/lib/leadValue.js` consumes productPricing.json: website USD299/month, AI selected USD100/200/300 plan, custom quote/deal value. monthlyCommission is a compatibility alias for subscription revenue. Annual/weighted forecasts and breakdowns reuse it. Forecasts are USD for subscriptions; they are not actual regional subscription accounting. |
+| Actual website billing and owner management link | DONE implementation, CRM frontend release not verified | CRM Billing ClientsTable reads actual provider/plan/monthly amount/currency/paid-through/status/cancellation. Server admin subscriptions controller handles object/array relation, paid-intent environment binding and excludes deleted sites; retired staff checkout returns410. This is website coverage, not an AI workspace subscription feed. |
+| Test-data separation and financial summaries | DONE implementation, CRM frontend release not verified | Billing dataset selector, SpaceWidgets RevenueWidget real/environment filters and per-currency totals; server compliance and charge read model exclude sandbox/test data. No claim that test revenue is real customer revenue. |
+| Regional website price administration | DONE implementation, CRM frontend release not verified | ManagedWebsiteCatalogue.jsx + OfferEditor + useBilling hooks and staff-gated managedWebsiteCatalogueController. Provider account/currency/amount verified before activating a new catalogue version; historical agreements retained. |
+| Whop payment-event review and retry | DONE implementation, CRM frontend release not verified | Billing WhopActivity, activity/retry hooks, routes/admin/billing.js and controllers/admin/whopOperationsController.js expose pending/processing/done/review, attempts/error/next check, review retry and financial cases. Earlier "UI pending" notes are superseded for this slice. |
+| Custom software project billing links | DONE existing implementation | CustomProjectSummary.jsx reads scoped projects/quotes/milestones/invoices with native-currency amounts/tax; existing Airwallex custom-project boundary retained. No new Airwallex settlement acceptance claimed. |
+| Shared sales script/template tooling | DONE existing tooling; product filtering not confirmed | useCallScripts.js and useEmailTemplates.js provide existing shared reads/edits. Checked hooks do not implement the September per-product filtering proposal; live stored script/template wording was not read or changed in this pass. |
+| AI intake, hiring-signal handoff, won-to-workspace provision and CRM workspace view | SEPARATE integration review | Not established by checked CRM routes/pages. Reconcile with the active AI session and current subscription/credits product before retaining these as future work. No direct cross-project DB access or legacy recipe billing should be inferred. |
+| September one-off AI build fee / recipe monthly run on website ledger | SUPERSEDED proposal | Current AI plans use independent subscriptions and credits. Do not implement the old shared-ledger design from the historical list below. |
+
+This is source verification, not a new runtime/browser/provider acceptance. CRM HEAD21b5207 does not contain the current Billing/RevenueWidget/catalogue additions; their local modifications are preserved. Existing November browser/build records remain dated evidence in CRM WORK_REPORT, not fresh deployment proof.
+
+### Historical September proposal
+
+The original numbered proposal below is retained for context. Use the current status table above and current product boundaries when deciding what remains.
+
 
 The CRM stays the one sales and operations surface for the company (leads, deals, billing,
 compliance, team); the Stemfra AI dashboard at ai.stemfra.com stays the tenant's surface
@@ -3753,7 +3974,7 @@ first and decides the legal position:**
 3. **Booking-only tier**: a claimed listing that keeps the marketplace page as its only web
    presence with the booking engine on, same 5%. A one-page theme, not new tech.
 4. Consumer marketing of the marketplace last, city by city, once one city is dense.
-Not started. Prerequisite for stage 2: a Places API key on the server and a written
+Local homepage/profile design preview implemented 2026-11-04; operational stages remain unreleased. See current marketplace docs above. Prerequisite for stage 2: a Places API key on the server and a written
 data-licence note in `docs/NICHE_SATURATION_2026-09.md`'s successor doc.
 
 ## P37 — Custom-build verticals (Peter's pick, 2026-09-11 night; 🔜 NEXT to scope)
@@ -3879,3 +4100,7 @@ Checks: 3 adapter regression tests per shared API/Helen (6), 8 AI adapter/fallba
 
 ### 20 October 2026: CRM custom project linking
 McMaster lead now links to a native CAD proposal snapshot, project, two milestones and a reference to the already-issued invoice. UI local, shared database migration applied; Airwallex not changed. Payment status remains dated, not live sync. No payment/webhook release gate lifted. See ../../stemfra-ops/docs/CUSTOM_PROJECT_LINKS.md.
+
+## CMS billing details status
+
+CMS Billing details now shows a billing information summary with an Edit dialog and a website-scoped saved-card list. Add new and card management open Whop. Setting the renewal card remains sandbox-only. The current integration does not return a verified default card. CMS typecheck, server syntax and diff checks passed. Signed-in browser and Clean Cuts card-switch verification are pending.

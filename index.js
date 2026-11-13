@@ -57,25 +57,11 @@ const PORT = process.env.PORT || 4000;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  // Production frontends
-  'https://stemfra.com',         // stemfra_client (apex)
-  'https://www.stemfra.com',     // stemfra_client (www)
-  'https://crm.stemfra.com',     // stemfra_ops (CRM)
-  // Local dev (kept in prod too so devs can hit api.stemfra.com from
-  // localhost:5173 — only ever exploitable from the dev's own machine).
-  'http://localhost:5173',
-  'http://localhost:5174',   // stemfra_barbers template (dev)
-  'http://localhost:5175',   // stemfra_salons template (dev)
-  'http://localhost:5176',   // stemfra_crossfit template (dev)
-  'http://localhost:5177',   // stemfra_yoga template (dev)
-  'http://localhost:5181',   // stemfra_massage template (dev)
-  'http://localhost:5182',   // stemfra_spa template (dev — built after massage)
-  'http://localhost:5180',   // stemfra_cms (dev)
-  'http://localhost:5178',   // stemfra-ops CRM (dev)
-  'http://localhost:5183',   // stemfra_business (dev — plans & pitch decks)
-  'http://localhost:5192',   // stemfra_client on its fallback port (launch.json `client_alt`, when 5173 is taken)
-];
+  process.env.CLIENT_URL,
+  process.env.CLIENT_ALTERNATE_URL,
+  process.env.CMS_URL,
+  ...(process.env.CORS_ALLOWED_ORIGINS || '').split(','),
+].map(value => value?.trim()).filter(Boolean);
 
 // Pattern-matched origins for the multi-tenant Cloudflare Pages deployments.
 // The deployed template/CMS sites live on hosts that can't be listed
@@ -171,6 +157,8 @@ app.use('/api/site-chat',     require('./routes/siteChat'));
 app.use('/api/concierge',     require('./routes/concierge'));
 app.use('/api/voice',         require('./routes/voice'));
 app.use('/api/site-bookings', siteBookingsRoutes);
+app.use('/api/marketplace', require('./routes/marketplace'));
+app.use('/api/admin/marketplace', require('./routes/admin/marketplace'));
 app.use('/api/site-payments', sitePaymentsRoutes);
 app.use('/api/platform-billing', platformBillingRoutes);
 app.use('/api/site-memberships', siteMembershipsRoutes);

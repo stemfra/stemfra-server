@@ -1,3 +1,4 @@
+process.env.CMS_URL = 'http://localhost:5180';
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createService, digest } = require('../lib/managedWebsitePurchase');
@@ -34,6 +35,8 @@ function fixture(options = {}) {
 }
 test('Kenya checkout stores only a hashed capability and does not create an account/site before payment',async()=>{
  const f=fixture(), p=await f.service.start({planKey:'kenya',vertical:'barbershops'},f.cfg);
+ assert.equal(p.sandboxCheckout?.configurationId,'ch_test');
+ assert.equal(p.url,undefined);
  assert.equal(f.rows.get(p.id).secret_hash,digest(p.key));assert.notEqual(f.rows.get(p.id).secret_hash,p.key);
  assert.equal(f.calls.onboard,0);assert.equal(f.calls.mail,0);
  await assert.rejects(f.service.load(p.id,'0'.repeat(64)),{status:404});
@@ -104,19 +107,19 @@ test('an interruption preparing the atomic clone leaves the paid purchase retrya
 });
 
 test('production checkout selects embedded only when enabled and keeps its HTTPS return on Stemfra', async () => {
-  const names = ['WHOP_WEBSITE_CUSTOM_PRODUCTION', 'CLIENT_URL', 'CMS_URL'];
+  const names = ['WHOP_WEBSITE_CUSTOM_PRODUCTION', 'CLIENT_URL', 'CLIENT_ALTERNATE_URL', 'CMS_URL'];
   const original = Object.fromEntries(names.map(name => [name, process.env[name]]));
   try {
     process.env.CLIENT_URL = 'https://stemfra.com';
     process.env.CMS_URL = 'https://cms.stemfra.com';
+    process.env.CLIENT_ALTERNATE_URL = 'https://www.stemfra.com';
     const f = fixture();
     const cfg = { ...f.cfg, sandbox: false, account: 'biz_live' };
     const selection = { planKey: 'kenya', vertical: 'barbershops' };
 
     process.env.WHOP_WEBSITE_CUSTOM_PRODUCTION = 'false';
-    const fallback = await f.service.start(selection, cfg);
-    assert.ok(fallback.url);
-    assert.equal(fallback.embeddedCheckout, undefined);
+    await assert.rejects(f.service.start(selection, cfg), { status: 503 });
+    assert.equal(f.rows.size, 0);
 
     process.env.WHOP_WEBSITE_CUSTOM_PRODUCTION = 'true';
     const result = await f.service.start(selection, cfg);
@@ -137,11 +140,23 @@ test('production checkout selects embedded only when enabled and keeps its HTTPS
 
     process.env.CLIENT_URL = 'http://localhost:5173';
     await assert.rejects(f.service.start(selection, cfg), { status: 503 });
-    assert.equal(f.rows.size, 3);
+    assert.equal(f.rows.size, 2);
   } finally {
     for (const name of names) {
       if (original[name] === undefined) delete process.env[name];
       else process.env[name] = original[name];
     }
+  }
+});
+
+test('a missing CMS destination blocks checkout before creating a purchase', async () => {
+  const before = process.env.CMS_URL;
+  try {
+    delete process.env.CMS_URL;
+    const f = fixture();
+    await assert.rejects(f.service.start({ planKey: 'kenya', vertical: 'barbershops' }, f.cfg), { status: 503 });
+    assert.equal(f.rows.size, 0);
+  } finally {
+    process.env.CMS_URL = before;
   }
 });

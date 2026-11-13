@@ -1,3 +1,4 @@
+const { origin, websiteReturnOrigin } = require('../lib/checkoutOrigins');
 const router = require('express').Router();
 const catalogue = require('../lib/managedWebsiteCatalogue');
 const db = require('../config/supabase');
@@ -7,7 +8,11 @@ const { randomBytes } = require('node:crypto');
 const { createClient } = require('@supabase/supabase-js');
 const { isPurchaseOwner } = require('../lib/managedWebsitePurchase');
 const handoffs = new Map();
-const cartEnabled = () => process.env.WHOP_SANDBOX === 'true' && process.env.WHOP_WEBSITE_CUSTOM_SANDBOX === 'true';
+const cartEnabled = () => process.env.WHOP_ENABLED === 'true' && (
+  process.env.WHOP_SANDBOX === 'true'
+    ? process.env.WHOP_WEBSITE_CUSTOM_SANDBOX === 'true'
+    : process.env.WHOP_SANDBOX === 'false' && process.env.WHOP_WEBSITE_CUSTOM_PRODUCTION === 'true'
+);
 const fail = (message, status) => Object.assign(Error(message), { status });
 const enabled = () => process.env.MANAGED_WEBSITE_PURCHASE_ENABLED === 'true';
 router.get('/config', (_req, res) => res.set('Cache-Control', 'no-store').json({
@@ -20,7 +25,11 @@ router.get('/sandbox-return', (req, res) => {
   if (!process.env.WHOP_WEBSITE_SANDBOX_RETURN_ORIGIN || process.env.WHOP_SANDBOX !== 'true') return res.sendStatus(404);
   const { purchase, status, checkout_status, payment, payment_id, receipt_id } = req.query;
   if (typeof purchase !== 'string' || !/^[0-9a-f-]{36}$/i.test(purchase)) return res.sendStatus(400);
-  const target = new URL('http://localhost:5173/checkout');
+  let target;
+  try {
+    origin('WHOP_WEBSITE_SANDBOX_RETURN_ORIGIN', { relay: true });
+    target = new URL('/checkout', websiteReturnOrigin(true));
+  } catch (error) { return res.status(error.status).json({ error: error.message }); }
   target.searchParams.set('purchase', purchase);
   const outcome = status || checkout_status;
   if (['success', 'succeeded', 'failed', 'canceled'].includes(outcome)) target.searchParams.set('status', outcome);
@@ -45,17 +54,17 @@ const route = fn => async (req, res) => {
   catch (e) { if (!e.status) console.error('[website-purchase]', e.message); res.status(e.status || 503).json({ error: e.status ? e.message : 'Setup is temporarily unavailable. Your purchase is saved. Please try again.' }); }
 };
 router.get('/cart/card-config', route(async req => {
-  if (!cartEnabled()) throw fail('Sandbox cart checkout is unavailable.', 404);
-  const price = catalogue.active(req.query.currency);
+  if (!cartEnabled()) throw fail('Card checkout is unavailable.', 404);
+  const price = req.query.currency === 'USD' ? catalogue.active('USD') : null;
   if (!price || price.id !== req.query.version) throw fail('The subscription price has changed.', 409);
   const cfg = core.config();
   const planId = cfg.plans[price.plan_key]?.plan;
-  if (!planId) throw fail('Whop Sandbox card checkout is unavailable.', 503);
+  if (!planId) throw fail('Card checkout is unavailable.', 503);
   return { accountId: cfg.account, planId };
 }));
-router.post('/start', catalogue.quoteGate, route(async req => {
+router.post('/start', catalogue.newQuoteGate, route(async req => {
   const cartCheckout = req.body.cartCheckout === true;
-  if (cartCheckout && !cartEnabled()) throw fail('Sandbox cart checkout is unavailable.', 404);
+  if (cartCheckout && !cartEnabled()) throw fail('Card checkout is unavailable.', 404);
   if (req.body.termsAccepted !== true) throw Object.assign(Error('Accept the subscription terms to continue.'), { status: 400 });
   let starterId = typeof req.body.starterId === 'string' ? req.body.starterId : null;
   const themes = { manhattan: 'rourke-sloane', 'classic-nyc': 'argyle-and-sons', sorrel: 'maison-lune', 'beauty-house': 'vesper-beauty-house', box: 'ironclad-athletics', volt: 'forge-and-bell', blackfly: 'blackfly-barbell', '212': '212-strength-co', sanctuary: 'wildflower-yoga-pilates', sawiet: 'lila-studio', 'zen-haven': 'umbra', escape: 'lull', reverie: 'reveline', ellaris: 'ellaris-spa', lumora: 'vela', respira: 'aurea' };
@@ -71,7 +80,8 @@ router.post('/start', catalogue.quoteGate, route(async req => {
   if (!starterId && !require('../lib/verticalConfig').configFor(vertical)) throw Object.assign(Error('Choose an available business type.'), { status: 400 });
   const price = require('../lib/whop/websitePrices').price(req.body.subscriptionCurrency);
   // The issuer must return to the origin that owns the browser checkout session.
-  const checkoutOrigin = req.get('origin') === 'https://www.stemfra.com' ? 'https://www.stemfra.com' : undefined;
+  const requestOrigin = req.get('origin');
+  const checkoutOrigin = requestOrigin === process.env.CLIENT_ALTERNATE_URL?.trim() ? requestOrigin : undefined;
   return service.start({ vertical, starterId, planKey: price.key, country: req.body.country || null, ...(checkoutOrigin ? { checkoutOrigin } : {}), ...(cartCheckout ? { cartCheckout } : {}),
     claimToken: typeof req.body.claimToken === 'string' ? req.body.claimToken : null,
     acceptedAt: new Date().toISOString(), legalVersions: require('../lib/legalDocs').LEGAL_DOCS, clientIp: require('../lib/clientIp').clientIp(req), userAgent: String(req.headers['user-agent'] || '').slice(0, 500), pricingVersion: price.version }, core.config());
@@ -86,7 +96,7 @@ router.post('/status', route(async req => {
   const jwt = String(req.headers.authorization || '').replace(/^Bearer /, '');
   const auth = jwt ? await db.auth.getUser(jwt) : null;
   const verified = !auth?.error && isPurchaseOwner(p, auth?.data?.user);
-  return { state: p.state, verified, siteId: verified && p.state === 'complete' ? p.site_id : null,
+  return { state: p.state, restartInUsd: p.state === 'pending' && p.currency !== 'USD' && !p.selection?.cardAttempt && !p.checkout_id && !p.snapshot?.paid, verified, siteId: verified && p.state === 'complete' ? p.site_id : null,
     ...(p.selection?.cardAttempt ? { cardPaymentStarted: true, cardPaymentId: p.selection.cardAttempt.paymentId || null } : {}),
     ...(p.snapshot?.paid ? { email: p.snapshot.customer_email, newAccount: p.state !== 'complete' && p.new_account === true, codeSentAt: p.otp_sent_at || null } : {}) }; 
 }));
@@ -119,6 +129,27 @@ router.post('/cart/exchange', route(async req => {
   if (entry?.id !== p.id) throw fail('Your setup link expired. Verify your email again to continue.', 410);
   handoffs.delete(req.body.grant);
   return { access_token: entry.access_token, refresh_token: entry.refresh_token };
+}));
+router.post('/cart/complete', route(async req => {
+  const p = await paidCart(req);
+  const entry = handoffs.get(req.body.grant);
+  if (entry?.id !== p.id) throw fail('Your setup link expired. Verify your email again to continue.', 410);
+  const company = typeof req.body.company === 'string' ? req.body.company.trim() : '';
+  if (!company || company.length > 200) throw fail('Enter your business name.', 400);
+  const auth = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  }).auth;
+  const { data, error } = await auth.setSession(entry);
+  if (error || !isPurchaseOwner(p, data.user)) throw fail('Verify your email again to continue.', 401);
+  if (p.state !== 'complete' && p.new_account === true) {
+    const password = req.body.password;
+    if (typeof password !== 'string' || password.length < 8) throw fail('Use at least 8 characters for your password.', 400);
+    const changed = await auth.updateUser({ password });
+    if (changed.error) throw fail(changed.error.message, 400);
+  }
+  catalogue.assertAvailable(p.snapshot?.billing_address?.country, p.snapshot?.billing_address?.state);
+  const result = await service.complete(p, data.user, core.config(), company);
+  return result;
 }));
 router.post('/complete', route(async req => {
   const jwt = String(req.headers.authorization || '').replace(/^Bearer /, '');

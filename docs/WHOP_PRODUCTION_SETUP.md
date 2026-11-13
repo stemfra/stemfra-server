@@ -1,5 +1,7 @@
 ## 2026-11-04: Managed website signup release and hosted acceptance
 
+Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](../../docs/user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
+
 Production payment-first website signup deployed and explicitly enabled by Peter; activation run41734352333 succeeded at e0b7b08, hosted config enabled=true. CMS245672e/marketingf16db72 deployed. Existing paid sandbox purchase completed hosted setup, database resume, owner recovery and active KES30,000 subscription checks without another payment. Sandbox existing delivery replay200/Active and durable idempotency verified. Older-purchase audit found no stranded paid record. Shared sign-in/password-reset style deployed. Full evidence/limits: [website journey](user-journeys/managed-website-purchase-to-setup.md). This does not release AI, change Airwallex or certify a new production payment. Whole-menu/AI holds remain separate. Earlier dated pending statements are historical.
 
 ## Local GitHub deployment access, 4 November 2026
@@ -185,11 +187,12 @@ The first migration also permits Whop in the subscription provider constraint an
 - [ ] Verify future invoice immutability and persisted due date through an actual new payment, PDF, CRM and email paths.
 - [x] Replay original successful provider delivery: duplicate=true,invoice count1 and sent-email attempts1 unchanged. New-event-ID duplicate payment fixtures also pass locally.
 - [ ] Test delayed/out-of-order events and temporary receiver/database/provider failure with recovery.
-- [ ] Test failed first payment without paid activation.
-- [ ] Test failed renewal, notices, explicit grace boundary, suspension and recovery. Reconcile dated seven-day plan against the final agreed policy before enabling it.
+- [x] Test failed first payment without paid activation. The disposable sandbox site stayed Not subscribed, with no active subscription or paid invoice.
+- [x] Rehearse the seven-day sandbox grace boundary, public suspension and recovery; restore the test site. Sandbox cancellation and reactivation preserved the paid-through date.
+- [ ] Verify an actual failed renewal, notices, suspension and recovery with the agreed grace policy.
 - [ ] Verify cancellation at actual paid-period expiry across access paths. Current dialog promises website offline; full enforcement is not accepted.
 - [ ] Test refunds and disputes, credit-note/accounting/access effects; cancellation is not a refund.
-- [ ] Complete CAD/GBP/KES validation and account activation, not just provider price creation. EUR/NGN placeholders are not launch prices.
+- [x] Verify the CAD sandbox payment, signed delivery, activation and original invoice. Verify existing paid KES recovery and activation. GBP was covered by simulation in the accepted sandbox scope. EUR/NGN placeholders are not launch prices.
 - [ ] Repeat account linking, entitlements/credits, invoice, email and lifecycle acceptance in the separate AI runtime.
 - [x] Retire duplicate Stemfra Whop paid-invoice mail; provider owns original payment documents. Three-day reminder delivery and recovery notification acceptance remain open.
 - [ ] Add operational visibility for pending/failed events and controlled reconciliation retries.

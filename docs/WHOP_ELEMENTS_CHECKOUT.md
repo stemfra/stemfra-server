@@ -2,6 +2,51 @@
 
 ## Managed website checkout status
 
+Sandbox audit found two pending KES 30,000 Marketing records with no linked Whop checkout and no pending non-USD CMS intent. The existing CAD membership is active, with a CAD 400 recurring price and a 30-day period. Whop payment history showed the original CAD 452 paid charge, including tax, and no observed renewal. No checkout was resumed to email verification.
+
+For the current post-payment route, see [Marketing checkout to CMS setup](#marketing-checkout-to-cms-setup). Earlier activation and hosted checkout notes below describe historical flows.
+
+Stemfra's custom embedded checkout renders the checkout page on a Stemfra domain and mounts Whop's secure card fields inside it. Hosted checkout sends the buyer to a checkout page on Whop's domain. Both use Whop to process payment.
+
+**Checkout standard, 10 November 2026.** Use custom Stemfra checkout or an embedded provider checkout on the product's page for new integrations. The local retirement removes buyer redirects to Whop-hosted checkout. Buyers can contact billing@stemfra.com when checkout is unavailable. Keep earlier payment records and reconcile ambiguous attempts before offering another payment. The production rollout below records the earlier deployed configuration. See the [Stemfra checkout standard](../../docs/STEMFRA_PAY_WHOP_RESEARCH.md#checkout-standard).
+
+| Entry point | Accepted in Whop Sandbox | Production behavior in the current code |
+| --- | --- | --- |
+| Marketing Pricing | Custom embedded payment and first-time CMS activation passed. The Hostinger-style cart was also tested through real Stemfra email verification and CMS setup in the local sandbox. | Production supports the same cart and embedded card flow through `WHOP_WEBSITE_CUSTOM_PRODUCTION`. With the flag off, the API declines to start checkout and offers billing support. |
+| CMS Billing | The Hostinger-style embedded card form returned to Billing for the same website and showed one paid charge and an active subscription. | Embedded new-card checkout is opt-in through `WHOP_CMS_CARD_CHECKOUT_PRODUCTION`. The deployment workflow defaults the switch to off. When new-card checkout is unavailable, Billing offers support. Pending hosted attempts go to support for review. |
+
+Before a controlled real-card test, verify the live Whop account, plan and currency mappings, permanent HTTPS return URLs, and signed webhook delivery for the intended path. Confirm the payment, invoice, subscription, and CMS outcome independently. The sandbox successes do not establish live payment acceptance. An actual issuer challenge and return, failed renewal and recovery, expiry, and refunds remain separate acceptance checks.
+
+## Whop Ads attribution
+
+The original checkout browser’s stored visitor ID exactly matched Whop’s visitor ID on the paid USD 299.00 sandbox payment. The visitor Events query returned zero records. Browser-to-payment linkage is verified. Landing-event attribution and purchase reporting remain unverified.
+
+Marketing loads the Whop Pixel after explicit opt-in and honors Global Privacy Control. React reports `page` on eligible funnel navigations and `view_content` on the barbers offer. Campaign and click parameters carry into checkout for the opted-in session. Pages with purchase and resume data are excluded. Whop owns purchase reporting. Stemfra sends neither a manual purchase nor an initiate checkout event.
+
+Set `VITE_WHOP_ADS_ACCOUNT_ID` to `biz_3yEQNCgp1hy3wV` only in the approved production build. Local verification needs `VITE_WHOP_ADS_TEST_ACCOUNT_ID` for a separate test business. The installed Elements 1.9.0 has built-in Pixel identity linking, enabled for opted-in buyers. Its confirmation-token interface has no visitor ID parameter.
+
+Local checks covered the production client build and a simulated Pixel script load, consent, GPC, duplicate router notifications, campaign carry, and exclusion of a resume key. Provider acceptance remains open. In a separate test business, compare the opted-in landing browser's `_wuid` with the retrieved custom checkout payment's `wuid` using payment read access and `member:basic:read`. Use Whop's event history to verify automatic checkout and exactly one attributed purchase with the provider-confirmed amount and currency. Check a decline, refresh and webhook retry. Record matching status without saving raw visitor identifiers in handoffs. If linkage fails, investigate Elements and Whop before considering any changes to reporting.
+
+Sandbox readback confirmed the existing barbers checkout was paid for USD 299.00 and returned a non-empty payment `wuid`. A follow-up query found zero events for that visitor and zero account events matching `payment.completed,pixel.page` over seven days. Whop's public sandbox guide does not specify Ads purchase reporting support. The browser automation surface could not inspect browser storage. Inspect `_wuid` in the original tab using browser developer tools for a same-browser comparison. An original landing event is still needed to independently prove the ID at landing time. This run used a synthetic UTM marker and does not establish attribution to a real ad.
+
+Marketing reads allowlisted attribution from the current URL via the React Router subscription, stores it in session storage after opt-in, and restores it on eligible checkout URLs. The checkout start request and normalized server payment snapshot do not store UTMs, click IDs, or the Pixel visitor ID. The server keeps its order and provider payment references for reconciliation.
+
+## Marketing checkout to CMS setup
+
+Pricing **Subscribe** and template **Start** enter the same custom Stemfra checkout. Template entry preserves the selected design for provisioning. After payment is confirmed, buyers verify their email on the marketing site. New buyers enter their business name and set their password there. The verification email’s **Resume setup** link also returns to marketing.
+
+The post-checkout **Log in** button points to the purchased website’s protected CMS route, `/setup?site=<site-id>`, for both new and existing buyers. If signed out, the CMS sends the buyer to sign in and preserves the setup destination. The CMS checks access to the requested site before opening its onboarding. The normal custom checkout handoff no longer uses the legacy CMS activation screen. This does not change the signed-in CMS Billing checkout, which returns to Billing for the selected site.
+
+**Local verification, 12 November 2026:** The existing signed-in Sorrel sandbox buyer opened the site-specific setup link. The browser showed “Preparing your setup…” and then Sorrel onboarding, with no dashboard in between. The signed-out sign-in-and-return path and the existing-account purchase path were not rerun for this update. No new payment was submitted.
+
+## 13 November 2026 release and acceptance check
+
+- The live `/api/website-purchase/config` returned all three switches enabled. The latest successful Hostinger run, [42837458990](https://github.com/stemfra/stemfra-server/actions/runs/42837458990), deployed `537917bf`, the release that preserves existing hosted checkout resumes. Local hosted fallback retirement was not part of that release.
+- Public Marketing `/checkout` and CMS `/setup` returned HTTP 200. SSH verified Marketing main `cb1902d9` and CMS main `2248d70a`. Neither branch contains the latest site-specific checkout handoff. The release credential returned 404 for frontend deployment metadata, so the route responses do not prove exact frontend deployment commits.
+- Locally, Marketing's `WebsiteCheckoutEntry` uses the cart component and its account handoff. `SandboxCartPayment` reads `VITE_WEBSITE_SANDBOX_API_URL`; the server gates the cart endpoints on sandbox mode. Production promotion needs a shared, provider-mode-aware cart flow verified with the same customer experience. No code or configuration change was made.
+- All 17 focused purchase, catalogue and offer tests passed. The isolated sandbox API on port 4057 was not running, and a usable private paid purchase resume and buyer login were not available. The signed-out browser check remains open. Reuse the paid Sorrel purchase, confirm sign-in preserves the purchased site, and observe its setup before any Dashboard render. No new payment was submitted.
+
+
 Stemfra's custom embedded checkout renders the checkout page on a Stemfra domain and mounts Whop's secure card fields inside it. Hosted checkout sends the buyer to a checkout page on Whop's domain. Both use Whop to process payment.
 
 | Entry point | Accepted in Whop Sandbox | Production behavior in the current code |
@@ -18,6 +63,15 @@ On 9 November 2026, a fresh buyer started the custom checkout directly from the 
 The standard Resend mailer accepted the Stemfra verification email. Peter confirmed receiving it in the real inbox, entered the code privately, set the first password and reached website setup. Readback verified one preview test site, one active Whop subscription and one paid billing record, with the purchase marked complete. The test used an isolated local CMS origin and the existing provider status verification path. The signed webhook was exercised in the preceding sandbox run.
 
 The temporary marketing API override was removed after the run. The original embed remains available with the custom flag off.
+
+## Production rollout, 10 November 2026
+
+Marketing `d6c08e89` and CMS `5f4e4155` reached production. The API enabled `WHOP_WEBSITE_CUSTOM_PRODUCTION` and `WHOP_CMS_CARD_CHECKOUT_PRODUCTION` during [activation run 42837251137](https://github.com/stemfra/stemfra-server/actions/runs/42837251137). The public checkout configuration confirmed both enabled. The permanent return uses the originating marketing domain or the selected CMS website, as applicable. The HTTPS sandbox relay is for local tests.
+
+In that deployment, turning a production switch off restored hosted checkout for new attempts. An existing payment must be checked before starting another attempt. The CMS compatibility update lets customers reopen an already-created hosted checkout without creating another provider session. The deployed fixes are API `537917bf` and CMS `2248d70a`.
+
+The four regional prices and the unsigned webhook rejection were verified in production. Live payment, signed delivery from a live purchase, issuer challenge, and the resulting account activation or subscription update were outside this release verification.
+
 
 ## Marketing integration sandbox acceptance
 
@@ -65,6 +119,8 @@ Whop Elements returns the same browser tab to the marketing checkout with the pu
 ## Reusing the pattern in Stemfra AI
 
 1. Start with AI's own authenticated billing flow, catalogue, environment and order binding. Use the configuration ID created for that exact AI order. Keep website plans, return URLs, webhook settings and credentials separate.
+2. Mount Elements after the existing subscription review. Use an AI-specific return URL and provide the billing support link if checkout is unavailable. Use a fixed sandbox environment in the first test.
+
 2. Mount Elements after the existing subscription review. Use an AI-specific return URL and preserve the existing hosted fallback while validating. Use a fixed sandbox environment in the first test.
 3. Treat the return as a signal to refresh AI billing. Use existing verified provider and signed-webhook logic for subscription state, invoice reconciliation and idempotent credit grants.
 4. Verify the selected plan, amount and currency in the embed. Use a sandbox test account and test payment method. Check return, webhook delivery, one subscription and one credit grant, and repeat the status refresh without granting twice.

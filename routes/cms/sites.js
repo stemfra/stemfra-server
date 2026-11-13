@@ -16,10 +16,10 @@ router.get('/subscription-offer', requireCmsAuth, async (req, res) => {
   }
 });
 
-router.post('/', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, createSite);
+router.post('/', requireCmsAuth, catalogue.requestGate, catalogue.newQuoteGate, createSite);
 // Owner self-serve "Clone this shop" — duplicate an owned site (design + catalog
 // + content) into a new one.
-router.post('/clone', requireCmsAuth, catalogue.requestGate, catalogue.quoteGate, cloneOwnSite);
+router.post('/clone', requireCmsAuth, catalogue.requestGate, catalogue.newQuoteGate, cloneOwnSite);
 // Owner self-serve delete / restore (soft-delete, 90-day grace).
 router.post('/:siteId/delete', requireCmsAuth, deleteOwnSite);
 router.post('/:siteId/restore', requireCmsAuth, restoreOwnSite);

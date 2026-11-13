@@ -2,6 +2,17 @@
 
 Approved by Peter on 3 November 2026. The approved journey is deployed; current hosted acceptance and limits follow.
 
+## Latest popup styling, 4 November 2026
+
+Removed renewal/tax and service-description paragraphs at Peter’s request. Only the plan name/price, linked agreement and Continue remain, with a larger40px gap before agreement. No Cancel button; close icon and Escape remain. Existing pricing card/Offer box classes are reused exactly for colors, border shape and typography. Local browser verified; not deployed.
+
+## Local review-popup follow-up, 4 November 2026
+
+Latest requested UI is implemented locally: pricing card Subscribe → in-page subscription/price review → Continue → Whop. No checkbox or standalone agreement page. The review states "By clicking Continue, you agree to..." with Terms of Service, Privacy Policy and Fees & Payments Policy links. Clicking Continue submits explicit consent with the existing immutable quote/template/business context; merely opening or canceling does not start checkout. Server quote/consent requirements remain intact. Existing design tokens and buttons retained.
+
+Local /websites and /pricing browser checks cover regional price agreement, no checkbox, closing/focus restoration and narrow-screen readability. Marketing build/prerender99routes passes. New Continue/purchase was not exercised against Whop; no new payment or consent was submitted. This popup update is not pushed or deployed; hosted acceptance below describes the prior released UI. [Pricing screenshot](evidence/website-pricing-clean-local.png), [review screenshot](evidence/website-subscription-review-local.png), [narrow screen](evidence/website-subscription-review-mobile.png).
+
+
 ## Current acceptance, 4 November 2026
 
 Production paid website signup is deployed and enabled after Peter's explicit approval. API deployment [41734352333](https://github.com/stemfra/stemfra-server/actions/runs/41734352333) succeeded at `e0b7b08`; hosted `/api/website-purchase/config` returns `{"enabled":true}`. CMS production is `245672e`, marketing production `f16db72`; both Cloudflare deployments succeeded. Existing sandbox purchase was reused throughout. No new checkout/payment, domain purchase or test-site publishing.
@@ -118,3 +129,6 @@ Fresh review found no stranded provisioning purchase: two pending checkouts have
 ![Implemented managed website signup and remaining acceptance](images/managed-website-signup-2026-11-04.png)
 
 [Editable SVG](images/managed-website-signup-2026-11-04.svg). The image separates verified implementation from release acceptance. Improvements preserve the approved payment-first journey: durable drafts, stale-window protection, required-field validation, atomic creation/retry, and editable country with cached/Google/manual lookup.
+
+
+Latest follow-up: Peter restored the original service description inside Managed website: "Website, online booking and AI Front Desk, with setup, hosting and ongoing updates." Full-width centered Continue, even summary padding and64px agreement separation remain. Verified in the local browser; no push or deployment.

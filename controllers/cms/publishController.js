@@ -65,23 +65,14 @@ async function unpublish(req, res) {
 }
 
 // POST /api/cms/site-publish/billing-checkout { siteId } — pay-to-publish.
-// Owner-facing System A checkout; amounts derive from the site's vertical
-// (owner can't set prices). On success the webhook flips the subscription to
-// active, clearing the publish billing gate.
+// Older clients can continue through Billing for the same website.
 async function billingCheckout(req, res) {
-  try {
-    const { siteId } = req.body;
-    if (!siteId) return res.status(400).json({ error: 'siteId required' });
-    const site = await verifySiteOwnership(req.cmsUser.id, siteId);
-    if (!site) return res.status(403).json({ error: 'Not your site.' });
-
-    const result = await require('../../lib/whop/service').prepare(siteId, req.cmsUser.id, req.cmsUser.email);
-    res.json(result);
-  } catch (err) {
-    if (err.code === 'no_stripe') return res.status(503).json({ error: 'Billing is not configured yet.' });
-    if (err.code === 'no_email') return res.status(400).json({ error: 'Add a billing email to your account first.' });
-    res.status(500).json({ error: err.message });
-  }
+  const { siteId } = req.body || {};
+  if (!siteId) return res.status(400).json({ error: 'siteId required' });
+  const site = await verifySiteOwnership(req.cmsUser.id, siteId);
+  if (!site) return res.status(403).json({ error: 'Not your site.' });
+  const query = new URLSearchParams({ site: siteId });
+  return res.json({ url: `/billing/checkout?${query}` });
 }
 
 // POST /api/cms/site-publish/request-invoice { siteId } — Payoneer-first
