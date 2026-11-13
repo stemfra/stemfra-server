@@ -90,6 +90,8 @@ jobs:
             WHOP_ENABLED=${{ secrets.WHOP_ENABLED_PROD || 'false' }}
             MANAGED_WEBSITE_PURCHASE_ENABLED=${{ secrets.MANAGED_WEBSITE_PURCHASE_ENABLED_PROD || 'false' }}
             WHOP_SANDBOX=false
+            WHOP_PLAN_MANAGED_WEBSITE_PRIVATE_TEST=${{ secrets.WHOP_PLAN_MANAGED_WEBSITE_PRIVATE_TEST_PROD }}
+            WHOP_PRIVATE_TEST_TOKEN=${{ secrets.WHOP_PRIVATE_TEST_TOKEN_PROD }}
             WHOP_ACCOUNT_ID=${{ secrets.WHOP_ACCOUNT_ID_PROD }}
             WHOP_API_KEY=${{ secrets.WHOP_API_KEY_PROD }}
             WHOP_WEBHOOK_SECRET=${{ secrets.WHOP_WEBHOOK_SECRET_PROD }}

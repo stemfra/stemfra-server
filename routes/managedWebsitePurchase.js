@@ -4,7 +4,7 @@ const catalogue = require('../lib/managedWebsiteCatalogue');
 const db = require('../config/supabase');
 const core = require('../lib/whop/core');
 const service = require('../lib/managedWebsitePurchaseService');
-const { randomBytes } = require('node:crypto');
+const { randomBytes, timingSafeEqual } = require('node:crypto');
 const { createClient } = require('@supabase/supabase-js');
 const { isPurchaseOwner } = require('../lib/managedWebsitePurchase');
 const handoffs = new Map();
@@ -62,7 +62,34 @@ router.get('/cart/card-config', route(async req => {
   if (!planId) throw fail('Card checkout is unavailable.', 503);
   return { accountId: cfg.account, planId };
 }));
-router.post('/start', catalogue.newQuoteGate, route(async req => {
+const privateTestPlan = 'managed_website_private_test';
+function privateTestOffer(req) {
+  const secret = process.env.WHOP_PRIVATE_TEST_TOKEN;
+  const token = req.body?.privateTestToken;
+  if (!cartEnabled() || !secret || secret.length < 32 || typeof token !== 'string' ||
+      Buffer.byteLength(token) !== Buffer.byteLength(secret) ||
+      !timingSafeEqual(Buffer.from(token), Buffer.from(secret))) throw fail('Private checkout is unavailable.', 404);
+  const cfg = core.config();
+  const plan = cfg.plans[privateTestPlan];
+  if (!plan?.plan || Object.entries(cfg.plans).some(([key, entry]) => key !== privateTestPlan && entry.plan === plan.plan)) {
+    throw fail('Private checkout is unavailable.', 404);
+  }
+  return { available: true, currency: plan.currency, monthlyCents: plan.cents, version: privateTestPlan };
+}
+router.post('/private-offer', route(privateTestOffer));
+function checkoutQuoteGate(req, res, next) {
+  if (req.body?.privateTestToken === undefined) return catalogue.newQuoteGate(req, res, next);
+  try {
+    const offer = privateTestOffer(req);
+    if (req.body.pricingVersion !== offer.version || req.body.subscriptionCurrency !== offer.currency) {
+      throw fail('Reload to review the private checkout price.', 409);
+    }
+    next();
+  } catch (error) {
+    res.set('Cache-Control', 'no-store').status(error.status || 503).json({ error: 'Private checkout is unavailable.' });
+  }
+}
+router.post('/start', checkoutQuoteGate, route(async req => {
   const cartCheckout = req.body.cartCheckout === true;
   if (cartCheckout && !cartEnabled()) throw fail('Card checkout is unavailable.', 404);
   if (req.body.termsAccepted !== true) throw Object.assign(Error('Accept the subscription terms to continue.'), { status: 400 });
@@ -78,7 +105,9 @@ router.post('/start', catalogue.newQuoteGate, route(async req => {
   if (starter) starterId = starter.id;
   const vertical = starter?.vertical?.slug || require('../lib/verticalConfig').resolveVerticalSlug(req.body.vertical || 'barbers');
   if (!starterId && !require('../lib/verticalConfig').configFor(vertical)) throw Object.assign(Error('Choose an available business type.'), { status: 400 });
-  const price = require('../lib/whop/websitePrices').price(req.body.subscriptionCurrency);
+  const price = req.body.privateTestToken === undefined
+    ? require('../lib/whop/websitePrices').price(req.body.subscriptionCurrency)
+    : { key: privateTestPlan, version: privateTestPlan };
   // The issuer must return to the origin that owns the browser checkout session.
   const requestOrigin = req.get('origin');
   const checkoutOrigin = requestOrigin === process.env.CLIENT_ALTERNATE_URL?.trim() ? requestOrigin : undefined;
